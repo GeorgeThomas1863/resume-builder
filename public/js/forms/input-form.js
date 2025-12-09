@@ -12,9 +12,9 @@ export const buildInputForm = async () => {
 
   const selectAIListItem = await buildSelectAIListItem();
   const uploadListItem = await buildUploadListItem();
-  const buttonListItem = await buildButtonListItem();
+  const submitListItem = await buildSubmitListItem();
 
-  inputFormElement.append(selectAIListItem, uploadListItem, buttonListItem);
+  inputFormElement.append(selectAIListItem, uploadListItem, submitListItem);
 
   inputFormWrapper.append(inputTitleElement, inputFormElement);
 
@@ -61,26 +61,23 @@ export const buildUploadListItem = async () => {
   uploadListItem.id = "upload-list-item";
   uploadListItem.className = "form-list-item";
 
-  const uploadLabel = document.createElement("label");
-  uploadLabel.setAttribute("for", "upload-select");
-  uploadLabel.textContent = "Upload your DEFAULT resume";
-  uploadLabel.className = "form-label";
-
   const uploadButton = document.createElement("button");
-  uploadButton.type = "button";
-  uploadButton.className = "upload-button";
-  uploadButton.textContent = "Upload File";
-  uploadListItem.appendChild(uploadButton);
+  //   uploadButton.type = "button";
+  uploadButton.className = "btn-upload";
+  uploadButton.id = "upload-button";
+  uploadButton.textContent = "Upload your DEFAULT resume";
+  uploadButton.setAttribute("data-label", "upload-button");
+
+  //   uploadListItem.append(uploadLabel, uploadButton);
+  uploadListItem.append(uploadButton);
 
   return uploadListItem;
 };
 
-export const buildButtonListItem = async () => {
-  const buttonListItem = document.createElement("li");
-  buttonListItem.id = "button-list-item";
-
-  const buttonWrapper = document.createElement("div");
-  buttonWrapper.className = "button-wrapper";
+export const buildSubmitListItem = async () => {
+  const submitListItem = document.createElement("li");
+  submitListItem.id = "submit-list-item";
+  submitListItem.className = "form-list-item";
 
   const submitButton = document.createElement("button");
   submitButton.id = "form-submit-button";
@@ -88,9 +85,7 @@ export const buildButtonListItem = async () => {
   submitButton.textContent = "SUBMIT";
   submitButton.setAttribute("data-label", "submit-button");
 
-  buttonWrapper.append(submitButton);
+  submitListItem.append(submitButton);
 
-  buttonListItem.append(buttonWrapper);
-
-  return buttonListItem;
+  return submitListItem;
 };

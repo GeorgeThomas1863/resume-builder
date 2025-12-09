@@ -93,7 +93,7 @@ h3 {
 
 #input-form-wrapper {
   margin: 3rem auto;
-  max-width: 720px;
+  max-width: 600px;
   display: flex;
   background: #ffffff;
   flex-direction: column;
@@ -107,15 +107,13 @@ h3 {
 #input-form-element {
   width: 100%;
   margin: 0 auto;
-  /* margin-top: 3rem; */
 }
 
 .form-title {
   width: 100%;
-  text-align: center;
+  text-align: left;
   margin: 0 auto;
   padding: 1rem 2rem;
-  background: #f3f4f6;
   border-bottom: 1px solid #d1d5db;
 }
 
@@ -128,11 +126,6 @@ h3 {
   padding-top: 0;
 }
 
-#button-list-item {
-  margin-top: 1rem;
-  padding: 1rem 2rem;
-}
-
 .form-label {
   display: block;
   font-size: 0.9rem;
@@ -142,10 +135,8 @@ h3 {
   margin-left: 0.25rem;
 }
 
-.form-control,
 .form-select,
-.form-input,
-.form-textarea {
+.form-input {
   width: 100%;
   padding: 11px 14px;
   font-size: 0.9rem;
@@ -167,12 +158,12 @@ h3 {
   padding-right: 40px;
 }
 
-.form-input:focus,
+/* .form-input:focus,
 .form-textarea:focus {
   border-color: #3b82f6;
   background: rgba(255, 255, 255, 0.95);
   box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.08);
-}
+} */
 
 .form-input:hover,
 .form-textarea:hover {
@@ -186,20 +177,20 @@ h3 {
   line-height: 1.6;
 }
 
-.form-select:hover,
+/* .form-select:hover,
 .form-select:focus {
   border-color: #3b82f6;
-}
+} */
 
 .form-textarea::placeholder,
 .form-input::placeholder {
   color: #9ca3af;
 }
 
-#form-submit-button {
+/* #form-submit-button {
   font-size: 18px;
   padding: 1.2rem;
-}
+} */
 
 /* +++++++++++++++++++++++++++++++++++++++++++++++++ */
 
@@ -276,7 +267,6 @@ h3 {
   text-transform: uppercase;
   letter-spacing: 1px;
   color: #ffffff;
-  /* background: #357abd; */
   background: #2563a8;
   border: none;
   border-radius: 8px;
@@ -295,4 +285,29 @@ h3 {
   transform: translateY(0);
   background: linear-gradient(135deg, #1d5398 0%, #164388 100%);
   box-shadow: 0 2px 8px rgba(74, 144, 226, 0.25);
+}
+
+.btn-upload {
+  width: 100%;
+  padding: 16px 24px;
+  font-size: 16px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: #000000;
+  background-color: transparent;
+  border: 2px solid #000000;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn-upload:hover {
+  background: #f0f0f0;
+  transform: translateY(-2px);
+}
+
+.btn-upload:active {
+  transform: translateY(0);
+  background: #e0e0e0;
 }
