@@ -68,7 +68,7 @@ export const buildPasteJobListItem = async () => {
   //   pasteJobLabel.textContent = "Paste the ENTIRE job description here:";
 
   const pasteJobInput = document.createElement("textarea");
-  pasteJobInput.rows = 7;
+  pasteJobInput.rows = 12;
   pasteJobInput.name = "paste-job-input";
   pasteJobInput.id = "paste-job-input";
   pasteJobInput.className = "form-textarea";
