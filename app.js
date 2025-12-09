@@ -1,3 +1,7 @@
+//build main input
+//connect to local llm
+//figure out word output
+
 import express from "express";
 import session from "express-session";
 import routes from "./routes/router.js";
