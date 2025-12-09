@@ -86,13 +86,12 @@ export const buildUploadListItem = async () => {
   uploadListItem.className = "form-list-item";
 
   const uploadButton = document.createElement("button");
-  //   uploadButton.type = "button";
+  uploadButton.type = "button";
   uploadButton.className = "btn-upload";
   uploadButton.id = "upload-button";
   uploadButton.textContent = "Upload your DEFAULT resume";
   uploadButton.setAttribute("data-label", "upload-button");
 
-  //   uploadListItem.append(uploadLabel, uploadButton);
   uploadListItem.append(uploadButton);
 
   return uploadListItem;
