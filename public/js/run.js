@@ -1,3 +1,19 @@
+import { EYE_OPEN_SVG, EYE_CLOSED_SVG } from "./util/define-things.js";
+import { sendToBack } from "./util/api-front.js";
+
+export const runAuthSubmit = async () => {
+  const authPwInput = document.getElementById("auth-pw-input");
+  if (!authPwInput || !authPwInput.value) return null;
+
+  const data = await sendToBack({ route: "/site-auth-route", pw: authPwInput.value });
+  if (!data || !data.redirect) return null;
+
+  window.location.href = data.redirect;
+  return data;
+};
+
+//----------------------
+
 export const runPwToggle = async () => {
   const pwButton = document.querySelector(".password-toggle-btn");
   const pwInput = document.querySelector(".password-input");
