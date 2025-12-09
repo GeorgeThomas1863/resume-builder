@@ -12,9 +12,10 @@ export const buildInputForm = async () => {
 
   const selectAIListItem = await buildSelectAIListItem();
   const uploadListItem = await buildUploadListItem();
+  const pasteJobListItem = await buildPasteJobListItem();
   const submitListItem = await buildSubmitListItem();
 
-  inputFormElement.append(selectAIListItem, uploadListItem, submitListItem);
+  inputFormElement.append(selectAIListItem, uploadListItem, pasteJobListItem, submitListItem);
 
   inputFormWrapper.append(inputTitleElement, inputFormElement);
 
@@ -54,6 +55,29 @@ export const buildSelectAIListItem = async () => {
   selectAIListItem.append(selectAILabel, aiSelectType);
 
   return selectAIListItem;
+};
+
+export const buildPasteJobListItem = async () => {
+  const pasteJobListItem = document.createElement("li");
+  pasteJobListItem.id = "paste-job-list-item";
+  pasteJobListItem.className = "form-list-item";
+
+  //   const pasteJobLabel = document.createElement("label");
+  //   pasteJobLabel.setAttribute("for", "paste-job");
+  //   pasteJobLabel.className = "form-label";
+  //   pasteJobLabel.textContent = "Paste the ENTIRE job description here:";
+
+  const pasteJobInput = document.createElement("textarea");
+  pasteJobInput.rows = 7;
+  pasteJobInput.name = "paste-job-input";
+  pasteJobInput.id = "paste-job-input";
+  pasteJobInput.className = "form-textarea";
+  pasteJobInput.placeholder = "[Paste the ENTIRE job description here]";
+
+  //   pasteJobListItem.append(pasteJobLabel, pasteJobInput);
+  pasteJobListItem.append(pasteJobInput);
+
+  return pasteJobListItem;
 };
 
 export const buildUploadListItem = async () => {
