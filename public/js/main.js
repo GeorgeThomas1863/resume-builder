@@ -10,3 +10,5 @@ export const buildDisplay = async () => {
 
   return true;
 };
+
+buildDisplay();
