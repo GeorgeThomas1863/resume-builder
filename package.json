@@ -1,0 +1,26 @@
+{
+  "name": "resume-builder",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "",
+  "homepage": "https://github.com/GeorgeThomas1863/resume-builder#readme",
+  "bugs": {
+    "url": "https://github.com/GeorgeThomas1863/resume-builder/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/GeorgeThomas1863/resume-builder.git"
+  },
+  "license": "ISC",
+  "author": "George H. Thomas",
+  "main": "app.js",
+  "scripts": {
+    "start": "nodemon app.js"
+  },
+  "dependencies": {
+    "express": "^5.2.1",
+    "express-session": "^1.18.2",
+    "mongodb": "^7.0.0",
+    "nodemon": "^3.1.11"
+  }
+}
