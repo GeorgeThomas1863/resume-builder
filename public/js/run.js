@@ -13,12 +13,16 @@ export const runAuthSubmit = async () => {
 };
 
 export const runUploadClick = async () => {
-  //triggers the file picker for upload (per claude)
   const fileInput = document.getElementById("upload-file-input");
   if (!fileInput) return null;
 
+  console.log("FILE INPUT");
+  console.log(fileInput);
+  console.log("FILE INPUT TYPE");
+  console.log(fileInput.type);
+
   fileInput.click();
-  return true;
+  // return true;
 };
 
 export const runUploadFile = async (file) => {
@@ -42,7 +46,7 @@ export const runUploadFile = async (file) => {
 
     const result = await response.json();
 
-    if (!result || !result.ok) {
+    if (result.error) {
       uploadStatus.textContent = `✗ ${result.error}`;
       uploadStatus.style.color = "red";
       return null;

@@ -4,7 +4,7 @@ const authElement = document.getElementById("auth-element");
 const displayElement = document.getElementById("display-element");
 
 export const clickHandler = async (e) => {
-  e.preventDefault();
+  // e.preventDefault();
 
   const clickElement = e.target;
   const clickId = clickElement.id;
@@ -50,7 +50,11 @@ export const changeHandler = async (e) => {
 
   if (changeId !== "upload-file-input") return null;
 
+  console.log("CHANGE HANDLER");
+
   const file = e.target.files[0];
+  console.log("FILE");
+  console.log(file);
   if (!file) return null;
 
   await runUploadFile(file);

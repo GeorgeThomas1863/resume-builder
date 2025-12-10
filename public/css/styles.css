@@ -93,7 +93,7 @@ h3 {
 
 #input-form-wrapper {
   margin: 1rem auto;
-  max-width: 600px;
+  max-width: 700px;
   display: flex;
   background: #ffffff;
   flex-direction: column;
@@ -193,7 +193,7 @@ h3 {
 }
 
 .form-textarea::placeholder {
-  color: #818181;
+  color: #555555;
   font-size: 1.1rem;
   padding: 0;
 }

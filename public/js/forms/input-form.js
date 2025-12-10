@@ -3,7 +3,7 @@ export const buildInputForm = async () => {
   inputFormWrapper.id = "input-form-wrapper";
 
   const inputTitleElement = document.createElement("h2");
-  inputTitleElement.textContent = "Unfuck your resume below:";
+  inputTitleElement.textContent = "Tool to auto unfuck your resume ('align' it with a job description)";
   inputTitleElement.className = "form-title";
 
   const inputFormElement = document.createElement("div");
