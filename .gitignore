@@ -4,6 +4,9 @@ config/
 /config/*
 .env
 
+data/*
+**/data/*
+
 # logs
 logs
 *.log
