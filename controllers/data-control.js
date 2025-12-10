@@ -30,6 +30,8 @@ export const getBackendValueController = async (req, res) => {
 
 export const submitRouteController = async (req, res) => {
   const inputParams = req.body;
+  console.log("INPUT PARAMS");
+  console.log(inputParams);
 
   const data = await runResumeUnfucker(inputParams);
   if (!data) return res.json({ success: false, message: "Something crashed, no clue why" });

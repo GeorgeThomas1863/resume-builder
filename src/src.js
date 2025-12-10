@@ -1,37 +1,19 @@
-import fs from "fs";
-import path from "path";
-import { fileURLToPath } from "url";
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+import { extractResumeText } from "./resume.js";
 
 export const runResumeUnfucker = async (inputParams) => {
-  const resumeInput = await extractResumeText();
+  if (!inputParams) return null;
+  const { aiType, jobInput } = inputParams;
 
-  console.log("RESUME INPUT");
-  console.log(resumeInput);
-};
+  console.log("INPUT PARAMS");
+  console.log(inputParams);
 
-export const extractResumeText = async () => {
-  const filePath = await getResumeFilePath();
-  if (!filePath) return null;
+  const resumeText = await extractResumeText();
+  if (!resumeText) return null;
+  console.log("RESUME TEXT");
+  console.log(resumeText);
 
-  const data = await mammoth.extractRawText({ path: filePath });
+  const data = await runAI(resumeText, jobInput, aiType);
   if (!data) return null;
 
-  return data.value;
-};
-
-export const getResumeFilePath = async () => {
-  const fileDir = path.join(__dirname, "data");
-  const fileArray = fs.readdirSync(fileDir);
-
-  for (const file of fileArray) {
-    if (file.endsWith(".docx")) {
-      const filePath = path.join(fileDir, file);
-      return filePath;
-    }
-  }
-
-  return null;
+  return data;
 };
