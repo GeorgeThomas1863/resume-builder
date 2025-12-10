@@ -62,11 +62,6 @@ export const buildPasteJobListItem = async () => {
   pasteJobListItem.id = "paste-job-list-item";
   pasteJobListItem.className = "form-list-item";
 
-  //   const pasteJobLabel = document.createElement("label");
-  //   pasteJobLabel.setAttribute("for", "paste-job");
-  //   pasteJobLabel.className = "form-label";
-  //   pasteJobLabel.textContent = "Paste the ENTIRE job description here:";
-
   const pasteJobInput = document.createElement("textarea");
   pasteJobInput.rows = 12;
   pasteJobInput.name = "paste-job-input";
@@ -85,6 +80,13 @@ export const buildUploadListItem = async () => {
   uploadListItem.id = "upload-list-item";
   uploadListItem.className = "form-list-item";
 
+  // Create hidden file input for file upload
+  const fileInput = document.createElement("input");
+  fileInput.type = "file";
+  fileInput.id = "upload-file-input";
+  fileInput.accept = ".pdf,.doc,.docx";
+  fileInput.style.display = "none";
+
   const uploadButton = document.createElement("button");
   uploadButton.type = "button";
   uploadButton.className = "btn-upload";
@@ -92,7 +94,13 @@ export const buildUploadListItem = async () => {
   uploadButton.textContent = "Upload your DEFAULT resume";
   uploadButton.setAttribute("data-label", "upload-button");
 
-  uploadListItem.append(uploadButton);
+  const uploadStatus = document.createElement("span");
+  uploadStatus.id = "upload-status";
+  uploadStatus.className = "upload-status";
+  uploadStatus.style.marginLeft = "10px";
+  uploadStatus.style.display = "none";
+
+  uploadListItem.append(fileInput, uploadButton, uploadStatus);
 
   return uploadListItem;
 };

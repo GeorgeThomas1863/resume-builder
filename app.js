@@ -5,6 +5,7 @@
 import express from "express";
 import session from "express-session";
 import routes from "./routes/router.js";
+import { uploadErrorHandler } from "./routes/upload-error.js";
 
 import CONFIG from "./config/config.js";
 
@@ -21,5 +22,8 @@ app.use(express.json());
 
 //routes
 app.use(routes);
+
+//needed for file upload
+app.use(uploadErrorHandler);
 
 app.listen(port);
