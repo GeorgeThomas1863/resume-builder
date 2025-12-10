@@ -67,6 +67,25 @@ export const runUploadFile = async (file) => {
   }
 };
 
+export const runMainSubmit = async () => {
+  const submitRoute = await sendToBack({ route: "/get-backend-value-route", key: "submitRoute" });
+  if (!submitRoute) return null;
+
+  const params = {
+    route: submitRoute,
+    aiType: document.getElementById("ai-type-select").value,
+    jobInput: document.getElementById("paste-job-input").value,
+  };
+
+  const data = await sendToBack(params);
+  if (!data) return null;
+
+  console.log("DATA");
+  console.log(data);
+
+  return data;
+};
+
 //----------------------
 
 export const runPwToggle = async () => {
