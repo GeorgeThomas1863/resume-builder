@@ -21,10 +21,6 @@ export const runAI = async (resumeText, inputParams) => {
   const params = {
     model: "openai/gpt-oss-20b",
     input: messageInput,
-    temperature: 0.7,
-    top_p: 0.95,
-    max_tokens: 10000,
-    stream: false,
   };
 
   const res = await client.responses.create(params);
