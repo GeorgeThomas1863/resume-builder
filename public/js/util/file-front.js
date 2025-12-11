@@ -54,7 +54,7 @@ export const checkFile = async () => {
 
   const checkRoute = await sendToBack({ route: "/get-backend-value-route", key: "checkRoute" });
   const fileData = await sendToBackGET({ route: checkRoute });
-  //   if (!fileData) return null;
+  if (!fileData || !fileData.success) return null;
   console.log("CHECK FILE FILE DATA");
   console.log(fileData);
 
