@@ -28,6 +28,9 @@ export const runUploadClick = async () => {
 export const runUploadFile = async (file) => {
   if (!file) return null;
 
+  const uploadRoute = await sendToBack({ route: "/get-backend-value-route", key: "uploadRoute" });
+  if (!uploadRoute) return null;
+
   const uploadStatus = document.getElementById("upload-status");
   const uploadButton = document.getElementById("upload-button");
 
@@ -39,7 +42,7 @@ export const runUploadFile = async (file) => {
   formData.append("resume", file);
 
   try {
-    const response = await fetch("/upload-resume", {
+    const response = await fetch(uploadRoute, {
       method: "POST",
       body: formData,
     });
@@ -68,22 +71,28 @@ export const runUploadFile = async (file) => {
 };
 
 export const runMainSubmit = async () => {
-  const submitRoute = await sendToBack({ route: "/get-backend-value-route", key: "submitRoute" });
-  if (!submitRoute) return null;
+  const checkRoute = await sendToBack({ route: "/get-backend-value-route", key: "checkFilePath" });
+  const fileData = await sendToBack({ route: checkRoute, method: "GET" });
+  console.log("FILE DATA");
+  console.log(fileData);
 
-  const params = {
-    route: submitRoute,
-    aiType: document.getElementById("ai-type-select").value,
-    jobInput: document.getElementById("paste-job-input").value,
-  };
 
-  const data = await sendToBack(params);
-  if (!data) return null;
+  // const submitRoute = await sendToBack({ route: "/get-backend-value-route", key: "submitRoute" });
+  // if (!submitRoute) return null;
 
-  console.log("DATA");
-  console.log(data);
+  // const params = {
+  //   route: submitRoute,
+  //   aiType: document.getElementById("ai-type-select").value,
+  //   jobInput: document.getElementById("paste-job-input").value,
+  // };
 
-  return data;
+  // const data = await sendToBack(params);
+  // if (!data) return null;
+
+  // console.log("DATA");
+  // console.log(data);
+
+  // return data;
 };
 
 //----------------------
