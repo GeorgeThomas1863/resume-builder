@@ -3,12 +3,12 @@ import { runAI } from "./ai.js";
 
 export const runResumeUnfucker = async (inputParams) => {
   if (!inputParams) return null;
-  const { filePath } = inputParams;
+  const { inputPath } = inputParams;
 
   console.log("INPUT PARAMS");
   console.log(inputParams);
 
-  const resumeText = await extractResumeText(filePath);
+  const resumeText = await extractResumeText(inputPath);
   if (!resumeText) return null;
   console.log("RESUME TEXT");
   console.log(resumeText);
@@ -16,7 +16,7 @@ export const runResumeUnfucker = async (inputParams) => {
   const aiText = await runAI(resumeText, inputParams);
   if (!aiText) return null;
 
-  await buildNewResume(aiText, resumeText);
+  await buildNewResume(aiText, resumeText, inputParams);
 
   // return data;
 };

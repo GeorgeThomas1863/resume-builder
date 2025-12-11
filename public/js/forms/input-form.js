@@ -3,7 +3,7 @@ export const buildInputForm = async () => {
   inputFormWrapper.id = "input-form-wrapper";
 
   const inputTitleElement = document.createElement("h2");
-  inputTitleElement.textContent = "Tool to auto unfuck your resume ('align' it with a job description)";
+  inputTitleElement.textContent = `Tool to auto unfuck your resume ("align it with a job description")`;
   inputTitleElement.className = "form-title";
 
   const inputFormElement = document.createElement("div");
@@ -11,11 +11,12 @@ export const buildInputForm = async () => {
   inputFormElement.className = "form-element";
 
   const selectAIListItem = await buildSelectAIListItem();
+  const selectFormatListItem = await buildSelectFormatListItem();
   const uploadListItem = await buildUploadListItem();
   const pasteJobListItem = await buildPasteJobListItem();
   const submitListItem = await buildSubmitListItem();
 
-  inputFormElement.append(selectAIListItem, uploadListItem, pasteJobListItem, submitListItem);
+  inputFormElement.append(selectAIListItem, selectFormatListItem, uploadListItem, pasteJobListItem, submitListItem);
 
   inputFormWrapper.append(inputTitleElement, inputFormElement);
 
@@ -57,6 +58,41 @@ export const buildSelectAIListItem = async () => {
   return selectAIListItem;
 };
 
+export const buildSelectFormatListItem = async () => {
+  const selectFormatListItem = document.createElement("li");
+  selectFormatListItem.id = "select-format-list-item";
+  selectFormatListItem.className = "form-list-item";
+
+  const selectFormatLabel = document.createElement("label");
+  selectFormatLabel.setAttribute("for", "format-select");
+  selectFormatLabel.textContent = "Select Format";
+  selectFormatLabel.className = "form-label";
+
+  const formatTypeSelect = document.createElement("select");
+  formatTypeSelect.id = "format-type-select";
+  formatTypeSelect.className = "form-select";
+  formatTypeSelect.setAttribute("data-label", "format-type-select");
+
+  const optionArray = [
+    { value: "custom", text: "Custom", selected: true },
+    { value: "none", text: "None [default]" },
+  ];
+
+  for (let i = 0; i < optionArray.length; i++) {
+    const optionData = optionArray[i];
+    const option = document.createElement("option");
+    option.value = optionData.value;
+    option.textContent = optionData.text;
+    if (optionData.selected) option.selected = true;
+
+    formatTypeSelect.append(option);
+  }
+
+  selectFormatListItem.append(selectFormatLabel, formatTypeSelect);
+
+  return selectFormatListItem;
+};
+
 export const buildPasteJobListItem = async () => {
   const pasteJobListItem = document.createElement("li");
   pasteJobListItem.id = "paste-job-list-item";
@@ -69,7 +105,6 @@ export const buildPasteJobListItem = async () => {
   pasteJobInput.className = "form-textarea";
   pasteJobInput.placeholder = "[Paste the ENTIRE job description here]";
 
-  //   pasteJobListItem.append(pasteJobLabel, pasteJobInput);
   pasteJobListItem.append(pasteJobInput);
 
   return pasteJobListItem;

@@ -37,8 +37,9 @@ export const runMainSubmit = async () => {
   const params = {
     route: submitRoute,
     aiType: document.getElementById("ai-type-select").value,
+    formatType: document.getElementById("format-type-select").value,
     jobInput: jobInput,
-    filePath: fileData.filePath,
+    inputPath: fileData.filePath,
   };
 
   console.log("PARAMS");
