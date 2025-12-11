@@ -48,10 +48,16 @@ export const runMainSubmit = async () => {
   const data = await sendToBack(params);
   if (!data) return null;
 
-  console.log("DATA");
-  console.log(data);
+  const blob = await data.blob();
+  const url = window.URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "new-resume.docx";
+  a.click();
+  window.URL.revokeObjectURL(url);
+  a.remove();
 
-  return data;
+  return true;
 };
 
 //----------------------

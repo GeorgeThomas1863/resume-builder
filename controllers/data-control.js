@@ -30,7 +30,7 @@ export const uploadResumeController = async (req, res) => {
     size: req.file.size,
   };
 
-  res.json(data);
+  return res.json(data);
 };
 
 export const checkRouteController = async (req, res) => {
@@ -47,5 +47,7 @@ export const submitRouteController = async (req, res) => {
   const data = await runResumeUnfucker(inputParams);
   if (!data) return res.json({ success: false, message: "Something crashed, no clue why" });
 
-  return res.json(data);
+  res.setHeader("Content-Type", "application/vnd.openxmlformats-officedocument.wordprocessingml.document");
+  res.setHeader("Content-Disposition", 'attachment; filename="new-resume.docx"');
+  return res.send(data);
 };
