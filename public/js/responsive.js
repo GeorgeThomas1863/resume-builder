@@ -16,8 +16,8 @@ export const clickHandler = async (e) => {
   console.log(clickType);
 
   if (clickType === "auth-submit") await runAuthSubmit();
-  if (clickType === "upload-button") await runUploadClick();
   if (clickType === "submit-button") await runMainSubmit();
+  if (clickType === "upload-button") await runUploadClick();
 
   if (clickType === "pwToggle") await runPwToggle();
   // if (clickType === "advancedToggle") await runAdvancedToggle();

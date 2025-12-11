@@ -30,8 +30,19 @@ export const runClearFiles = async (file) => {
 export const runCheckFile = async () => {
   const fileArray = fs.readdirSync(uploadDir);
   if (!fileArray || !fileArray.length) return { success: false, message: "No files found" };
+  if (fileArray.length > 1) return { success: false, message: "Multiple files found" };
 
-  const filePath = path.join(uploadDir, fileArray[0]);
+  const filename = fileArray[0];
+
+  const filePath = path.join(uploadDir, filename);
   if (!fs.existsSync(filePath)) return { success: false, message: "File not found" };
-  return { success: true, message: "File found", filePath };
+
+  const returnObj = {
+    success: true,
+    message: "File found",
+    fileName: filename,
+    filePath: filePath,
+  };
+  
+  return returnObj;
 };

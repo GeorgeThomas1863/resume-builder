@@ -1,5 +1,6 @@
 import { EYE_OPEN_SVG, EYE_CLOSED_SVG } from "./util/define-things.js";
-import { sendToBack, sendToBackGET } from "./util/api-front.js";
+import { sendToBack } from "./util/api-front.js";
+import { checkFile } from "./util/file-front.js";
 
 export const runAuthSubmit = async () => {
   const authPwInput = document.getElementById("auth-pw-input");
@@ -16,64 +17,12 @@ export const runUploadClick = async () => {
   const fileInput = document.getElementById("upload-file-input");
   if (!fileInput) return null;
 
-  console.log("FILE INPUT");
-  console.log(fileInput);
-  console.log("FILE INPUT TYPE");
-  console.log(fileInput.type);
-
   fileInput.click();
   // return true;
 };
 
-export const runUploadFile = async (file) => {
-  if (!file) return null;
-
-  const uploadRoute = await sendToBack({ route: "/get-backend-value-route", key: "uploadRoute" });
-  if (!uploadRoute) return null;
-
-  const uploadStatus = document.getElementById("upload-status");
-  const uploadButton = document.getElementById("upload-button");
-
-  uploadStatus.textContent = "Uploading...";
-  uploadStatus.style.display = "inline";
-  uploadButton.disabled = true;
-
-  const formData = new FormData();
-  formData.append("resume", file);
-
-  try {
-    const response = await fetch(uploadRoute, {
-      method: "POST",
-      body: formData,
-    });
-
-    const result = await response.json();
-
-    if (result.error) {
-      uploadStatus.textContent = `✗ ${result.error}`;
-      uploadStatus.style.color = "red";
-      return null;
-    }
-
-    uploadStatus.textContent = `✓ ${file.name}`;
-    uploadStatus.style.color = "green";
-    uploadButton.textContent = "Change Resume";
-    uploadButton.dataset.uploadedFile = result.filename;
-    return result;
-  } catch (error) {
-    console.error("Upload failed:", error);
-    uploadStatus.textContent = "✗ Upload failed";
-    uploadStatus.style.color = "red";
-    return null;
-  } finally {
-    uploadButton.disabled = false;
-  }
-};
-
 export const runMainSubmit = async () => {
-  //unnecessary but oh well
-  const checkRoute = await sendToBack({ route: "/get-backend-value-route", key: "checkRoute" });
-  const fileData = await sendToBackGET({ route: checkRoute });
+  const fileData = await checkFile();
   if (!fileData) return null;
 
   const submitRoute = await sendToBack({ route: "/get-backend-value-route", key: "submitRoute" });
