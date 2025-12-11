@@ -28,12 +28,21 @@ export const runMainSubmit = async () => {
   const submitRoute = await sendToBack({ route: "/get-backend-value-route", key: "submitRoute" });
   if (!submitRoute) return null;
 
+  const jobInput = document.getElementById("paste-job-input").value.trim();
+  if (!jobInput) {
+    alert("You forgot to input a job description. Please paste it in the big stupid box and try again.");
+    return null;
+  }
+
   const params = {
     route: submitRoute,
     aiType: document.getElementById("ai-type-select").value,
-    jobInput: document.getElementById("paste-job-input").value,
+    jobInput: jobInput,
     filePath: fileData.filePath,
   };
+
+  console.log("PARAMS");
+  console.log(params);
 
   const data = await sendToBack(params);
   if (!data) return null;
