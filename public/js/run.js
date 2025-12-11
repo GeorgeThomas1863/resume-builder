@@ -1,5 +1,5 @@
 import { EYE_OPEN_SVG, EYE_CLOSED_SVG } from "./util/define-things.js";
-import { sendToBack } from "./util/api-front.js";
+import { sendToBack, sendToBackGET } from "./util/api-front.js";
 
 export const runAuthSubmit = async () => {
   const authPwInput = document.getElementById("auth-pw-input");
@@ -71,28 +71,28 @@ export const runUploadFile = async (file) => {
 };
 
 export const runMainSubmit = async () => {
-  const checkRoute = await sendToBack({ route: "/get-backend-value-route", key: "checkFilePath" });
-  const fileData = await sendToBack({ route: checkRoute, method: "GET" });
-  console.log("FILE DATA");
-  console.log(fileData);
+  //unnecessary but oh well
+  const checkRoute = await sendToBack({ route: "/get-backend-value-route", key: "checkRoute" });
+  const fileData = await sendToBackGET({ route: checkRoute });
+  if (!fileData) return null;
 
+  const submitRoute = await sendToBack({ route: "/get-backend-value-route", key: "submitRoute" });
+  if (!submitRoute) return null;
 
-  // const submitRoute = await sendToBack({ route: "/get-backend-value-route", key: "submitRoute" });
-  // if (!submitRoute) return null;
+  const params = {
+    route: submitRoute,
+    aiType: document.getElementById("ai-type-select").value,
+    jobInput: document.getElementById("paste-job-input").value,
+    filePath: fileData.filePath,
+  };
 
-  // const params = {
-  //   route: submitRoute,
-  //   aiType: document.getElementById("ai-type-select").value,
-  //   jobInput: document.getElementById("paste-job-input").value,
-  // };
+  const data = await sendToBack(params);
+  if (!data) return null;
 
-  // const data = await sendToBack(params);
-  // if (!data) return null;
+  console.log("DATA");
+  console.log(data);
 
-  // console.log("DATA");
-  // console.log(data);
-
-  // return data;
+  return data;
 };
 
 //----------------------
