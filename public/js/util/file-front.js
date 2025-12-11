@@ -54,11 +54,14 @@ export const checkFile = async () => {
 
   const checkRoute = await sendToBack({ route: "/get-backend-value-route", key: "checkRoute" });
   const fileData = await sendToBackGET({ route: checkRoute });
-  if (!fileData) return null;
+  //   if (!fileData) return null;
+  console.log("CHECK FILE FILE DATA");
+  console.log(fileData);
 
   uploadStatus.textContent = `✓ ${fileData.filename}`;
   uploadStatus.style.color = "green";
   uploadButton.textContent = "Change Resume";
+  uploadStatus.style.display = "inline";
   uploadButton.dataset.uploadedFile = fileData.filename;
 
   return fileData;

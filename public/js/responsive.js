@@ -1,4 +1,5 @@
-import { runPwToggle, runAuthSubmit, runUploadClick, runUploadFile, runMainSubmit } from "./run.js";
+import { runPwToggle, runAuthSubmit, runUploadClick, runMainSubmit } from "./run.js";
+import { uploadFile } from "./util/file-front.js";
 
 const authElement = document.getElementById("auth-element");
 const displayElement = document.getElementById("display-element");
@@ -57,7 +58,7 @@ export const changeHandler = async (e) => {
   console.log(file);
   if (!file) return null;
 
-  await runUploadFile(file);
+  await uploadFile(file);
 };
 
 if (authElement) {

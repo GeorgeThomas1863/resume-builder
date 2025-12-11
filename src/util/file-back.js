@@ -40,9 +40,9 @@ export const runCheckFile = async () => {
   const returnObj = {
     success: true,
     message: "File found",
-    fileName: filename,
+    filename: filename,
     filePath: filePath,
   };
-  
+
   return returnObj;
 };
