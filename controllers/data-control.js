@@ -44,10 +44,12 @@ export const submitRouteController = async (req, res) => {
   console.log("INPUT PARAMS");
   console.log(inputParams);
 
-  const data = await runResumeUnfucker(inputParams);
-  if (!data) return res.json({ success: false, message: "Something crashed, no clue why" });
+  const buffer = await runResumeUnfucker(inputParams);
+
+  console.log("DATA");
+  console.log(buffer.length);
 
   res.setHeader("Content-Type", "application/vnd.openxmlformats-officedocument.wordprocessingml.document");
   res.setHeader("Content-Disposition", 'attachment; filename="new-resume.docx"');
-  return res.send(data);
+  return res.send(buffer);
 };

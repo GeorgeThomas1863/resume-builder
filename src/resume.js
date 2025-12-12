@@ -1,5 +1,5 @@
 import mammoth from "mammoth";
-import docx from "docx";
+import { Document, Packer, Paragraph } from "docx";
 
 export const extractResumeText = async (filePath) => {
   if (!filePath) return null;
@@ -10,26 +10,25 @@ export const extractResumeText = async (filePath) => {
   return data.value;
 };
 
-
 //add format type later
 export const buildNewResume = async (aiText, resumeText, inputParams) => {
-  if (!aiText || !resumeText || !inputParams) return null;
-  const { formatType } = inputParams;
+  // if (!aiText || !resumeText || !inputParams) return null;
+  // const { formatType } = inputParams;
 
-  const lineArray = resumeText.split("\n");
+  const lineArray = aiText.split("\n");
 
   const paragraphArray = [];
   for (let i = 0; i < lineArray.length; i++) {
     const line = lineArray[i];
     paragraphArray.push(
-      new docx.Paragraph({
+      new Paragraph({
         text: line,
         spacing: { after: 100 },
       })
     );
   }
 
-  const doc = new docx.Document({
+  const doc = new Document({
     sections: [
       {
         children: paragraphArray,
@@ -37,5 +36,5 @@ export const buildNewResume = async (aiText, resumeText, inputParams) => {
     ],
   });
 
-  return await docx.Packer.toBuffer(doc);
+  return await Packer.toBuffer(doc);
 };

@@ -1,5 +1,5 @@
 import { EYE_OPEN_SVG, EYE_CLOSED_SVG } from "./util/define-things.js";
-import { sendToBack } from "./util/api-front.js";
+import { sendToBack, sendToBackFile } from "./util/api-front.js";
 import { checkFile } from "./util/file-front.js";
 
 export const runAuthSubmit = async () => {
@@ -45,17 +45,7 @@ export const runMainSubmit = async () => {
   console.log("PARAMS");
   console.log(params);
 
-  const data = await sendToBack(params);
-  if (!data) return null;
-
-  const blob = await data.blob();
-  const url = window.URL.createObjectURL(blob);
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = "new-resume.docx";
-  a.click();
-  window.URL.revokeObjectURL(url);
-  a.remove();
+  await sendToBackFile(params);
 
   return true;
 };
