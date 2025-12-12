@@ -26,6 +26,8 @@ export const runAI = async (resumeText, inputParams) => {
   const res = await client.responses.create(params);
   console.log("MODEL RESPONSE");
   console.log(res);
+
+  return res.output_text;
 };
 
 export const runChatGPT = async (resumeText, jobInput) => {};

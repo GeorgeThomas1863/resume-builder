@@ -12,10 +12,12 @@ export const extractResumeText = async (filePath) => {
 
 //add format type later
 export const buildNewResume = async (aiText, resumeText, inputParams) => {
-  // if (!aiText || !resumeText || !inputParams) return null;
-  // const { formatType } = inputParams;
+
 
   const lineArray = aiText.split("\n");
+
+  console.log("LINE ARRAY");
+  console.log(lineArray.length);
 
   const paragraphArray = [];
   for (let i = 0; i < lineArray.length; i++) {
@@ -36,5 +38,9 @@ export const buildNewResume = async (aiText, resumeText, inputParams) => {
     ],
   });
 
-  return await Packer.toBuffer(doc);
+  const buffer = await Packer.toBuffer(doc);
+  console.log("BUFFER");
+  console.log(buffer.length);
+
+  return buffer;
 };
