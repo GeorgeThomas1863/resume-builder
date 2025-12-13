@@ -64,6 +64,7 @@ Please follow the following rules when outputting the new resume text:
 - The new resume text should be truthful and accurate, optimize the content for the job description, do NOT invent new experiences or achievements.
 - Do NOT invent or make up any information in the new resume that is not provided in the original resume.
 - Do NOT reference the original resume or that this is a new resume.
+- Do NOT reference these instructions in the new resume text.
 - Do NOT use markdown formatting, or other formatting not in the original resume. Just the plain text.
 - Please follow the schema format provided exactly, nothing else.
 `,
@@ -79,6 +80,7 @@ And here is the Job Description: <job_description>${jobInput}</job_description>`
   return messageInput;
 };
 
+//BUILD IN FOR LOOP 
 export const buildSchema = async () => {
   const schema = {
     type: "json_schema",
@@ -87,155 +89,192 @@ export const buildSchema = async () => {
       schema: {
         type: "object",
         properties: {
-          summarySection: {
+          summary: {
             type: "string",
-            description:
-              "A concise summary of experiences and achievements that are relevant to the job description. Goes at the top of the resume, after the name and contact information. Keep it short, but be engaging, and designed to get past ATS filters. Should be no more than 2-3 sentences.",
+            description: "Tailored professional summary",
           },
-          experiencesSection: {
+          experience: {
             type: "array",
-            description:
-              "A list of experiences and achievements that are relevant to the job description. Goes after the summary section. You need to include at least 5 of these items (especially the most recent ones), depending on the job description. Keep the content short, but be engaging, and designed to get past ATS filters.",
-            items: [
-              {
-                type: "object",
-                properties: {
-                  jobId: 1,
-                  jobName: "DPRK Cyber Threat Analyst",
-                  company: "Federal Bureau of Investigation",
-                  timeFrame: "December 2023 - Present",
-                  bullets: {
-                    type: "array",
-                    items: {
-                      type: "string",
-                      description:
-                        "A bullet point of the experience and achievements at this position. Use action verbs and keywords to make it engaging and designed to get past ATS filters.",
-                    },
-                  },
+            items: {
+              type: "object",
+              properties: {
+                jobId: { type: "number" },
+                jobName: { type: "string" },
+                company: { type: "string" },
+                position: { type: "string" },
+                bullets: {
+                  type: "array",
+                  items: { type: "string" },
                 },
-                required: ["jobId", "jobName", "company", "timeFrame", "bullets"],
               },
-              {
-                type: "object",
-                properties: {
-                  jobId: 2,
-                  jobName: "Online Operator, Social Engineering",
-                  company: "Federal Bureau of Investigation",
-                  timeFrame: "February 2016 - Present",
-                  bullets: {
-                    type: "array",
-                    items: {
-                      type: "string",
-                      description:
-                        "A bullet point of the experience and achievements at this position. Use action verbs and keywords to make it engaging and designed to get past ATS filters.",
-                    },
-                  },
-                },
-                required: ["jobId", "jobName", "company", "timeFrame", "bullets"],
-              },
-
-              {
-                type: "object",
-                properties: {
-                  jobId: 3,
-                  jobName: "Cyber Criminal Threat Analyst",
-                  company: "Federal Bureau of Investigation",
-                  timeFrame: "May 2023 - December 2023",
-                  bullets: {
-                    type: "array",
-                    items: {
-                      type: "string",
-                      description:
-                        "A bullet point of the experience and achievements at this position. Use action verbs and keywords to make it engaging and designed to get past ATS filters.",
-                    },
-                  },
-                },
-                required: ["jobId", "jobName", "company", "timeFrame", "bullets"],
-              },
-              {
-                type: "object",
-                properties: {
-                  jobId: 4,
-                  jobName: "Embedded Liaison Officer with USIC partner, Counterterrorism",
-                  company: "Federal Bureau of Investigation",
-                  timeFrame: "November 2021 - May 2023",
-                  bullets: {
-                    type: "array",
-                    items: {
-                      type: "string",
-                      description:
-                        "A bullet point of the experience and achievements at this position. Use action verbs and keywords to make it engaging and designed to get past ATS filters.",
-                    },
-                  },
-                },
-                required: ["jobId", "jobName", "company", "timeFrame", "bullets"],
-              },
-
-              {
-                type: "object",
-                properties: {
-                  jobId: 5,
-                  jobName: "Counterterrorism Division, Tactical Analyst, Program Manager",
-                  company: "Federal Bureau of Investigation",
-                  timeFrame: "July 2015 - May 2023",
-                  bullets: {
-                    type: "array",
-                    items: {
-                      type: "string",
-                      description:
-                        "A bullet point of the experience and achievements at this position. Use action verbs and keywords to make it engaging and designed to get past ATS filters.",
-                    },
-                  },
-                },
-                required: ["jobId", "jobName", "company", "timeFrame", "bullets"],
-              },
-
-              {
-                type: "object",
-                properties: {
-                  jobId: 6,
-                  jobName: "Presidential Daily Briefer for FBI Director and Attorney General",
-                  company: "Federal Bureau of Investigation",
-                  timeFrame: "2015-2018",
-                  bullets: {
-                    type: "array",
-                    items: {
-                      type: "string",
-                      description:
-                        "A bullet point of the experience and achievements at this position. Use action verbs and keywords to make it engaging and designed to get past ATS filters.",
-                    },
-                  },
-                },
-                required: ["jobId", "jobName", "company", "timeFrame", "bullets"],
-              },
-              {
-                type: "object",
-                properties: {
-                  jobId: 7,
-                  jobName: "Electronic Communications Analyst",
-                  company: "Federal Bureau of Investigation",
-                  timeFrame: "September 2010 - July 2015",
-                  bullets: {
-                    type: "array",
-                    items: {
-                      type: "string",
-                      description:
-                        "A bullet point of the experience and achievements at this position. Use action verbs and keywords to make it engaging and designed to get past ATS filters.",
-                    },
-                  },
-                },
-                required: ["jobId", "jobName", "company", "timeFrame", "bullets"],
-              },
-            ],
+              required: ["company", "position", "bullets"],
+            },
           },
         },
-        required: ["summarySection", "experiencesSection"],
-        additionalProperties: false,
+        required: ["summary", "experience"],
       },
     },
   };
+
   return schema;
 };
+// export const buildSchema = async () => {
+//   const schema = {
+//     type: "json_schema",
+//     json_schema: {
+//       name: "resume_enhancement",
+//       schema: {
+//         type: "object",
+//         properties: {
+//           summarySection: {
+//             type: "string",
+//             description:
+//               "A concise summary of experiences and achievements that are relevant to the job description. Goes at the top of the resume, after the name and contact information. Keep it short, but be engaging, and designed to get past ATS filters. Should be no more than 2-3 sentences.",
+//           },
+//           experiencesSection: {
+//             type: "array",
+//             description:
+//               "A list of experiences and achievements that are relevant to the job description. Goes after the summary section. You need to include at least 5 of these items (especially the most recent ones), depending on the job description. Keep the content short, but be engaging, and designed to get past ATS filters.",
+//             items: [
+//               {
+//                 type: "object",
+//                 properties: {
+//                   jobId: 1,
+//                   jobName: "DPRK Cyber Threat Analyst",
+//                   company: "Federal Bureau of Investigation",
+//                   timeFrame: "December 2023 - Present",
+//                   bullets: {
+//                     type: "array",
+//                     items: {
+//                       type: "string",
+//                       description:
+//                         "A bullet point of the experience and achievements at this position. Use action verbs and keywords to make it engaging and designed to get past ATS filters.",
+//                     },
+//                   },
+//                 },
+//                 required: ["jobId", "jobName", "company", "timeFrame", "bullets"],
+//               },
+//               {
+//                 type: "object",
+//                 properties: {
+//                   jobId: 2,
+//                   jobName: "Online Operator, Social Engineering",
+//                   company: "Federal Bureau of Investigation",
+//                   timeFrame: "February 2016 - Present",
+//                   bullets: {
+//                     type: "array",
+//                     items: {
+//                       type: "string",
+//                       description:
+//                         "A bullet point of the experience and achievements at this position. Use action verbs and keywords to make it engaging and designed to get past ATS filters.",
+//                     },
+//                   },
+//                 },
+//                 required: ["jobId", "jobName", "company", "timeFrame", "bullets"],
+//               },
+
+//               {
+//                 type: "object",
+//                 properties: {
+//                   jobId: 3,
+//                   jobName: "Cyber Criminal Threat Analyst",
+//                   company: "Federal Bureau of Investigation",
+//                   timeFrame: "May 2023 - December 2023",
+//                   bullets: {
+//                     type: "array",
+//                     items: {
+//                       type: "string",
+//                       description:
+//                         "A bullet point of the experience and achievements at this position. Use action verbs and keywords to make it engaging and designed to get past ATS filters.",
+//                     },
+//                   },
+//                 },
+//                 required: ["jobId", "jobName", "company", "timeFrame", "bullets"],
+//               },
+//               {
+//                 type: "object",
+//                 properties: {
+//                   jobId: 4,
+//                   jobName: "Embedded Liaison Officer with USIC partner, Counterterrorism",
+//                   company: "Federal Bureau of Investigation",
+//                   timeFrame: "November 2021 - May 2023",
+//                   bullets: {
+//                     type: "array",
+//                     items: {
+//                       type: "string",
+//                       description:
+//                         "A bullet point of the experience and achievements at this position. Use action verbs and keywords to make it engaging and designed to get past ATS filters.",
+//                     },
+//                   },
+//                 },
+//                 required: ["jobId", "jobName", "company", "timeFrame", "bullets"],
+//               },
+
+//               {
+//                 type: "object",
+//                 properties: {
+//                   jobId: 5,
+//                   jobName: "Counterterrorism Division, Tactical Analyst, Program Manager",
+//                   company: "Federal Bureau of Investigation",
+//                   timeFrame: "July 2015 - May 2023",
+//                   bullets: {
+//                     type: "array",
+//                     items: {
+//                       type: "string",
+//                       description:
+//                         "A bullet point of the experience and achievements at this position. Use action verbs and keywords to make it engaging and designed to get past ATS filters.",
+//                     },
+//                   },
+//                 },
+//                 required: ["jobId", "jobName", "company", "timeFrame", "bullets"],
+//               },
+
+//               {
+//                 type: "object",
+//                 properties: {
+//                   jobId: 6,
+//                   jobName: "Presidential Daily Briefer for FBI Director and Attorney General",
+//                   company: "Federal Bureau of Investigation",
+//                   timeFrame: "2015-2018",
+//                   bullets: {
+//                     type: "array",
+//                     items: {
+//                       type: "string",
+//                       description:
+//                         "A bullet point of the experience and achievements at this position. Use action verbs and keywords to make it engaging and designed to get past ATS filters.",
+//                     },
+//                   },
+//                 },
+//                 required: ["jobId", "jobName", "company", "timeFrame", "bullets"],
+//               },
+//               {
+//                 type: "object",
+//                 properties: {
+//                   jobId: 7,
+//                   jobName: "Electronic Communications Analyst",
+//                   company: "Federal Bureau of Investigation",
+//                   timeFrame: "September 2010 - July 2015",
+//                   bullets: {
+//                     type: "array",
+//                     items: {
+//                       type: "string",
+//                       description:
+//                         "A bullet point of the experience and achievements at this position. Use action verbs and keywords to make it engaging and designed to get past ATS filters.",
+//                     },
+//                   },
+//                 },
+//                 required: ["jobId", "jobName", "company", "timeFrame", "bullets"],
+//               },
+//             ],
+//           },
+//         },
+//         required: ["summarySection", "experiencesSection"],
+//         additionalProperties: false,
+//       },
+//     },
+//   };
+//   return schema;
+// };
 
 // export const buildSchema = async () => {
 //   const schema = {
