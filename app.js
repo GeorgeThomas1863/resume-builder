@@ -2,6 +2,8 @@
 //connect to local llm
 //figure out word output
 
+//fix cancel of resume download
+
 import express from "express";
 import session from "express-session";
 import routes from "./routes/router.js";
