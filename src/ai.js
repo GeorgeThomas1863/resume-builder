@@ -1,8 +1,9 @@
 import { OpenAI } from "openai";
+import CONFIG from "../config/config.js";
 
 const client = new OpenAI({
-  baseURL: "http://127.0.0.1:1234/v1",
-  apiKey: "balls",
+  baseURL: CONFIG.localURL,
+  apiKey: CONFIG.localKey,
 });
 
 export const runAI = async (resumeText, inputParams) => {
@@ -80,8 +81,11 @@ And here is the Job Description: <job_description>${jobInput}</job_description>`
   return messageInput;
 };
 
-//BUILD IN FOR LOOP 
+//BUILD IN FOR LOOP
 export const buildSchema = async () => {
+  const jobOptions = await buildJobOptions();
+  if (!jobOptions) return null;
+
   const schema = {
     type: "json_schema",
     json_schema: {
@@ -97,17 +101,11 @@ export const buildSchema = async () => {
             type: "array",
             items: {
               type: "object",
-              properties: {
-                jobId: { type: "number" },
-                jobName: { type: "string" },
-                company: { type: "string" },
-                position: { type: "string" },
-                bullets: {
-                  type: "array",
-                  items: { type: "string" },
-                },
+              items: {
+                oneOf: jobOptions,
               },
-              required: ["company", "position", "bullets"],
+              minItems: jobOptions.length,
+              maxItems: jobOptions.length,
             },
           },
         },
@@ -118,6 +116,43 @@ export const buildSchema = async () => {
 
   return schema;
 };
+
+export const buildJobOptions = async () => {
+  const { jobArray } = CONFIG;
+  if (!jobArray) return null;
+
+  const jobOptions = [];
+  for (let i = 0; i < jobArray.length; i++) {
+    const job = jobArray[i];
+    const { jobId, company, role, timeframe } = job;
+
+    const jobObj = {
+      type: "object",
+      properties: {
+        jobId: { type: "number", const: jobId },
+        role: { type: "string", const: role },
+        company: { type: "string", const: company },
+        timeframe: { type: "string", const: timeframe },
+        bullets: {
+          type: "array",
+          items: {
+            type: "string",
+            description:
+              "A bullet point of the experience and achievements at this position. Use action verbs and keywords to make it engaging and designed to get past ATS filters.",
+          },
+        },
+      },
+      required: ["jobId", "role", "company", "timeframe", "bullets"],
+    };
+
+    jobOptions.push(jobObj);
+  }
+
+  return jobOptions;
+};
+
+//=--------------------------
+
 // export const buildSchema = async () => {
 //   const schema = {
 //     type: "json_schema",
