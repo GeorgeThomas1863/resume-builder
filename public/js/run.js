@@ -13,14 +13,6 @@ export const runAuthSubmit = async () => {
   return data;
 };
 
-export const runUploadClick = async () => {
-  const fileInput = document.getElementById("upload-file-input");
-  if (!fileInput) return null;
-
-  fileInput.click();
-  // return true;
-};
-
 export const runMainSubmit = async () => {
   const jobInput = document.getElementById("paste-job-input").value.trim();
   if (!jobInput) {
@@ -33,21 +25,36 @@ export const runMainSubmit = async () => {
     aiType: document.getElementById("ai-type-select").value,
     formatType: document.getElementById("format-type-select").value,
     jobInput: jobInput,
-    // inputPath: fileData.filePath,
   };
 
   const fileData = await checkFile();
   console.log("FILE DATA");
   console.log(fileData);
-  if (!fileData && params.formatType === "none") return null;
+  if (!fileData && params.formatType === "none") {
+    alert("You forgot to upload a resume. Please upload a resume and try again.");
+    return null;
+  }
 
   params.inputPath = fileData.filePath;
 
   console.log("RUN MAIN SUBMIT");
   console.log(params);
 
+  const data = await sendToBack(params);
+  if (!data) return null;
+  console.log("DATA");
+  console.log(data);
+
   // await sendToBackFile(params);
 
+  // return true;
+};
+
+export const runUploadClick = async () => {
+  const fileInput = document.getElementById("upload-file-input");
+  if (!fileInput) return null;
+
+  fileInput.click();
   // return true;
 };
 
