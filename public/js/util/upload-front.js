@@ -29,6 +29,11 @@ export const runUploadFile = async (file) => {
 
     await checkFile();
 
+    const deleteButton = document.getElementById("delete-resume-button");
+    if (deleteButton) {
+      deleteButton.style.display = "inline-block";
+    }
+
     return data;
   } catch (e) {
     console.error("Upload failed:", e);
@@ -41,20 +46,29 @@ export const runUploadFile = async (file) => {
 };
 
 export const checkFile = async () => {
-  const uploadStatus = document.getElementById("upload-status");
-  const uploadButton = document.getElementById("upload-button");
-  if (!uploadStatus || !uploadButton) return null;
-
   const fileData = await sendToBack({ route: "/check-file" }, "GET");
   if (!fileData || !fileData.success) return null;
   console.log("CHECK FILE FILE DATA");
   console.log(fileData);
 
-  uploadStatus.textContent = `✓ ${fileData.filename}`;
-  uploadStatus.style.color = "green";
-  uploadButton.textContent = "Change Resume";
-  uploadStatus.style.display = "inline";
-  uploadButton.dataset.uploadedFile = fileData.filename;
+  const uploadStatus = document.getElementById("upload-status");
+  const uploadButton = document.getElementById("upload-button");
+  const deleteButton = document.getElementById("delete-resume-button");
+  if (uploadButton) {
+    uploadButton.textContent = "Change Resume";
+    uploadButton.dataset.uploadedFile = fileData.filename;
+  }
+
+  if (uploadStatus) {
+    uploadStatus.textContent = `✓ ${fileData.filename}`;
+    uploadStatus.style.color = "green";
+    uploadStatus.style.display = "inline-block";
+    // uploadStatus.style.display = "inline";
+  }
+
+  if (deleteButton) {
+    deleteButton.style.display = "inline-block";
+  }
 
   return fileData;
 };

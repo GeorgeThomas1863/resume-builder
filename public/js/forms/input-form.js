@@ -146,7 +146,15 @@ export const buildUploadListItem = async () => {
   uploadStatus.style.marginLeft = "10px";
   uploadStatus.style.display = "none";
 
-  uploadListItem.append(fileInput, uploadButton, uploadStatus);
+  const deleteButton = document.createElement("button");
+  deleteButton.type = "button";
+  deleteButton.className = "btn-delete";
+  deleteButton.id = "delete-resume-button";
+  deleteButton.textContent = "Delete";
+  deleteButton.setAttribute("data-label", "delete-resume-button");
+  deleteButton.style.display = "none";
+
+  uploadListItem.append(fileInput, uploadButton, uploadStatus, deleteButton);
 
   return uploadListItem;
 };

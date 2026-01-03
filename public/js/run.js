@@ -58,6 +58,29 @@ export const runUploadClick = async () => {
   // return true;
 };
 
+export const runDeleteResume = async () => {
+  const data = await sendToBack({ route: "/delete-resume" });
+
+  if (!data || !data.success) {
+    alert("Failed to delete resume. Please try again.");
+    return null;
+  }
+
+  // Reset UI to initial state
+  const uploadButton = document.getElementById("upload-button");
+  const uploadStatus = document.getElementById("upload-status");
+  const deleteButton = document.getElementById("delete-resume-button");
+  const fileInput = document.getElementById("upload-file-input");
+
+  uploadButton.textContent = "Upload your GARBAGE resume";
+  uploadStatus.textContent = "";
+  uploadStatus.style.display = "none";
+  deleteButton.style.display = "none";
+  fileInput.value = "";
+
+  return true;
+};
+
 //----------------------
 
 export const runPwToggle = async () => {

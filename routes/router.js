@@ -3,7 +3,7 @@ import express from "express";
 import requireAuth from "../middleware/auth.js";
 import { displayMain, display401, display404, display500 } from "../controllers/display-control.js";
 import { authController } from "../controllers/auth-control.js";
-import { uploadResumeController, getBackendValueController, submitRouteController, checkRouteController } from "../controllers/data-control.js";
+import { uploadResumeController, getBackendValueController, submitRouteController, checkRouteController, deleteResumeController } from "../controllers/data-control.js";
 import { upload } from "../src/upload-file.js";
 
 const router = express.Router();
@@ -15,6 +15,7 @@ router.post("/get-backend-value-route", requireAuth, getBackendValueController);
 
 router.post("/upload", requireAuth, upload.single("resume"), uploadResumeController);
 router.get("/check-file", requireAuth, checkRouteController);
+router.get("/delete-resume", requireAuth, deleteResumeController);
 
 router.post("/submit", requireAuth, submitRouteController);
 

@@ -317,6 +317,36 @@ h3 {
   background: #e0e0e0;
 }
 
+.btn-delete {
+  margin-left: 12px;
+  padding: 10px 20px;
+  font-size: 13px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #dc2626;
+  background-color: transparent;
+  border: 2px solid #dc2626;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn-delete:hover {
+  background: #fef2f2;
+  transform: translateY(-2px);
+}
+
+.btn-delete:active {
+  transform: translateY(0);
+  background: #fee2e2;
+}
+
+.upload-status {
+  display: inline-block;
+  vertical-align: middle;
+}
+
 /* COLLAPSE FUNCTIONALITY STYLES */
 .collapse-container {
   border: 1px solid rgba(255, 255, 255, 0.4);

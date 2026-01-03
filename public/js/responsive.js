@@ -1,4 +1,4 @@
-import { runPwToggle, runAuthSubmit, runUploadClick, runMainSubmit } from "./run.js";
+import { runPwToggle, runAuthSubmit, runUploadClick, runMainSubmit, runDeleteResume } from "./run.js";
 import { runUploadFile } from "./util/upload-front.js";
 
 const authElement = document.getElementById("auth-element");
@@ -19,6 +19,7 @@ export const clickHandler = async (e) => {
   if (clickType === "auth-submit") await runAuthSubmit();
   if (clickType === "submit-button") await runMainSubmit();
   if (clickType === "upload-button") await runUploadClick();
+  if (clickType === "delete-resume-button") await runDeleteResume();
 
   if (clickType === "pwToggle") await runPwToggle();
   // if (clickType === "advancedToggle") await runAdvancedToggle();

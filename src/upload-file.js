@@ -90,13 +90,19 @@ export const runCheckFile = async () => {
 
 // Helper function to clear all files in upload directory
 export const clearUploadDirectory = () => {
-  const files = fs.readdirSync(uploadDir);
-  files.forEach((file) => {
-    const filePath = path.join(uploadDir, file);
-    if (fs.statSync(filePath).isFile()) {
-      fs.unlinkSync(filePath);
-    }
-  });
+  try {
+    const files = fs.readdirSync(uploadDir);
+    files.forEach((file) => {
+      const filePath = path.join(uploadDir, file);
+      if (fs.statSync(filePath).isFile()) {
+        fs.unlinkSync(filePath);
+      }
+    });
+    return { success: true, message: "All files deleted" };
+  } catch (error) {
+    console.error("Error clearing upload directory:", error);
+    return { success: false, message: "Error deleting files" };
+  }
 };
 
 export { uploadDir };

@@ -1,6 +1,6 @@
 import CONFIG from "../config/config.js";
 
-import { runClearFiles, runCheckFile } from "../src/upload-file.js";
+import { runClearFiles, runCheckFile, clearUploadDirectory } from "../src/upload-file.js";
 import { runResumeUnfucker } from "../src/src.js";
 
 export const getBackendValueController = async (req, res) => {
@@ -52,4 +52,19 @@ export const submitRouteController = async (req, res) => {
   res.setHeader("Content-Type", "application/vnd.openxmlformats-officedocument.wordprocessingml.document");
   res.setHeader("Content-Disposition", 'attachment; filename="new-resume.docx"');
   return res.send(buffer);
+};
+
+export const deleteResumeController = async (req, res) => {
+  try {
+    const data = await clearUploadDirectory();
+
+    if (!data || !data.success) {
+      return res.status(500).json({ success: false, message: data.message });
+    }
+
+    return res.status(200).json({ success: true, message: "Resume deleted successfully" });
+  } catch (e) {
+    console.error("Error deleting resume:", e);
+    return res.status(500).json({ success: false, message: "Server error deleting resume" });
+  }
 };
