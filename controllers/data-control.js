@@ -1,6 +1,6 @@
 import CONFIG from "../config/config.js";
 
-import { runClearFiles, runCheckFile } from "../src/util/file-back.js";
+import { runClearFiles, runCheckFile } from "../src/upload-file.js";
 import { runResumeUnfucker } from "../src/src.js";
 
 export const getBackendValueController = async (req, res) => {

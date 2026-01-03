@@ -4,10 +4,7 @@ import requireAuth from "../middleware/auth.js";
 import { displayMain, display401, display404, display500 } from "../controllers/display-control.js";
 import { authController } from "../controllers/auth-control.js";
 import { uploadResumeController, getBackendValueController, submitRouteController, checkRouteController } from "../controllers/data-control.js";
-import { upload } from "../config/upload-config.js";
-import CONFIG from "../config/config.js";
-
-const { uploadRoute, checkRoute, submitRoute } = CONFIG;
+import { upload } from "../src/upload-file.js";
 
 const router = express.Router();
 
@@ -16,10 +13,10 @@ router.get("/401", display401);
 
 router.post("/get-backend-value-route", requireAuth, getBackendValueController);
 
-router.post(uploadRoute, requireAuth, upload.single("resume"), uploadResumeController);
-router.get(checkRoute, requireAuth, checkRouteController);
+router.post("/upload", requireAuth, upload.single("resume"), uploadResumeController);
+router.get("/check-file", requireAuth, checkRouteController);
 
-router.post(submitRoute, requireAuth, submitRouteController);
+router.post("/submit", requireAuth, submitRouteController);
 
 router.get("/", requireAuth, displayMain);
 

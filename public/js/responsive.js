@@ -1,5 +1,5 @@
 import { runPwToggle, runAuthSubmit, runUploadClick, runMainSubmit } from "./run.js";
-import { uploadFile } from "./util/file-front.js";
+import { runUploadFile } from "./util/upload-front.js";
 
 const authElement = document.getElementById("auth-element");
 const displayElement = document.getElementById("display-element");
@@ -11,7 +11,7 @@ export const clickHandler = async (e) => {
   const clickId = clickElement.id;
   const clickType = clickElement.getAttribute("data-label");
 
-  console.log("CLICK HANDLER");
+  console.log("CLICK ID");
   console.log(clickId);
   console.log("CLICK TYPE");
   console.log(clickType);
@@ -58,7 +58,7 @@ export const changeHandler = async (e) => {
   console.log(file);
   if (!file) return null;
 
-  await uploadFile(file);
+  await runUploadFile(file);
 };
 
 if (authElement) {

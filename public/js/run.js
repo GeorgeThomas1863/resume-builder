@@ -1,6 +1,6 @@
 import { EYE_OPEN_SVG, EYE_CLOSED_SVG } from "./util/define-things.js";
 import { sendToBack, sendToBackFile } from "./util/api-front.js";
-import { checkFile } from "./util/file-front.js";
+import { checkFile } from "./util/upload-front.js";
 
 export const runAuthSubmit = async () => {
   const authPwInput = document.getElementById("auth-pw-input");
@@ -22,12 +22,6 @@ export const runUploadClick = async () => {
 };
 
 export const runMainSubmit = async () => {
-  const fileData = await checkFile();
-  if (!fileData) return null;
-
-  const submitRoute = await sendToBack({ route: "/get-backend-value-route", key: "submitRoute" });
-  if (!submitRoute) return null;
-
   const jobInput = document.getElementById("paste-job-input").value.trim();
   if (!jobInput) {
     alert("You forgot to input a job description. Please paste it in the big stupid box and try again.");
@@ -35,19 +29,26 @@ export const runMainSubmit = async () => {
   }
 
   const params = {
-    route: submitRoute,
+    route: "/submit",
     aiType: document.getElementById("ai-type-select").value,
     formatType: document.getElementById("format-type-select").value,
     jobInput: jobInput,
-    inputPath: fileData.filePath,
+    // inputPath: fileData.filePath,
   };
 
-  console.log("PARAMS");
+  const fileData = await checkFile();
+  console.log("FILE DATA");
+  console.log(fileData);
+  if (!fileData && params.formatType === "none") return null;
+
+  params.inputPath = fileData.filePath;
+
+  console.log("RUN MAIN SUBMIT");
   console.log(params);
 
-  await sendToBackFile(params);
+  // await sendToBackFile(params);
 
-  return true;
+  // return true;
 };
 
 //----------------------

@@ -1,10 +1,7 @@
-import { sendToBack, sendToBackGET } from "./api-front.js";
+import { sendToBack } from "./api-front.js";
 
-export const uploadFile = async (file) => {
+export const runUploadFile = async (file) => {
   if (!file) return null;
-
-  const uploadRoute = await sendToBack({ route: "/get-backend-value-route", key: "uploadRoute" });
-  if (!uploadRoute) return null;
 
   const uploadStatus = document.getElementById("upload-status");
   const uploadButton = document.getElementById("upload-button");
@@ -17,28 +14,24 @@ export const uploadFile = async (file) => {
   formData.append("resume", file);
 
   try {
-    const response = await fetch(uploadRoute, {
+    const res = await fetch("/upload", {
       method: "POST",
       body: formData,
     });
 
-    const result = await response.json();
+    const data = await res.json();
 
-    if (result.error) {
-      uploadStatus.textContent = `✗ ${result.error}`;
+    if (data.error) {
+      uploadStatus.textContent = `✗ ${data.error}`;
       uploadStatus.style.color = "red";
       return null;
     }
 
     await checkFile();
 
-    // uploadStatus.textContent = `✓ ${file.name}`;
-    // uploadStatus.style.color = "green";
-    // uploadButton.textContent = "Change Resume";
-    // uploadButton.dataset.uploadedFile = result.filename;
-    return result;
-  } catch (error) {
-    console.error("Upload failed:", error);
+    return data;
+  } catch (e) {
+    console.error("Upload failed:", e);
     uploadStatus.textContent = "✗ Upload failed";
     uploadStatus.style.color = "red";
     return null;
@@ -52,8 +45,7 @@ export const checkFile = async () => {
   const uploadButton = document.getElementById("upload-button");
   if (!uploadStatus || !uploadButton) return null;
 
-  const checkRoute = await sendToBack({ route: "/get-backend-value-route", key: "checkRoute" });
-  const fileData = await sendToBackGET({ route: checkRoute });
+  const fileData = await sendToBack({ route: "/check-file" }, "GET");
   if (!fileData || !fileData.success) return null;
   console.log("CHECK FILE FILE DATA");
   console.log(fileData);
