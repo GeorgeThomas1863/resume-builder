@@ -315,3 +315,29 @@ h3 {
   transform: translateY(0);
   background: #e0e0e0;
 }
+
+/* COLLAPSE FUNCTIONALITY STYLES */
+.collapse-header {
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.collapse-arrow {
+  width: 0;
+  height: 0;
+  border-left: 6px solid transparent;
+  border-right: 6px solid transparent;
+  border-top: 8px solid #374151;
+  transition: transform 0.2s ease;
+  flex-shrink: 0;
+}
+
+.collapse-arrow.expanded {
+  transform: rotate(180deg);
+}
+
+.collapse-content {
+  transition: all 0.2s ease;
+}

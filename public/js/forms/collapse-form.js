@@ -16,7 +16,8 @@ export const buildCollapseContainer = async (inputObj) => {
   arrow.className = isExpanded ? "collapse-arrow expanded" : "collapse-arrow";
   arrow.setAttribute("data-update", dataAttribute);
 
-  titleElement.className = "collapse-title";
+  const existingTitleClasses = titleElement.className || "";
+  titleElement.className = existingTitleClasses ? `${existingTitleClasses} collapse-title` : "collapse-title";
   titleElement.setAttribute("data-update", dataAttribute);
 
   //add arrow / title to header

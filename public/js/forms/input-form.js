@@ -1,3 +1,5 @@
+import { buildCollapseContainer } from "./collapse-form.js";
+
 export const buildInputForm = async () => {
   const inputFormWrapper = document.createElement("div");
   inputFormWrapper.id = "input-form-wrapper";
@@ -18,7 +20,16 @@ export const buildInputForm = async () => {
 
   inputFormElement.append(selectAIListItem, selectFormatListItem, uploadListItem, pasteJobListItem, submitListItem);
 
-  inputFormWrapper.append(inputTitleElement, inputFormElement);
+  // Build collapse container
+  const collapseContainer = await buildCollapseContainer({
+    titleElement: inputTitleElement,
+    contentElement: inputFormElement,
+    isExpanded: true,
+    className: "",
+    dataAttribute: "",
+  });
+
+  inputFormWrapper.append(collapseContainer);
 
   return inputFormWrapper;
 };
