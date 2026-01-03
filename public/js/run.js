@@ -59,7 +59,7 @@ export const runUploadClick = async () => {
 };
 
 export const runDeleteResume = async () => {
-  const data = await sendToBack({ route: "/delete-resume" });
+  const data = await sendToBack({ route: "/delete-resume" }, "GET");
 
   if (!data || !data.success) {
     alert("Failed to delete resume. Please try again.");

@@ -89,7 +89,7 @@ export const runCheckFile = async () => {
 };
 
 // Helper function to clear all files in upload directory
-export const clearUploadDirectory = () => {
+export const clearUploadDirectory = async () => {
   try {
     const files = fs.readdirSync(uploadDir);
     files.forEach((file) => {

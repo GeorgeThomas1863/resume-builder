@@ -140,6 +140,9 @@ export const buildUploadListItem = async () => {
   uploadButton.textContent = "Upload your GARBAGE resume";
   uploadButton.setAttribute("data-label", "upload-button");
 
+  const uploadRowWrapper = document.createElement("div");
+  uploadRowWrapper.className = "upload-row-wrapper";
+
   const uploadStatus = document.createElement("span");
   uploadStatus.id = "upload-status";
   uploadStatus.className = "upload-status";
@@ -150,11 +153,13 @@ export const buildUploadListItem = async () => {
   deleteButton.type = "button";
   deleteButton.className = "btn-delete";
   deleteButton.id = "delete-resume-button";
-  deleteButton.textContent = "Delete";
+  deleteButton.textContent = "Delete Resume";
   deleteButton.setAttribute("data-label", "delete-resume-button");
   deleteButton.style.display = "none";
 
-  uploadListItem.append(fileInput, uploadButton, uploadStatus, deleteButton);
+  uploadRowWrapper.append(uploadStatus, deleteButton);
+
+  uploadListItem.append(fileInput, uploadButton, uploadRowWrapper);
 
   return uploadListItem;
 };

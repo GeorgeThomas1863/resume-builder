@@ -101,9 +101,6 @@ h3 {
   gap: 2rem;
   border-radius: 12px;
   box-shadow: 0 4px 24px rgba(0, 0, 0, 0.1);
-  /* border-radius: 12px;
-  overflow: hidden;
-  border: 1px solid rgba(255, 255, 255, 0.4); */
 }
 
 #input-form-element {
@@ -116,12 +113,10 @@ h3 {
   text-align: left;
   margin: 0 auto;
   padding: 1rem 2rem;
-  /* border-bottom: 1px solid #d1d5db; */
 }
 
 .form-list-item {
   padding: 1rem 2rem;
-  /* padding-bottom: 0; */
 }
 
 .form-list-item:first-child {
@@ -172,17 +167,6 @@ h3 {
   background: rgba(255, 255, 255, 0.85);
 }
 
-/* .form-textarea {
-  resize: vertical;
-  min-height: 110px;
-  line-height: 1.6;
-} */
-
-/* .form-select:hover,
-.form-select:focus {
-  border-color: #3b82f6;
-} */
-
 .form-input::placeholder {
   color: #9ca3af;
 }
@@ -192,10 +176,18 @@ h3 {
   font-size: 1.1rem;
   padding: 0;
 }
-/* #form-submit-button {
-  font-size: 18px;
-  padding: 1.2rem;
-} */
+
+.upload-row-wrapper {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  gap: 2rem;
+}
+
+.upload-status {
+  display: inline-block;
+  vertical-align: middle;
+}
 
 /* +++++++++++++++++++++++++++++++++++++++++++++++++ */
 
@@ -318,8 +310,9 @@ h3 {
 }
 
 .btn-delete {
-  margin-left: 12px;
-  padding: 10px 20px;
+  margin-top: 1rem;
+  margin-left: auto;
+  padding: 0.75rem 4rem;
   font-size: 13px;
   font-weight: 600;
   text-transform: uppercase;
@@ -340,11 +333,6 @@ h3 {
 .btn-delete:active {
   transform: translateY(0);
   background: #fee2e2;
-}
-
-.upload-status {
-  display: inline-block;
-  vertical-align: middle;
 }
 
 /* COLLAPSE FUNCTIONALITY STYLES */

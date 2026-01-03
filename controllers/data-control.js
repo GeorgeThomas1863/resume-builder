@@ -57,6 +57,9 @@ export const submitRouteController = async (req, res) => {
 export const deleteResumeController = async (req, res) => {
   try {
     const data = await clearUploadDirectory();
+    console.log("CLEAR UPLOAD DIRECTORY DATA");
+    console.log("DATA");
+    console.log(data);
 
     if (!data || !data.success) {
       return res.status(500).json({ success: false, message: data.message });
