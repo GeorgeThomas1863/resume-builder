@@ -99,7 +99,7 @@ export const buildPasteJobListItem = async () => {
   pasteJobListItem.className = "form-list-item";
 
   const pasteJobInput = document.createElement("textarea");
-  pasteJobInput.rows = 12;
+  pasteJobInput.rows = 15;
   pasteJobInput.name = "paste-job-input";
   pasteJobInput.id = "paste-job-input";
   pasteJobInput.className = "form-textarea";
@@ -126,7 +126,7 @@ export const buildUploadListItem = async () => {
   uploadButton.type = "button";
   uploadButton.className = "btn-upload";
   uploadButton.id = "upload-button";
-  uploadButton.textContent = "Upload your DEFAULT resume";
+  uploadButton.textContent = "Upload your GARBAGE resume";
   uploadButton.setAttribute("data-label", "upload-button");
 
   const uploadStatus = document.createElement("span");

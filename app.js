@@ -7,7 +7,7 @@
 import express from "express";
 import session from "express-session";
 import routes from "./routes/router.js";
-import { uploadErrorHandler } from "./routes/upload-error.js";
+import { uploadErrorHandler } from "./middleware/upload-error.js";
 
 import CONFIG from "./config/config.js";
 
