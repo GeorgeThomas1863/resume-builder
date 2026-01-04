@@ -47,9 +47,9 @@ export const runUploadFile = async (file) => {
 
 export const checkFile = async () => {
   const fileData = await sendToBack({ route: "/check-file" }, "GET");
-  if (!fileData || !fileData.success) return null;
   console.log("CHECK FILE FILE DATA");
   console.log(fileData);
+  if (!fileData || !fileData.success) return null;
 
   const uploadStatus = document.getElementById("upload-status");
   const uploadButton = document.getElementById("upload-button");
