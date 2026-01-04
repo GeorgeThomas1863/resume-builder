@@ -30,12 +30,14 @@ export const runResumeUnfucker = async (inputParams) => {
 
   const buffer = await buildNewResume(aiText, inputParams);
 
-  const outputPath = path.join(outputDir, "new-resume.docx");
+  return buffer;
 
-  await fsPromises.writeFile(outputPath, buffer);
+  // const outputPath = path.join(outputDir, "new-resume.docx");
 
-  console.log("NEW RESUME DATA");
-  console.log(data);
+  // await fsPromises.writeFile(outputPath, buffer);
 
-  return true;
+  // console.log("NEW RESUME DATA");
+  // console.log(data);
+
+  // return buffer;
 };
