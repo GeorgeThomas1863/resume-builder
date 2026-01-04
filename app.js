@@ -1,6 +1,8 @@
-//build main input
-//connect to local llm
-//figure out word output
+//fix resume output
+
+//build chatGPT connection
+
+//return buffer to user to specify output path
 
 //fix cancel of resume download
 

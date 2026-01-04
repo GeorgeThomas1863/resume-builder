@@ -164,7 +164,7 @@ export const buildNewResume = async (aiText, inputParams) => {
       new Paragraph({
         children: [
           new TextRun({
-            text: `- ${job.jobTitle}, ${job.company}, `,
+            text: `- ${job.role}, ${job.company}, `,
             bold: true,
             font: "Times New Roman",
             size: 22, // 22 half-points = 11pt

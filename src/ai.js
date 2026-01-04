@@ -130,18 +130,66 @@ export const buildCustomSchema = async () => {
             type: "array",
             items: {
               type: "object",
-              items: {
-                oneOf: jobArray,
+              properties: {
+                role: {
+                  type: "string",
+                  description: "Job title/role",
+                },
+                company: {
+                  type: "string",
+                  description: "Company name",
+                },
+                timeframe: {
+                  type: "string",
+                  description: "Employment timeframe or empty string",
+                },
+                bullets: {
+                  type: "array",
+                  items: {
+                    type: "string",
+                  },
+                  description: "Array of bullet points describing responsibilities",
+                },
               },
-              minItems: jobArray.length,
-              maxItems: jobArray.length,
+              required: ["role", "company", "timeframe", "bullets"],
             },
+            minItems: jobArray.length,
+            maxItems: jobArray.length,
           },
         },
         required: ["summary", "experience"],
+        additionalProperties: false,
       },
     },
   };
+
+  // const schema = {
+  //   type: "json_schema",
+  //   json_schema: {
+  //     name: "resume_enhancement",
+  //     schema: {
+  //       type: "object",
+  //       properties: {
+  //         summary: {
+  //           type: "string",
+  //           description: "Tailored professional summary",
+  //         },
+  //         experience: {
+  //           type: "array",
+  //           items: {
+  //             type: "object",
+  //             items: {
+  //               oneOf: jobArray,
+  //             },
+  //             minItems: jobArray.length,
+  //             maxItems: jobArray.length,
+  //           },
+  //         },
+  //       },
+  //       required: ["summary", "experience"],
+  //     },
+  //   },
+  // };
 
   return schema;
 };
