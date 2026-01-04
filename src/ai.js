@@ -10,12 +10,17 @@ const client = new OpenAI({
 export const runCustomAI = async (inputParams, resumeText) => {
   const { aiType, jobInput } = inputParams;
 
-  console.log("RUNNING AI");
-  console.log(inputParams);
+  console.log("RUNNING CUSTOM AI");
+  // console.log(inputParams);
 
   //for my custom input
   const messageInput = await buildCustomMessageInput(jobInput);
   const schema = await buildCustomSchema();
+
+  // console.log("MESSAGE INPUT");
+  // console.log(messageInput);
+  console.log("SCHEMA");
+  console.log(schema);
 
   const params = {
     // model: "meta-llama-3.1-8b-instruct",
@@ -40,6 +45,9 @@ export const runCustomAI = async (inputParams, resumeText) => {
 };
 
 export const buildCustomMessageInput = async (jobInput) => {
+  console.log("BUILDING CUSTOM MESSAGE INPUT");
+  console.log(jobInput);
+
   const messageInput = [
     {
       role: "system",
@@ -71,7 +79,11 @@ To do this you will be provided with the following information:
 
 
 ## Goals
-- You will need to output new resume text that is tailored to the job description following the rules and schema format provided. Only output valid JSON based on the schema, nothing else.
+- You will need to output new resume text that is tailored to the job description following the rules and schema format provided.  
+
+- Focus on customizing the overall resume summary, and each of the bullet points in the Job Array in your output. Do NOT copy and paste from the background information, use it as a guide. Do NOT invent new experiences or achievements. 
+
+- Only output valid JSON based on the schema, nothing else.
 
 ## Rules:
 
@@ -99,9 +111,9 @@ Please follow the following rules when outputting the new resume text:
 };
 
 //BUILD IN FOR LOOP
-export const buildSchema = async () => {
-  const jobOptions = await buildJobOptions();
-  if (!jobOptions) return null;
+export const buildCustomSchema = async () => {
+  const { jobArray } = OBJ;
+  if (!jobArray || !jobArray.length) return null;
 
   const schema = {
     type: "json_schema",
@@ -119,10 +131,10 @@ export const buildSchema = async () => {
             items: {
               type: "object",
               items: {
-                oneOf: jobOptions,
+                oneOf: jobArray,
               },
-              minItems: jobOptions.length,
-              maxItems: jobOptions.length,
+              minItems: jobArray.length,
+              maxItems: jobArray.length,
             },
           },
         },
@@ -134,245 +146,8 @@ export const buildSchema = async () => {
   return schema;
 };
 
-export const buildJobOptions = async () => {
-  const { jobArray } = CONFIG;
-  if (!jobArray) return null;
-
-  const jobOptions = [];
-  for (let i = 0; i < jobArray.length; i++) {
-    const job = jobArray[i];
-    const { jobId, company, role, timeframe } = job;
-
-    const jobObj = {
-      type: "object",
-      properties: {
-        jobId: { type: "number", const: jobId },
-        role: { type: "string", const: role },
-        company: { type: "string", const: company },
-        timeframe: { type: "string", const: timeframe },
-        bullets: {
-          type: "array",
-          items: {
-            type: "string",
-            description:
-              "A bullet point of the experience and achievements at this position. Use action verbs and keywords to make it engaging and designed to get past ATS filters.",
-          },
-        },
-      },
-      required: ["jobId", "role", "company", "timeframe", "bullets"],
-    };
-
-    jobOptions.push(jobObj);
-  }
-
-  return jobOptions;
-};
-
 export const runDefaultAI = async (inputParams) => {
   const resumeText = await extractResumeText(inputPath);
 };
 
 export const runChatGPT = async (resumeText, jobInput) => {};
-
-//=--------------------------
-
-// export const buildSchema = async () => {
-//   const schema = {
-//     type: "json_schema",
-//     json_schema: {
-//       name: "resume_enhancement",
-//       schema: {
-//         type: "object",
-//         properties: {
-//           summarySection: {
-//             type: "string",
-//             description:
-//               "A concise summary of experiences and achievements that are relevant to the job description. Goes at the top of the resume, after the name and contact information. Keep it short, but be engaging, and designed to get past ATS filters. Should be no more than 2-3 sentences.",
-//           },
-//           experiencesSection: {
-//             type: "array",
-//             description:
-//               "A list of experiences and achievements that are relevant to the job description. Goes after the summary section. You need to include at least 5 of these items (especially the most recent ones), depending on the job description. Keep the content short, but be engaging, and designed to get past ATS filters.",
-//             items: [
-//               {
-//                 type: "object",
-//                 properties: {
-//                   jobId: 1,
-//                   jobName: "DPRK Cyber Threat Analyst",
-//                   company: "Federal Bureau of Investigation",
-//                   timeFrame: "December 2023 - Present",
-//                   bullets: {
-//                     type: "array",
-//                     items: {
-//                       type: "string",
-//                       description:
-//                         "A bullet point of the experience and achievements at this position. Use action verbs and keywords to make it engaging and designed to get past ATS filters.",
-//                     },
-//                   },
-//                 },
-//                 required: ["jobId", "jobName", "company", "timeFrame", "bullets"],
-//               },
-//               {
-//                 type: "object",
-//                 properties: {
-//                   jobId: 2,
-//                   jobName: "Online Operator, Social Engineering",
-//                   company: "Federal Bureau of Investigation",
-//                   timeFrame: "February 2016 - Present",
-//                   bullets: {
-//                     type: "array",
-//                     items: {
-//                       type: "string",
-//                       description:
-//                         "A bullet point of the experience and achievements at this position. Use action verbs and keywords to make it engaging and designed to get past ATS filters.",
-//                     },
-//                   },
-//                 },
-//                 required: ["jobId", "jobName", "company", "timeFrame", "bullets"],
-//               },
-
-//               {
-//                 type: "object",
-//                 properties: {
-//                   jobId: 3,
-//                   jobName: "Cyber Criminal Threat Analyst",
-//                   company: "Federal Bureau of Investigation",
-//                   timeFrame: "May 2023 - December 2023",
-//                   bullets: {
-//                     type: "array",
-//                     items: {
-//                       type: "string",
-//                       description:
-//                         "A bullet point of the experience and achievements at this position. Use action verbs and keywords to make it engaging and designed to get past ATS filters.",
-//                     },
-//                   },
-//                 },
-//                 required: ["jobId", "jobName", "company", "timeFrame", "bullets"],
-//               },
-//               {
-//                 type: "object",
-//                 properties: {
-//                   jobId: 4,
-//                   jobName: "Embedded Liaison Officer with USIC partner, Counterterrorism",
-//                   company: "Federal Bureau of Investigation",
-//                   timeFrame: "November 2021 - May 2023",
-//                   bullets: {
-//                     type: "array",
-//                     items: {
-//                       type: "string",
-//                       description:
-//                         "A bullet point of the experience and achievements at this position. Use action verbs and keywords to make it engaging and designed to get past ATS filters.",
-//                     },
-//                   },
-//                 },
-//                 required: ["jobId", "jobName", "company", "timeFrame", "bullets"],
-//               },
-
-//               {
-//                 type: "object",
-//                 properties: {
-//                   jobId: 5,
-//                   jobName: "Counterterrorism Division, Tactical Analyst, Program Manager",
-//                   company: "Federal Bureau of Investigation",
-//                   timeFrame: "July 2015 - May 2023",
-//                   bullets: {
-//                     type: "array",
-//                     items: {
-//                       type: "string",
-//                       description:
-//                         "A bullet point of the experience and achievements at this position. Use action verbs and keywords to make it engaging and designed to get past ATS filters.",
-//                     },
-//                   },
-//                 },
-//                 required: ["jobId", "jobName", "company", "timeFrame", "bullets"],
-//               },
-
-//               {
-//                 type: "object",
-//                 properties: {
-//                   jobId: 6,
-//                   jobName: "Presidential Daily Briefer for FBI Director and Attorney General",
-//                   company: "Federal Bureau of Investigation",
-//                   timeFrame: "2015-2018",
-//                   bullets: {
-//                     type: "array",
-//                     items: {
-//                       type: "string",
-//                       description:
-//                         "A bullet point of the experience and achievements at this position. Use action verbs and keywords to make it engaging and designed to get past ATS filters.",
-//                     },
-//                   },
-//                 },
-//                 required: ["jobId", "jobName", "company", "timeFrame", "bullets"],
-//               },
-//               {
-//                 type: "object",
-//                 properties: {
-//                   jobId: 7,
-//                   jobName: "Electronic Communications Analyst",
-//                   company: "Federal Bureau of Investigation",
-//                   timeFrame: "September 2010 - July 2015",
-//                   bullets: {
-//                     type: "array",
-//                     items: {
-//                       type: "string",
-//                       description:
-//                         "A bullet point of the experience and achievements at this position. Use action verbs and keywords to make it engaging and designed to get past ATS filters.",
-//                     },
-//                   },
-//                 },
-//                 required: ["jobId", "jobName", "company", "timeFrame", "bullets"],
-//               },
-//             ],
-//           },
-//         },
-//         required: ["summarySection", "experiencesSection"],
-//         additionalProperties: false,
-//       },
-//     },
-//   };
-//   return schema;
-// };
-
-// export const buildSchema = async () => {
-//   const schema = {
-//     type: "json_schema",
-//     json_schema: {
-//       name: "resume_enhancement",
-//       schema: {
-//         type: "object",
-//         properties: {
-//           summary: {
-//             type: "string",
-//             description:
-//               "A concise summary of experiences and achievements that are relevant to the job description. Keep it short, but be engaging, and designed to get past ATS filters.",
-//           },
-//           experiences: {
-//             type: "array",
-//             description:
-//               "A list of experiences and achievements that are relevant to the job description. Keep it short, but be engaging, and designed to get past ATS filters.",
-//             items: {
-//               type: "object",
-//               properties: {
-//                 company: { type: "string", description: "The company name." },
-//                 position: { type: "string", description: "The position title." },
-//                 bullets: {
-//                   type: "array",
-//                   items: {
-//                     type: "string",
-//                     description:
-//                       "A bullet point of the experience and achievements. Use action verbs and keywords to make it engaging and designed to get past ATS filters.",
-//                   },
-//                 },
-//               },
-//               required: ["company", "position", "bullets"],
-//             },
-//           },
-//           required: ["summary", "experiences"],
-//         },
-//         additionalProperties: false,
-//       },
-//     },
-//   };
-//   return schema;
-// };s

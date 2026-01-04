@@ -16,10 +16,10 @@ export const runResumeUnfucker = async (inputParams) => {
   console.log("AI TEXT");
   console.log(aiText);
 
-  // const data = await buildNewResume(aiText, resumeText, inputParams);
+  const data = await buildNewResume(aiText, inputParams);
 
-  // console.log("NEW RESUME DATA");
-  // console.log(data);
+  console.log("NEW RESUME DATA");
+  console.log(data);
 
-  // return data;
+  return data;
 };
