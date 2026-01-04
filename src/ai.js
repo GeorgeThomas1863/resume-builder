@@ -1,22 +1,21 @@
 import { OpenAI } from "openai";
 import CONFIG from "../config/config.js";
+import OBJ from "../config/input-data.js";
 
 const client = new OpenAI({
   baseURL: CONFIG.localURL,
   apiKey: CONFIG.localKey,
 });
 
-export const runAI = async (resumeText, inputParams) => {
+export const runCustomAI = async (inputParams, resumeText) => {
   const { aiType, jobInput } = inputParams;
 
   console.log("RUNNING AI");
   console.log(inputParams);
 
-  //build local as default
-  if (aiType === "chatgpt") return await runChatGPT(resumeText, jobInput);
-
-  const messageInput = await buildMessageInput(resumeText, jobInput);
-  const schema = await buildSchema();
+  //for my custom input
+  const messageInput = await buildCustomMessageInput(jobInput);
+  const schema = await buildCustomSchema();
 
   const params = {
     // model: "meta-llama-3.1-8b-instruct",
@@ -29,6 +28,8 @@ export const runAI = async (resumeText, inputParams) => {
   console.log("AI PARAMS");
   console.log(params);
 
+  // if (aiType === "chatgpt") return await runChatGPT(resumeText, jobInput);
+
   const res = await client.chat.completions.create(params);
 
   // const res = await client.responses.create(params);
@@ -38,7 +39,7 @@ export const runAI = async (resumeText, inputParams) => {
   return res.choices[0].message.content;
 };
 
-export const buildMessageInput = async (resumeText, jobInput) => {
+export const buildCustomMessageInput = async (jobInput) => {
   const messageInput = [
     {
       role: "system",
@@ -46,14 +47,30 @@ export const buildMessageInput = async (resumeText, jobInput) => {
 
 ## Instructions:
 
-Your job is to take the provided Resume and Job Description and output a new resume that is specifically tailored to the job description. 
+##Overview:
+
+Your job is to take the provided Job Description and background information on me, and output a new resume that is specifically tailored to the job description. 
 
 In order for me to inject your output into a resume, I want you to provide different parts / sections of the new resume text in a structured format defined in the json schema. 
 
 To do this you will be provided with the following information:
 
-- A Job Description (labeled as "Job Description") and a Resume (labeled as "Resume").
+- A Job Description (labeled as "Job Description"). This is the job description that you are optimizing the resume for.
 
+- Background information on me (labeled as "Background Information"). This background information you receive is comprimsed of multiple different sections with information on me. 
+ multiple different sections. These sections include:
+      - "summary" - A summary of my background and experience.
+      - "jobArray" - An array of objects, each object representing a job I have held. The objects contain the following properties:
+        - "jobId" - The ID of the job.
+        - "role" - The role I held at the job.
+        - "company" - The company I worked for at the job.
+        - "timeframe" - The timeframe of the job.
+        - "bullets" - An array of strings, each string representing a bullet point of the experience and achievements at the job.
+      - "education" - An array of objects, each object representing my education and certifications.
+      - "general" - General information about me and my skills.
+
+
+## Goals
 - You will need to output new resume text that is tailored to the job description following the rules and schema format provided. Only output valid JSON based on the schema, nothing else.
 
 ## Rules:
@@ -72,9 +89,9 @@ Please follow the following rules when outputting the new resume text:
     },
     {
       role: "user",
-      content: `Here is the original Resume: <original_resume>${resumeText}</original_resume>
-
-And here is the Job Description: <job_description>${jobInput}</job_description>`,
+      content: `Here is the the Job Description: <job_description>${jobInput}</job_description>.
+      
+      And here is the background information on me: <background_information>${JSON.stringify(OBJ)}</background_information>`,
     },
   ];
 
@@ -150,6 +167,12 @@ export const buildJobOptions = async () => {
 
   return jobOptions;
 };
+
+export const runDefaultAI = async (inputParams) => {
+  const resumeText = await extractResumeText(inputPath);
+};
+
+export const runChatGPT = async (resumeText, jobInput) => {};
 
 //=--------------------------
 
@@ -352,6 +375,4 @@ export const buildJobOptions = async () => {
 //     },
 //   };
 //   return schema;
-// };
-
-export const runChatGPT = async (resumeText, jobInput) => {};
+// };s

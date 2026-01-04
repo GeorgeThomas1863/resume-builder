@@ -25,6 +25,7 @@ export const runMainSubmit = async () => {
     aiType: document.getElementById("ai-type-select").value,
     formatType: document.getElementById("format-type-select").value,
     jobInput: jobInput,
+    inputPath: null,
   };
 
   const fileData = await checkFile();
@@ -35,7 +36,7 @@ export const runMainSubmit = async () => {
     return null;
   }
 
-  params.inputPath = fileData.filePath;
+  if (fileData) params.inputPath = fileData.filePath;
 
   console.log("RUN MAIN SUBMIT");
   console.log(params);

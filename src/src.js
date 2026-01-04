@@ -1,19 +1,16 @@
 import { extractResumeText, buildNewResume } from "./resume.js";
-import { runAI } from "./ai.js";
+import { runCustomAI, runDefaultAI } from "./ai.js";
 
 export const runResumeUnfucker = async (inputParams) => {
   if (!inputParams) return null;
-  const { inputPath } = inputParams;
+  const { formatType } = inputParams;
 
   console.log("INPUT PARAMS");
   console.log(inputParams);
 
-  const resumeText = await extractResumeText(inputPath);
-  if (!resumeText) return null;
-  console.log("RESUME TEXT");
-  console.log(resumeText);
+  if (formatType === "none") return await runDefaultAI(inputParams);
 
-  const aiText = await runAI(resumeText, inputParams);
+  const aiText = await runCustomAI(inputParams);
   if (!aiText) return null;
 
   console.log("AI TEXT");
