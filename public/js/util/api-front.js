@@ -13,19 +13,13 @@ export const sendToBack = async (inputParams, method = "POST") => {
       params.body = JSON.stringify(inputParams);
     }
 
-    console.log("ROUTE");
-    console.log(route);
-
-    console.log("PARAMS");
-    console.log(params);
-
     const res = await fetch(route, params);
-    if (!res || !res.ok) return null;
+    if (!res.ok) return null;
     const data = await res.json();
 
     return data;
-  } catch (error) {
-    console.log(error);
+  } catch (e) {
+    console.log(e);
     return "FAIL";
   }
 };

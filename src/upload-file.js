@@ -1,4 +1,5 @@
 import fs from "fs";
+import fsPromises from "fs/promises";
 import path from "path";
 
 import { fileURLToPath } from "url";
@@ -10,6 +11,10 @@ const __dirname = dirname(__filename);
 
 // Define upload directory
 const uploadDir = path.join(__dirname, "../data");
+
+if (!fs.existsSync(uploadDir)) {
+  fs.mkdirSync(uploadDir, { recursive: true });
+}
 
 // File filter
 const fileFilter = (req, file, cb) => {
@@ -69,23 +74,29 @@ export const runClearFiles = async (file) => {
 };
 
 export const runCheckFile = async () => {
-  const fileArray = fs.readdirSync(uploadDir);
-  if (!fileArray || !fileArray.length) return { success: false, message: "No files found" };
-  if (fileArray.length > 1) return { success: false, message: "Multiple files found" };
+  try {
+    const fileArray = fs.readdirSync(uploadDir);
 
-  const filename = fileArray[0];
+    if (!fileArray || !fileArray.length) return { success: false, message: "No files found" };
+    if (fileArray.length > 1) return { success: false, message: "Multiple files found" };
 
-  const filePath = path.join(uploadDir, filename);
-  if (!fs.existsSync(filePath)) return { success: false, message: "File not found" };
+    const filename = fileArray[0];
 
-  const returnObj = {
-    success: true,
-    message: "File found",
-    filename: filename,
-    filePath: filePath,
-  };
+    const filePath = path.join(uploadDir, filename);
+    if (!fs.existsSync(filePath)) return { success: false, message: "File not found" };
 
-  return returnObj;
+    const returnObj = {
+      success: true,
+      message: "File found",
+      filename: filename,
+      filePath: filePath,
+    };
+
+    return returnObj;
+  } catch (e) {
+    console.error("Error checking file:", e.message);
+    return { success: false, message: "Error checking file" };
+  }
 };
 
 // Helper function to clear all files in upload directory
