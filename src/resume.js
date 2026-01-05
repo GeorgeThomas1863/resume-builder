@@ -1,5 +1,5 @@
 import mammoth from "mammoth";
-import { Document, Paragraph, Packer, TextRun, AlignmentType, BorderStyle } from "docx";
+import { Document, Paragraph, Packer, TextRun, AlignmentType, BorderStyle, LineRuleType } from "docx";
 import { otherObj } from "../config/input-data.js";
 
 export const extractResumeText = async (filePath) => {
@@ -21,23 +21,36 @@ export const buildNewResume = async (aiText, inputParams) => {
   //name header
   paragraphArray.push(
     new Paragraph({
-      text: name,
       alignment: AlignmentType.CENTER,
-      spacing: { after: 0 },
-      style: {
-        font: { name: "Times New Roman", size: 32 },
+      spacing: {
+        before: 0,
+        after: 0,
       },
+      children: [
+        new TextRun({
+          text: name,
+          font: "Times New Roman",
+          bold: true,
+          size: 32, // 32 half-points = 16pt
+        }),
+      ],
     })
   );
 
   paragraphArray.push(
     new Paragraph({
-      text: email,
       alignment: AlignmentType.CENTER,
-      spacing: { after: 200 },
-      style: {
-        font: { name: "Times New Roman", size: 22 }, // 22 half-points = 11pt
+      spacing: {
+        before: 0,
+        after: 0,
       },
+      children: [
+        new TextRun({
+          text: `Email: ${email}`,
+          font: "Times New Roman",
+          size: 22,
+        }),
+      ],
     })
   );
 
@@ -47,23 +60,32 @@ export const buildNewResume = async (aiText, inputParams) => {
       border: {
         bottom: {
           color: "000000",
-          space: 1,
+          space: 0,
           style: BorderStyle.SINGLE,
-          size: 6,
+          size: 1,
         },
       },
-      spacing: { after: 200 },
+      spacing: {
+        before: 0,
+        after: 0,
+      },
     })
   );
 
   paragraphArray.push(
     new Paragraph({
-      text: "Summary",
-      bold: true,
-      spacing: { after: 0 },
-      style: {
-        font: { name: "Times New Roman", size: 22 },
+      spacing: {
+        before: 0,
+        after: 0,
       },
+      children: [
+        new TextRun({
+          text: "Summary",
+          font: "Times New Roman",
+          size: 22,
+          bold: true,
+        }),
+      ],
     })
   );
 
@@ -73,23 +95,61 @@ export const buildNewResume = async (aiText, inputParams) => {
       border: {
         bottom: {
           color: "000000",
-          space: 1,
+          space: 0,
           style: BorderStyle.SINGLE,
-          size: 6,
+          size: 1,
         },
       },
-      spacing: { after: 200 },
+      spacing: {
+        before: 0,
+        after: 0,
+      },
     })
   );
 
   //summary content
   paragraphArray.push(
     new Paragraph({
-      text: inputObj.summary,
-      spacing: { after: 200 },
-      style: {
-        font: { name: "Times New Roman", size: 22 },
+      spacing: {
+        before: 0,
+        after: 0,
       },
+      children: [
+        new TextRun({
+          text: inputObj.summary,
+          font: "Times New Roman",
+          size: 22,
+        }),
+      ],
+    })
+  );
+
+  //line
+  paragraphArray.push(
+    new Paragraph({
+      border: {
+        bottom: {
+          color: "000000",
+          space: 0,
+          style: BorderStyle.SINGLE,
+          size: 1,
+        },
+      },
+      spacing: { before: 0, after: 0 },
+    })
+  );
+
+  paragraphArray.push(
+    new Paragraph({
+      spacing: { before: 0, after: 0 },
+      children: [
+        new TextRun({
+          text: "Professional Experience",
+          font: "Times New Roman",
+          size: 22,
+          bold: true,
+        }),
+      ],
     })
   );
 
@@ -104,33 +164,7 @@ export const buildNewResume = async (aiText, inputParams) => {
           size: 6,
         },
       },
-      spacing: { after: 200 },
-    })
-  );
-
-  paragraphArray.push(
-    new Paragraph({
-      text: "Professional Experience",
-      bold: true,
-      spacing: { after: 0 },
-      style: {
-        font: { name: "Times New Roman", size: 22 },
-      },
-    })
-  );
-
-  //line
-  paragraphArray.push(
-    new Paragraph({
-      border: {
-        bottom: {
-          color: "000000",
-          space: 1,
-          style: BorderStyle.SINGLE,
-          size: 6,
-        },
-      },
-      spacing: { after: 200 },
+      spacing: { before: 0, after: 0 },
     })
   );
 
@@ -150,9 +184,9 @@ export const buildNewResume = async (aiText, inputParams) => {
           italics: true,
           font: "Times New Roman",
           size: 24,
-          spacing: { after: 100 },
         }),
       ],
+      spacing: { before: 0, after: 0 },
     })
   );
 
@@ -177,7 +211,7 @@ export const buildNewResume = async (aiText, inputParams) => {
             size: 22,
           }),
         ],
-        spacing: { after: 100 },
+        spacing: { before: 0, after: 0 },
       })
     );
 
@@ -200,7 +234,7 @@ export const buildNewResume = async (aiText, inputParams) => {
       paragraphArray.push(
         new Paragraph({
           text: "",
-          spacing: { after: 200 },
+          spacing: { before: 0, after: 0 },
         })
       );
     }
@@ -217,18 +251,21 @@ export const buildNewResume = async (aiText, inputParams) => {
           size: 6,
         },
       },
-      spacing: { after: 200 },
+      spacing: { before: 0, after: 0 },
     })
   );
 
   paragraphArray.push(
     new Paragraph({
-      text: "Education",
-      bold: true,
-      spacing: { after: 0 },
-      style: {
-        font: { name: "Times New Roman", size: 22 },
-      },
+      spacing: { before: 0, after: 0 },
+      children: [
+        new TextRun({
+          text: "Education",
+          font: "Times New Roman",
+          size: 22,
+          bold: true,
+        }),
+      ],
     })
   );
 
@@ -243,7 +280,7 @@ export const buildNewResume = async (aiText, inputParams) => {
           size: 6,
         },
       },
-      spacing: { after: 200 },
+      spacing: { before: 0, after: 0 },
     })
   );
 
@@ -262,9 +299,10 @@ export const buildNewResume = async (aiText, inputParams) => {
           italics: true,
           font: "Times New Roman",
           size: 22,
-          spacing: { after: 100 },
         }),
       ],
+
+      spacing: { before: 0, after: 0 },
     })
   );
 
@@ -283,27 +321,30 @@ export const buildNewResume = async (aiText, inputParams) => {
           italics: true,
           font: "Times New Roman",
           size: 22,
-          spacing: { after: 100 },
         }),
       ],
+      spacing: { before: 0, after: 0 },
     })
   );
 
   paragraphArray.push(
     new Paragraph({
       text: "",
-      spacing: { after: 200 },
+      spacing: { before: 0, after: 0 },
     })
   );
 
   paragraphArray.push(
     new Paragraph({
-      text: "Certifications: GIAC Red Team Professional (GRTP), GIAC Certified Incident Handler (GCIH), GIAC Cyber Threat Intelligence (GCTI)",
-      bold: true,
-      spacing: { after: 0 },
-      style: {
-        font: { name: "Times New Roman", size: 22 },
-      },
+      spacing: { before: 0, after: 0 },
+      children: [
+        new TextRun({
+          text: "Certifications: GIAC Red Team Professional (GRTP), GIAC Certified Incident Handler (GCIH), GIAC Cyber Threat Intelligence (GCTI)",
+          font: "Times New Roman",
+          size: 22,
+          bold: true,
+        }),
+      ],
     })
   );
 
@@ -329,33 +370,3 @@ export const buildNewResume = async (aiText, inputParams) => {
   const buffer = await Packer.toBuffer(doc);
   return buffer;
 };
-
-// const lineArray = aiText.split("\n");
-
-// console.log("LINE ARRAY");
-// console.log(lineArray.length);
-
-// const paragraphArray = [];
-// for (let i = 0; i < lineArray.length; i++) {
-//   const line = lineArray[i];
-//   paragraphArray.push(
-//     new Paragraph({
-//       text: line,
-//       spacing: { after: 100 },
-//     })
-//   );
-// }
-
-// const doc = new Document({
-//   sections: [
-//     {
-//       children: paragraphArray,
-//     },
-//   ],
-// });
-
-// const buffer = await Packer.toBuffer(doc);
-// console.log("BUFFER");
-// console.log(buffer.length);
-
-// return buffer;

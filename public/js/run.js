@@ -41,7 +41,7 @@ export const runMainSubmit = async () => {
   console.log("RUN MAIN SUBMIT");
   console.log(params);
 
-  const data = await sendToBack(params);
+  const data = await sendToBack(params, "POST", true);
   if (!data) return null;
   console.log("DATA");
   console.log(data);

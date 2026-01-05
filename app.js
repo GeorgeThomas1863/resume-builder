@@ -1,5 +1,7 @@
 //fix resume output
 
+//indicator that work in progress
+
 //build chatGPT connection
 
 //return buffer to user to specify output path
