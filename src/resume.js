@@ -68,6 +68,8 @@ export const buildNewResume = async (aiText, inputParams) => {
       spacing: {
         before: 0,
         after: 0,
+        line: 40, // Added - sets exact line height (240 twips = 12pt)
+        lineRule: LineRuleType.EXACT, // Added - use exact line height
       },
     })
   );
@@ -103,6 +105,8 @@ export const buildNewResume = async (aiText, inputParams) => {
       spacing: {
         before: 0,
         after: 0,
+        line: 40, // Added - sets exact line height (240 twips = 12pt)
+        lineRule: LineRuleType.EXACT, // Added - use exact line height
       },
     })
   );
