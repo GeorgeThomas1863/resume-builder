@@ -1,4 +1,8 @@
-//fix resume output
+//test loading overlay
+
+//FIX connection to chatGPT
+
+//finalize resume output
 
 //indicator that work in progress
 
