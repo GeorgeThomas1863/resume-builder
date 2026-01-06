@@ -1,4 +1,5 @@
 import { buildCollapseContainer } from "./collapse-form.js";
+import { buildLoadStatusMessage } from "../util/status.js";
 
 export const buildInputForm = async () => {
   const inputFormWrapper = document.createElement("div");
@@ -179,15 +180,4 @@ export const buildSubmitListItem = async () => {
   submitListItem.append(submitButton);
 
   return submitListItem;
-};
-
-//------------------
-
-export const buildLoadStatusMessage = async () => {
-  const loadStatusMessageDiv = document.createElement("div");
-  loadStatusMessageDiv.id = "load-status-message-div";
-  loadStatusMessageDiv.className = "load-status-message-div";
-  loadStatusMessageDiv.style.display = "none";
-
-  return loadStatusMessageDiv;
 };

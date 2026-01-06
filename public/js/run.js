@@ -1,17 +1,7 @@
 import { EYE_OPEN_SVG, EYE_CLOSED_SVG } from "./util/define-things.js";
 import { sendToBack } from "./util/api-front.js";
 import { checkFile } from "./util/upload-front.js";
-
-export const runAuthSubmit = async () => {
-  const authPwInput = document.getElementById("auth-pw-input");
-  if (!authPwInput || !authPwInput.value) return null;
-
-  const data = await sendToBack({ route: "/site-auth-route", pw: authPwInput.value });
-  if (!data || !data.redirect) return null;
-
-  window.location.href = data.redirect;
-  return data;
-};
+import { showLoadStatus, hideLoadStatus } from "./util/status.js";
 
 export const runMainSubmit = async () => {
   const jobInput = document.getElementById("paste-job-input").value.trim();
@@ -41,7 +31,11 @@ export const runMainSubmit = async () => {
   console.log("RUN MAIN SUBMIT");
   console.log(params);
 
+  await showLoadStatus();
+
   const data = await sendToBack(params, "POST", true);
+  await hideLoadStatus();
+
   if (!data) return null;
   console.log("DATA");
   console.log(data);
@@ -59,12 +53,44 @@ export const runMainSubmit = async () => {
   return true;
 };
 
+//----------------------
+
+export const runAuthSubmit = async () => {
+  const authPwInput = document.getElementById("auth-pw-input");
+  if (!authPwInput || !authPwInput.value) return null;
+
+  const data = await sendToBack({ route: "/site-auth-route", pw: authPwInput.value });
+  if (!data || !data.redirect) return null;
+
+  window.location.href = data.redirect;
+  return data;
+};
+
 export const runUploadClick = async () => {
   const fileInput = document.getElementById("upload-file-input");
   if (!fileInput) return null;
 
   fileInput.click();
   // return true;
+};
+
+export const runPwToggle = async () => {
+  const pwButton = document.querySelector(".password-toggle-btn");
+  const pwInput = document.querySelector(".password-input");
+
+  console.log(pwButton);
+  console.log(pwInput);
+  const currentSvgId = pwButton.querySelector("svg").id;
+
+  if (currentSvgId === "eye-closed-icon") {
+    pwButton.innerHTML = EYE_OPEN_SVG;
+    pwInput.type = "text";
+    return true;
+  }
+
+  pwButton.innerHTML = EYE_CLOSED_SVG;
+  pwInput.type = "password";
+  return true;
 };
 
 export const runDeleteResume = async () => {
@@ -89,55 +115,3 @@ export const runDeleteResume = async () => {
 
   return true;
 };
-
-//----------------------
-
-export const runPwToggle = async () => {
-  const pwButton = document.querySelector(".password-toggle-btn");
-  const pwInput = document.querySelector(".password-input");
-
-  console.log(pwButton);
-  console.log(pwInput);
-  const currentSvgId = pwButton.querySelector("svg").id;
-
-  if (currentSvgId === "eye-closed-icon") {
-    pwButton.innerHTML = EYE_OPEN_SVG;
-    pwInput.type = "text";
-    return true;
-  }
-
-  pwButton.innerHTML = EYE_CLOSED_SVG;
-  pwInput.type = "password";
-  return true;
-};
-
-//----------------------
-
-//BUILD
-// export const showLoadStatus = async () => {
-//   console.log("SHOWING LOAD STATUS");
-
-//   const loadStatusMessageDiv = document.getElementById("load-status-message-div");
-//   if (!loginStatusMessageDiv) return;
-//   loginStatusMessageDiv.innerHTML = "";
-
-//   const loginStatusMsg = await sendToBack({ route: "/get-backend-value-route", key: "loginStatusMsg" });
-//   if (!loginStatusMsg) return;
-
-//   console.log("LOGIN STATUS MSG: ");
-//   console.log(loginStatusMsg);
-
-//   const loginStatusMessage = document.createElement("div");
-//   loginStatusMessage.className = "login-status-message";
-//   loginStatusMessage.textContent = loginStatusMsg;
-
-//   loginStatusMessageDiv.append(loginStatusMessage);
-//   return true;
-// };
-
-// export const hideLoginStatus = async () => {
-//   const loginStatusMessageDiv = document.getElementById("login-status-message-div");
-//   if (!loginStatusMessageDiv) return;
-//   loginStatusMessageDiv.innerHTML = "";
-//   return true;
-// };
