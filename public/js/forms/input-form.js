@@ -18,9 +18,8 @@ export const buildInputForm = async () => {
   const uploadListItem = await buildUploadListItem();
   const pasteJobListItem = await buildPasteJobListItem();
   const submitListItem = await buildSubmitListItem();
-  const loadStatusMessageListItem = await buildLoadStatusMessage();
 
-  inputFormElement.append(selectAIListItem, selectFormatListItem, uploadListItem, pasteJobListItem, submitListItem, loadStatusMessageListItem);
+  inputFormElement.append(selectAIListItem, selectFormatListItem, uploadListItem, pasteJobListItem, submitListItem);
 
   // Build collapse container
   const collapseContainer = await buildCollapseContainer({
@@ -112,7 +111,8 @@ export const buildPasteJobListItem = async () => {
   pasteJobListItem.className = "form-list-item";
 
   const pasteJobInput = document.createElement("textarea");
-  pasteJobInput.rows = 15;
+  // pasteJobInput.rows = 15;
+  pasteJobInput.rows = 7;
   pasteJobInput.name = "paste-job-input";
   pasteJobInput.id = "paste-job-input";
   pasteJobInput.className = "form-textarea";

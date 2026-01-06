@@ -1,3 +1,5 @@
+const displayElement = document.getElementById("display-element");
+
 export const buildLoadStatusMessage = async () => {
   const loadStatusMessageDiv = document.createElement("div");
   loadStatusMessageDiv.id = "load-status-message-div";
@@ -10,18 +12,21 @@ export const buildLoadStatusMessage = async () => {
 //--------------
 
 export const showLoadStatus = async () => {
+  if (!displayElement) return null;
   console.log("SHOWING LOAD STATUS");
 
-  const loadStatusMessageDiv = document.getElementById("load-status-message-div");
-  if (!loadStatusMessageDiv) return;
+  const loadStatusMessageDiv = await buildLoadStatusMessage();
+  if (!loadStatusMessageDiv) return null;
+
   loadStatusMessageDiv.innerHTML = "";
   loadStatusMessageDiv.style.display = "block";
 
-  const loginStatusMessage = document.createElement("div");
-  loginStatusMessage.className = "login-status-message";
-  loginStatusMessage.textContent = "DATA SUBMITTED, BUILDING RESUME [SHOULD TAKE 10-20 SECONDS]";
+  const loadStatusMessage = document.createElement("div");
+  loadStatusMessage.className = "load-status-message";
+  loadStatusMessage.textContent = "DATA SUBMITTED, BUILDING RESUME [SHOULD TAKE 10-20 SECONDS]";
 
-  loadStatusMessageDiv.append(loginStatusMessage);
+  loadStatusMessageDiv.append(loadStatusMessage);
+  loadStatusMessage.append(loadStatusMessageDiv);
   return true;
 };
 
