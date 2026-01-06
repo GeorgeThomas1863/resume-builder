@@ -2,10 +2,11 @@ import mammoth from "mammoth";
 import { Document, Paragraph, Packer, TextRun, AlignmentType, BorderStyle, LineRuleType } from "docx";
 import { otherObj } from "../config/input-data.js";
 
-export const extractResumeText = async (filePath) => {
-  if (!filePath) return null;
+export const extractResumeText = async (inputPath, formatType = "custom") => {
+  //TURNED OFF FOR CUSTOM
+  if (!inputPath || formatType === "custom") return null;
 
-  const data = await mammoth.extractRawText({ path: filePath });
+  const data = await mammoth.extractRawText({ path: inputPath });
   if (!data) return null;
 
   return data.value;

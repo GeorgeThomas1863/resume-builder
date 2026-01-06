@@ -2,25 +2,41 @@ import { OpenAI } from "openai";
 import CONFIG from "../config/config.js";
 import OBJ from "../config/input-data.js";
 
-const client = new OpenAI({
-  baseURL: CONFIG.localURL,
-  apiKey: CONFIG.localKey,
+const { openaiKey, openaiURL, localKey, localURL } = CONFIG;
+
+const openaiClient = new OpenAI({
+  apiKey: openaiKey,
+  baseURL: openaiURL,
 });
 
-export const runCustomAI = async (inputParams, resumeText) => {
-  const { aiType, jobInput } = inputParams;
+const localClient = new OpenAI({
+  apiKey: localKey,
+  baseURL: localURL,
+});
 
+export const runSendToAI = async (aiType, messageInput, schema) => {
+  if (aiType === "chatgpt") return await runChatGPT(messageInput, schema);
+
+  //otherwise run local
+  return await runLocalAI(messageInput, schema);
+};
+
+export const runChatGPT = async (messageInput, schema) => {
+  const data = await openaiClient.responses.create({
+    model: "gpt-5-nano", //testing
+    input: messageInput,
+    response_format: schema,
+  });
+
+  console.log("CHATGPT RESPONSE");
+  console.log(data);
+
+  return data.output_parsed;
+};
+
+export const runLocalAI = async (messageInput, schema) => {
   console.log("RUNNING CUSTOM AI");
   // console.log(inputParams);
-
-  //for my custom input
-  const messageInput = await buildCustomMessageInput(jobInput);
-  const schema = await buildCustomSchema();
-
-  // console.log("MESSAGE INPUT");
-  // console.log(messageInput);
-  console.log("SCHEMA");
-  console.log(schema);
 
   const params = {
     // model: "meta-llama-3.1-8b-instruct",
@@ -35,16 +51,17 @@ export const runCustomAI = async (inputParams, resumeText) => {
 
   // if (aiType === "chatgpt") return await runChatGPT(resumeText, jobInput);
 
-  const res = await client.chat.completions.create(params);
+  const data = await localClient.chat.completions.create(params);
 
   // const res = await client.responses.create(params);
   console.log("MODEL RESPONSE");
-  console.log(res);
+  console.log(data);
 
-  return res.choices[0].message.content;
+  return data.choices[0].message.content;
 };
 
-export const buildCustomMessageInput = async (jobInput) => {
+//MAKE THIS BETTER
+export const buildMessageInput = async (resumeText, aiType, jobInput) => {
   console.log("BUILDING CUSTOM MESSAGE INPUT");
   console.log(jobInput);
 
@@ -111,7 +128,7 @@ Please follow the following rules when outputting the new resume text:
 };
 
 //BUILD IN FOR LOOP
-export const buildCustomSchema = async () => {
+export const buildSchema = async () => {
   const { jobArray } = OBJ;
   if (!jobArray || !jobArray.length) return null;
 
@@ -163,39 +180,5 @@ export const buildCustomSchema = async () => {
     },
   };
 
-  // const schema = {
-  //   type: "json_schema",
-  //   json_schema: {
-  //     name: "resume_enhancement",
-  //     schema: {
-  //       type: "object",
-  //       properties: {
-  //         summary: {
-  //           type: "string",
-  //           description: "Tailored professional summary",
-  //         },
-  //         experience: {
-  //           type: "array",
-  //           items: {
-  //             type: "object",
-  //             items: {
-  //               oneOf: jobArray,
-  //             },
-  //             minItems: jobArray.length,
-  //             maxItems: jobArray.length,
-  //           },
-  //         },
-  //       },
-  //       required: ["summary", "experience"],
-  //     },
-  //   },
-  // };
-
   return schema;
 };
-
-export const runDefaultAI = async (inputParams) => {
-  const resumeText = await extractResumeText(inputPath);
-};
-
-export const runChatGPT = async (resumeText, jobInput) => {};
