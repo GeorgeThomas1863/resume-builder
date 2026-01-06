@@ -233,10 +233,10 @@ export const buildNewResume = async (aiText, inputParams) => {
     for (let j = 0; j < job.bullets.length; j++) {
       paragraphArray.push(
         new Paragraph({
+          bullet: { level: 0 },
           children: [
             new TextRun({
               text: job.bullets[j],
-              bullet: { level: 0 },
               font: "Times New Roman",
               size: 22,
             }),
@@ -246,15 +246,15 @@ export const buildNewResume = async (aiText, inputParams) => {
       );
     }
 
-    // Add space between jobs
-    if (i < inputObj.experience.length - 1) {
-      paragraphArray.push(
-        new Paragraph({
-          text: "",
-          spacing: { before: 0, after: 0 },
-        })
-      );
-    }
+    // Add space between jobs //TURN ON
+    // if (i < inputObj.experience.length - 1) {
+    //   paragraphArray.push(
+    //     new Paragraph({
+    //       text: "",
+    //       spacing: { before: 0, after: 0 },
+    //     })
+    //   );
+    // }
   }
 
   //line
@@ -354,12 +354,13 @@ export const buildNewResume = async (aiText, inputParams) => {
     })
   );
 
-  paragraphArray.push(
-    new Paragraph({
-      text: "",
-      spacing: { before: 0, after: 0 },
-    })
-  );
+  // space, //TURN ON
+  // paragraphArray.push(
+  //   new Paragraph({
+  //     text: "",
+  //     spacing: { before: 0, after: 0 },
+  //   })
+  // );
 
   paragraphArray.push(
     new Paragraph({
