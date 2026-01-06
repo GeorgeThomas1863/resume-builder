@@ -4,8 +4,6 @@
 
 //build chatGPT connection
 
-//return buffer to user to specify output path
-
 //fix cancel of resume download
 
 import express from "express";

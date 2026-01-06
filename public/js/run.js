@@ -110,3 +110,34 @@ export const runPwToggle = async () => {
   pwInput.type = "password";
   return true;
 };
+
+//----------------------
+
+//BUILD
+// export const showLoadStatus = async () => {
+//   console.log("SHOWING LOAD STATUS");
+
+//   const loadStatusMessageDiv = document.getElementById("load-status-message-div");
+//   if (!loginStatusMessageDiv) return;
+//   loginStatusMessageDiv.innerHTML = "";
+
+//   const loginStatusMsg = await sendToBack({ route: "/get-backend-value-route", key: "loginStatusMsg" });
+//   if (!loginStatusMsg) return;
+
+//   console.log("LOGIN STATUS MSG: ");
+//   console.log(loginStatusMsg);
+
+//   const loginStatusMessage = document.createElement("div");
+//   loginStatusMessage.className = "login-status-message";
+//   loginStatusMessage.textContent = loginStatusMsg;
+
+//   loginStatusMessageDiv.append(loginStatusMessage);
+//   return true;
+// };
+
+// export const hideLoginStatus = async () => {
+//   const loginStatusMessageDiv = document.getElementById("login-status-message-div");
+//   if (!loginStatusMessageDiv) return;
+//   loginStatusMessageDiv.innerHTML = "";
+//   return true;
+// };

@@ -17,8 +17,9 @@ export const buildInputForm = async () => {
   const uploadListItem = await buildUploadListItem();
   const pasteJobListItem = await buildPasteJobListItem();
   const submitListItem = await buildSubmitListItem();
+  const loadStatusMessageListItem = await buildLoadStatusMessage();
 
-  inputFormElement.append(selectAIListItem, selectFormatListItem, uploadListItem, pasteJobListItem, submitListItem);
+  inputFormElement.append(selectAIListItem, selectFormatListItem, uploadListItem, pasteJobListItem, submitListItem, loadStatusMessageListItem);
 
   // Build collapse container
   const collapseContainer = await buildCollapseContainer({
@@ -178,4 +179,15 @@ export const buildSubmitListItem = async () => {
   submitListItem.append(submitButton);
 
   return submitListItem;
+};
+
+//------------------
+
+export const buildLoadStatusMessage = async () => {
+  const loadStatusMessageDiv = document.createElement("div");
+  loadStatusMessageDiv.id = "load-status-message-div";
+  loadStatusMessageDiv.className = "load-status-message-div";
+  loadStatusMessageDiv.style.display = "none";
+
+  return loadStatusMessageDiv;
 };
