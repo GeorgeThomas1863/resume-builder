@@ -139,7 +139,12 @@ export const buildNewResume = async (aiText, inputParams) => {
           size: 1,
         },
       },
-      spacing: { before: 0, after: 0 },
+      spacing: {
+        before: 0,
+        after: 0,
+        line: 40, // Added - sets exact line height (240 twips = 12pt)
+        lineRule: LineRuleType.EXACT, // Added - use exact line height
+      },
     })
   );
 
@@ -163,12 +168,17 @@ export const buildNewResume = async (aiText, inputParams) => {
       border: {
         bottom: {
           color: "000000",
-          space: 1,
+          space: 0,
           style: BorderStyle.SINGLE,
-          size: 6,
+          size: 1,
         },
       },
-      spacing: { before: 0, after: 0 },
+      spacing: {
+        before: 0,
+        after: 0,
+        line: 40, // Added - sets exact line height (240 twips = 12pt)
+        lineRule: LineRuleType.EXACT, // Added - use exact line height
+      },
     })
   );
 
@@ -223,12 +233,15 @@ export const buildNewResume = async (aiText, inputParams) => {
     for (let j = 0; j < job.bullets.length; j++) {
       paragraphArray.push(
         new Paragraph({
-          text: job.bullets[j],
-          bullet: { level: 0 },
-          spacing: { after: 100 },
-          style: {
-            font: { name: "Times New Roman", size: 22 },
-          },
+          children: [
+            new TextRun({
+              text: job.bullets[j],
+              bullet: { level: 0 },
+              font: "Times New Roman",
+              size: 22,
+            }),
+          ],
+          spacing: { before: 0, after: 0 },
         })
       );
     }
@@ -250,12 +263,17 @@ export const buildNewResume = async (aiText, inputParams) => {
       border: {
         bottom: {
           color: "000000",
-          space: 1,
+          space: 0,
           style: BorderStyle.SINGLE,
-          size: 6,
+          size: 1,
         },
       },
-      spacing: { before: 0, after: 0 },
+      spacing: {
+        before: 0,
+        after: 0,
+        line: 40, // Added - sets exact line height (240 twips = 12pt)
+        lineRule: LineRuleType.EXACT, // Added - use exact line height
+      },
     })
   );
 
@@ -279,12 +297,17 @@ export const buildNewResume = async (aiText, inputParams) => {
       border: {
         bottom: {
           color: "000000",
-          space: 1,
+          space: 0,
           style: BorderStyle.SINGLE,
-          size: 6,
+          size: 1,
         },
       },
-      spacing: { before: 0, after: 0 },
+      spacing: {
+        before: 0,
+        after: 0,
+        line: 40, // Added - sets exact line height (240 twips = 12pt)
+        lineRule: LineRuleType.EXACT, // Added - use exact line height
+      },
     })
   );
 
