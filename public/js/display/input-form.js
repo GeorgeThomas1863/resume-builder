@@ -1,5 +1,4 @@
-import { buildCollapseContainer } from "./collapse-form.js";
-import { buildLoadStatusMessage } from "../util/status.js";
+import { buildCollapseContainer } from "./collapse.js";
 
 export const buildInputForm = async () => {
   const inputFormWrapper = document.createElement("div");

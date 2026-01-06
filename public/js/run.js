@@ -1,7 +1,7 @@
 import { EYE_OPEN_SVG, EYE_CLOSED_SVG } from "./util/define-things.js";
 import { sendToBack } from "./util/api-front.js";
 import { checkFile } from "./util/upload-front.js";
-import { showLoadStatus, hideLoadStatus } from "./util/status.js";
+import { showLoadStatus, hideLoadStatus } from "./display/loading.js";
 
 export const runMainSubmit = async () => {
   const jobInput = document.getElementById("paste-job-input").value.trim();

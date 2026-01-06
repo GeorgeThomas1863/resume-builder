@@ -1,4 +1,4 @@
-import { buildInputForm } from "./forms/input-form.js";
+import { buildInputForm } from "./display/input-form.js";
 import { checkFile } from "./util/upload-front.js";
 
 const displayElement = document.getElementById("display-element");
