@@ -50,8 +50,9 @@ export const buildSelectAIListItem = async () => {
   aiSelectType.setAttribute("data-label", "ai-type-select");
 
   const optionArray = [
-    { value: "local", text: "Local LLM", selected: true },
-    { value: "chatgpt", text: "ChatGPT" },
+    { value: "chatgpt", text: "ChatGPT", selected: true },
+    { value: "local", text: "Local LLM"},
+    
   ];
 
   for (let i = 0; i < optionArray.length; i++) {

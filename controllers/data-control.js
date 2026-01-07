@@ -41,8 +41,8 @@ export const checkRouteController = async (req, res) => {
 
 export const submitRouteController = async (req, res) => {
   const inputParams = req.body;
-  console.log("INPUT PARAMS");
-  console.log(inputParams);
+  // console.log("INPUT PARAMS");
+  // console.log(inputParams);
 
   const buffer = await runResumeUnfucker(inputParams);
 

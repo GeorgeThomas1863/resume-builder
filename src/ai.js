@@ -21,18 +21,42 @@ export const runSendToAI = async (aiType, messageInput, schema) => {
   return await runLocalAI(messageInput, schema);
 };
 
+//FIX PARAMS SENT TO OPENAI HERE
 export const runChatGPT = async (messageInput, schema) => {
-  const data = await openaiClient.responses.create({
-    model: "gpt-5-nano", //testing
-    input: messageInput,
-    response_format: schema,
-  });
+  console.log("RUNNING CHATGPT");
+  // console.log(messageInput);
+  // console.log(schema);
 
-  console.log("CHATGPT RESPONSE");
-  console.log(data);
+  //OPEN AI THROWS ERROR, NEED CATCH TO SEE
+  try {
+    const data = await openaiClient.responses.create({
+      model: "gpt-5-nano", //testing
+      input: messageInput,
+      text: {
+        format: {
+          name: "fuck_me",
+          strict: true,
+          schema: schema,
+        },
+      },
+    });
 
-  return data.output_parsed;
+    console.log("CHATGPT RESPONSE");
+    console.log(data);
+
+    return data.output_parsed;
+  } catch (e) {
+    console.log("ERROR RUNNING CHATGPT, ERROR MESSAGE:");
+    console.log(e);
+    return null;
+  }
 };
+
+//testing
+//  const data = await openaiClient.responses.create({
+//   model: "gpt-5-nano", //testing
+//   input: "What is the capital of Ohio?",
+// });
 
 export const runLocalAI = async (messageInput, schema) => {
   console.log("RUNNING CUSTOM AI");

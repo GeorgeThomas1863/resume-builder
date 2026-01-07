@@ -28,8 +28,8 @@ export const runMainSubmit = async () => {
 
   if (fileData) params.inputPath = fileData.filePath;
 
-  console.log("RUN MAIN SUBMIT");
-  console.log(params);
+  console.log("RUN MAIN SUBMIT PARAMS");
+  console.dir(params);
 
   await showLoadStatus();
 

@@ -5,14 +5,16 @@ export const runResumeUnfucker = async (inputParams) => {
   if (!inputParams) return null;
   const { inputPath, formatType, aiType, jobInput } = inputParams;
 
+  // console.log("RESUME UNFUCKER INPUT PARAMS");
+  // console.log(inputParams);
+
+
   const resumeText = await extractResumeText(inputPath, formatType);
   const messageInput = await buildMessageInput(resumeText, aiType, jobInput);
   const schema = await buildSchema();
 
-  console.log("INPUT PARAMS");
-  console.log(inputParams);
 
-  if (formatType === "none") return await runDefaultAI(inputParams);
+  // if (formatType === "none") return await runDefaultAI(inputParams);
 
   const aiText = await runSendToAI(aiType, messageInput, schema);
   if (!aiText) return null;
