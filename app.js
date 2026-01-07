@@ -1,4 +1,4 @@
-//test loading overlay
+//USE ANGEL AI TO FIX API FORMAT
 
 //FIX connection to chatGPT
 
