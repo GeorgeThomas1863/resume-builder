@@ -1,12 +1,8 @@
-//USE ANGEL AI TO FIX API FORMAT
+//ADD IN MODEL SELECTION
 
-//FIX connection to chatGPT
+//GET LOCAL WORKING
 
-//finalize resume output
-
-//indicator that work in progress
-
-//build chatGPT connection
+//finalize resume output (change font, spacing, etc)
 
 //fix cancel of resume download
 

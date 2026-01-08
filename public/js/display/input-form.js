@@ -12,15 +12,15 @@ export const buildInputForm = async () => {
   inputFormElement.id = "input-form-element";
   inputFormElement.className = "form-element";
 
-  const selectFormatListItem = await buildSelectFormatListItem();
+  
   const selectRowContainer = await buildSelectRowContainer();
-  // const selectAIListItem = await buildSelectAIListItem();
+  const inputTypeListItem = await buildInputTypeListItem();
 
   const uploadListItem = await buildUploadListItem();
   const pasteJobListItem = await buildPasteJobListItem();
   const submitListItem = await buildSubmitListItem();
 
-  inputFormElement.append(selectFormatListItem, selectRowContainer, uploadListItem, pasteJobListItem, submitListItem);
+  inputFormElement.append(selectRowContainer, inputTypeListItem, uploadListItem, pasteJobListItem, submitListItem);
 
   // Build collapse container
   const collapseContainer = await buildCollapseContainer({
@@ -36,40 +36,6 @@ export const buildInputForm = async () => {
   return inputFormWrapper;
 };
 
-export const buildSelectFormatListItem = async () => {
-  const selectFormatListItem = document.createElement("li");
-  selectFormatListItem.id = "select-format-list-item";
-  selectFormatListItem.className = "form-list-item";
-
-  const selectFormatLabel = document.createElement("label");
-  selectFormatLabel.setAttribute("for", "format-select");
-  selectFormatLabel.textContent = "Select Format";
-  selectFormatLabel.className = "form-label";
-
-  const formatTypeSelect = document.createElement("select");
-  formatTypeSelect.id = "format-type-select";
-  formatTypeSelect.className = "form-select";
-  formatTypeSelect.setAttribute("data-label", "format-type-select");
-
-  const optionArray = [
-    { value: "custom", text: "Custom", selected: true },
-    { value: "none", text: "None [default]" },
-  ];
-
-  for (let i = 0; i < optionArray.length; i++) {
-    const optionData = optionArray[i];
-    const option = document.createElement("option");
-    option.value = optionData.value;
-    option.textContent = optionData.text;
-    if (optionData.selected) option.selected = true;
-
-    formatTypeSelect.append(option);
-  }
-
-  selectFormatListItem.append(selectFormatLabel, formatTypeSelect);
-
-  return selectFormatListItem;
-};
 
 export const buildSelectRowContainer = async () => {
   const selectRowContainer = document.createElement("li");
@@ -153,6 +119,42 @@ export const buildSelectModelListItem = async () => {
 
   return selectModelListItem;
 };
+
+export const buildInputTypeListItem = async () => {
+  const inputTypeListItem = document.createElement("li");
+  inputTypeListItem.id = "input-type-list-item";
+  inputTypeListItem.className = "form-list-item";
+
+  const inputTypeLabel = document.createElement("label");
+  inputTypeLabel.setAttribute("for", "input-type-select");
+  inputTypeLabel.textContent = "Select Input Type";
+  inputTypeLabel.className = "form-label";
+
+  const inputTypeSelect = document.createElement("select");
+  inputTypeSelect.id = "input-type-select";
+  inputTypeSelect.className = "form-select";
+  inputTypeSelect.setAttribute("data-label", "input-type-select");
+
+  const optionArray = [
+    { value: "prebuilt", text: "Use Pre-Built", selected: true },
+    { value: "custom", text: "Upload Custom Resume" },
+  ];
+
+  for (let i = 0; i < optionArray.length; i++) {
+    const optionData = optionArray[i];
+    const option = document.createElement("option");
+    option.value = optionData.value;
+    option.textContent = optionData.text;
+    if (optionData.selected) option.selected = true;
+
+    inputTypeSelect.append(option);
+  }
+
+  inputTypeListItem.append(inputTypeLabel, inputTypeSelect);
+
+  return inputTypeListItem;
+};
+
 
 export const buildPasteJobListItem = async () => {
   const pasteJobListItem = document.createElement("li");

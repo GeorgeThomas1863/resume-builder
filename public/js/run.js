@@ -13,7 +13,8 @@ export const runMainSubmit = async () => {
   const params = {
     route: "/submit",
     aiType: document.getElementById("ai-type-select").value,
-    formatType: document.getElementById("format-type-select").value,
+    modelType: document.getElementById("model-select").value,
+    inputType: document.getElementById("input-type-select").value,
     jobInput: jobInput,
     inputPath: null,
   };
