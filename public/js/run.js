@@ -113,7 +113,7 @@ export const runModelOptionsToggle = async () => {
   toggleButton.classList.add("expanded");
   modelOptionsListItem.style.borderBottom = "1px solid rgba(209, 213, 219, 0.6)";
   modelOptionsListItem.style.borderTop = "1px solid rgba(209, 213, 219, 0.6)";
-  modelOptionsListItem.style.paddingBottom = "1.5rem";
+  modelOptionsListItem.style.paddingBottom = "2rem";
   modelOptionsListItem.style.paddingTop = "1.5rem";
 
   return true;
