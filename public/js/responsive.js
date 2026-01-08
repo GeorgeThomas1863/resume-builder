@@ -1,4 +1,4 @@
-import { runPwToggle, runModelOptionsToggle, runUploadButtonToggle, runAuthSubmit, runUploadClick, runMainSubmit, runDeleteResume } from "./run.js";
+import { runPwToggle, runModelOptionsToggle, runAIModelSelect, runUploadButtonToggle, runAuthSubmit, runUploadClick, runMainSubmit, runDeleteResume } from "./run.js";
 import { runUploadFile } from "./util/upload-front.js";
 
 const authElement = document.getElementById("auth-element");
@@ -54,6 +54,8 @@ export const changeHandler = async (e) => {
   console.log(changeId);
   console.log("CHANGE ELEMENT VALUE");
   console.log(changeElement.value);
+
+  if (changeId === "ai-type-select") await runAIModelSelect(changeElement.value);
 
   if (changeId === "input-type-select") await runUploadButtonToggle(changeElement.value);
 

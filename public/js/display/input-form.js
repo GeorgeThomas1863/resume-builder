@@ -102,7 +102,7 @@ export const buildSelectAIDiv = async () => {
   const aiSelectType = document.createElement("select");
   aiSelectType.id = "ai-type-select";
   aiSelectType.className = "form-select";
-  aiSelectType.setAttribute("data-label", "ai-type-select");
+  // aiSelectType.setAttribute("data-label", "ai-type-select");
 
   const optionArray = [
     { value: "chatgpt", text: "ChatGPT", selected: true },
@@ -223,9 +223,9 @@ export const buildPriorityDiv = async () => {
   prioritySelect.setAttribute("data-label", "priority-select");
 
   const optionArray = [
-    { value: "flex", text: "Flex (slowest/cheapest)", selected: true },
+    { value: "flex", text: "Flex (slowest)", selected: true },
     { value: "default", text: "Default" },
-    { value: "priority", text: "Priority (fastest/most expensive)" },
+    { value: "priority", text: "Priority (most expensive)" },
   ];
 
   for (let i = 0; i < optionArray.length; i++) {

@@ -1,6 +1,6 @@
-//ADD NEW MODEL SETTINGS ON BACKEND
-
 //GET LOCAL WORKING
+
+//fix front option display (priority half page)
 
 //finalize resume output (change font, spacing, etc)
 

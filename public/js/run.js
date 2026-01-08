@@ -1,4 +1,4 @@
-import { EYE_OPEN_SVG, EYE_CLOSED_SVG } from "./util/define-things.js";
+import { EYE_OPEN_SVG, EYE_CLOSED_SVG, modelMap } from "./util/define-things.js";
 import { sendToBack } from "./util/api-front.js";
 import { buildSubmitParams } from "./util/params.js";
 import { checkFile } from "./util/upload-front.js";
@@ -87,6 +87,26 @@ export const runPwToggle = async () => {
 
   pwButton.innerHTML = EYE_CLOSED_SVG;
   pwInput.type = "password";
+  return true;
+};
+
+export const runAIModelSelect = async (modelType) => {
+  if (!modelType) return null;
+  const modelValue = modelMap[modelType];
+  console.log("MODEL VALUE");
+  console.log(modelValue);
+
+  const modelSelect = document.getElementById("model-select");
+  if (!modelSelect) return null;
+  modelSelect.innerHTML = "";
+  for (let i = 0; i < modelValue.length; i++) {
+    const model = modelValue[i];
+    const option = document.createElement("option");
+    option.value = model.value;
+    option.textContent = model.text;
+    if (model.selected) option.selected = true;
+    modelSelect.append(option);
+  }
   return true;
 };
 

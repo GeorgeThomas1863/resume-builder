@@ -1,5 +1,5 @@
 import mammoth from "mammoth";
-import { Document, Paragraph, Packer, TextRun, AlignmentType, BorderStyle, LineRuleType } from "docx";
+import { Document, Paragraph, Packer, TextRun, AlignmentType, BorderStyle, LineRuleType, TabStopType, TabStopPosition } from "docx";
 import { otherObj } from "../config/input-data.js";
 
 export const extractResumeText = async (inputPath, inputType = "prebuilt") => {
@@ -192,6 +192,9 @@ export const buildNewResume = async (aiText, inputParams) => {
           bold: true,
           font: "Times New Roman",
           size: 24,
+        }),
+        new TextRun({
+          text: " ".repeat(30), // 30 spaces
         }),
         new TextRun({
           text: "2010-Present",

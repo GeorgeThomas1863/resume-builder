@@ -19,3 +19,13 @@ export const EXPAND_OPTIONS_SVG = `
       <line class="horizontal-line" x1="5" y1="12" x2="19" y2="12" data-label="modelOptionsToggle"></line>
     </svg>
   `;
+
+export const modelMap = {
+  chatgpt: [
+    { value: "gpt-5-nano", text: "GPT 5 Nano" },
+    { value: "gpt-5-mini", text: "GPT 5 Mini" },
+    { value: "gpt-5", text: "GPT 5" },
+    { value: "gpt-5.2", text: "GPT 5.2" },
+  ],
+  local: [{ value: "meta-llama-3.1-8b-instruct", text: "Meta-Llama 3.1 8B Instruct" }],
+};

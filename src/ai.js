@@ -58,30 +58,34 @@ export const runChatGPT = async (inputParams) => {
   }
 };
 
-export const runLocalAI = async (messageInput, schema) => {
+export const runLocalAI = async (inputParams) => {
+  const { messageInput, schema, modelType, maxTokens, temperature } = inputParams;
   console.log("RUNNING CUSTOM AI");
   // console.log(inputParams);
 
-  const params = {
-    // model: "meta-llama-3.1-8b-instruct",
-    model: "meta-llama-3.1-8b-instruct",
-    messages: messageInput,
-    response_format: schema,
-    // temperature: 0.9,
-  };
+  try {
+    const params = {
+      // model: "meta-llama-3.1-8b-instruct",
+      model: modelType,
+      messages: messageInput,
+      response_format: schema,
+      max_tokens: +maxTokens,
+      temperature: +temperature,
+    };
 
-  console.log("AI PARAMS");
-  console.log(params);
+    console.log("AI PARAMS");
+    console.log(params);
 
-  // if (aiType === "chatgpt") return await runChatGPT(resumeText, jobInput);
+    const data = await localClient.chat.completions.create(params);
+    console.log("MODEL RESPONSE");
+    console.log(data);
 
-  const data = await localClient.chat.completions.create(params);
-
-  // const res = await client.responses.create(params);
-  console.log("MODEL RESPONSE");
-  console.log(data);
-
-  return data.choices[0].message.content;
+    return data.choices[0].message.content;
+  } catch (e) {
+    console.log("ERROR RUNNING LOCAL AI, ERROR MESSAGE:");
+    console.log(e);
+    return null;
+  }
 };
 
 //MAKE THIS BETTER
