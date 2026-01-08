@@ -5,7 +5,7 @@ export const buildSubmitParams = async () => {
     inputPath: null,
     aiType: document.getElementById("ai-type-select").value,
     modelType: document.getElementById("model-select").value,
-    priority: document.getElementById("priority-select").value,
+    serviceTier: document.getElementById("priority-select").value,
     maxTokens: document.getElementById("max-tokens-input").value,
     temperature: document.getElementById("temperature-input").value,
   };

@@ -224,7 +224,7 @@ export const buildPriorityDiv = async () => {
 
   const optionArray = [
     { value: "flex", text: "Flex (slowest/cheapest)", selected: true },
-    { value: "standard", text: "Standard" },
+    { value: "default", text: "Default" },
     { value: "priority", text: "Priority (fastest/most expensive)" },
   ];
 

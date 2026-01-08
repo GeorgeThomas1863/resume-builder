@@ -14,22 +14,28 @@ const localClient = new OpenAI({
   baseURL: localURL,
 });
 
-export const runSendToAI = async (aiType, messageInput, schema) => {
-  if (aiType === "chatgpt") return await runChatGPT(messageInput, schema);
+export const runSendToAI = async (inputParams) => {
+  const { aiType } = inputParams;
+  if (aiType === "chatgpt") return await runChatGPT(inputParams);
 
   //otherwise run local
-  return await runLocalAI(messageInput, schema);
+  return await runLocalAI(inputParams);
 };
 
-//FIX PARAMS SENT TO OPENAI HERE
-export const runChatGPT = async (messageInput, schema) => {
-  console.log("RUNNING CHATGPT");
+export const runChatGPT = async (inputParams) => {
+  const { messageInput, schema, modelType, serviceTier, maxTokens, temperature } = inputParams;
+  console.log("CHAT GPT INPUT PARAMS");
+  console.log(inputParams);
 
   //OPEN AI THROWS ERROR, NEED CATCH TO SEE
   try {
     const data = await openaiClient.responses.create({
-      model: "gpt-5-nano", //testing
+      // model: "gpt-5-nano", //testing
+      model: modelType,
       input: messageInput,
+      temperature: temperature,
+      max_output_tokens: maxTokens,
+      service_tier: serviceTier,
       text: {
         format: {
           type: "json_schema",
