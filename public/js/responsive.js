@@ -1,4 +1,4 @@
-import { runPwToggle, runModelOptionsToggle, runAuthSubmit, runUploadClick, runMainSubmit, runDeleteResume } from "./run.js";
+import { runPwToggle, runModelOptionsToggle, runUploadButtonToggle, runAuthSubmit, runUploadClick, runMainSubmit, runDeleteResume } from "./run.js";
 import { runUploadFile } from "./util/upload-front.js";
 
 const authElement = document.getElementById("auth-element");
@@ -49,6 +49,11 @@ export const keyHandler = async (e) => {
 export const changeHandler = async (e) => {
   const changeElement = e.target;
   const changeId = changeElement.id;
+
+  if (changeId === "input-type-select") await runUploadButtonToggle();
+
+  console.log("CHANGE HANDLER");
+  console.log(changeId);
 
   if (changeId !== "upload-file-input") return null;
 

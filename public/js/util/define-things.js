@@ -14,8 +14,8 @@ export const EYE_OPEN_SVG = `
 `;
 
 export const EXPAND_OPTIONS_SVG = `
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" data-label="advancedToggle">
-      <line x1="12" y1="5" x2="12" y2="19" data-label="advancedToggle"></line>
-      <line class="horizontal-line" x1="5" y1="12" x2="19" y2="12" data-label="advancedToggle"></line>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" data-label="modelOptionsToggle">
+      <line x1="12" y1="5" x2="12" y2="19" data-label="modelOptionsToggle"></line>
+      <line class="horizontal-line" x1="5" y1="12" x2="19" y2="12" data-label="modelOptionsToggle"></line>
     </svg>
   `;

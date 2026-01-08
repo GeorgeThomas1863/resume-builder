@@ -13,14 +13,16 @@ export const buildInputForm = async () => {
   inputFormElement.id = "input-form-element";
   inputFormElement.className = "form-element";
 
-  const selectRowListItem = await buildSelectRowListItem();
   const inputTypeListItem = await buildInputTypeListItem();
-
   const uploadListItem = await buildUploadListItem();
+
+  const selectRowListItem = await buildSelectRowListItem();
+  const modelOptionsListItem = await buildModelOptionsListItem();
+
   const pasteJobListItem = await buildPasteJobListItem();
   const submitListItem = await buildSubmitListItem();
 
-  inputFormElement.append(selectRowListItem, inputTypeListItem, uploadListItem, pasteJobListItem, submitListItem);
+  inputFormElement.append(inputTypeListItem, uploadListItem, selectRowListItem, modelOptionsListItem, pasteJobListItem, submitListItem);
 
   // Build collapse container
   const collapseContainer = await buildCollapseContainer({
@@ -36,24 +38,61 @@ export const buildInputForm = async () => {
   return inputFormWrapper;
 };
 
+export const buildInputTypeListItem = async () => {
+  const inputTypeListItem = document.createElement("li");
+  inputTypeListItem.id = "input-type-list-item";
+  inputTypeListItem.className = "form-list-item";
+
+  const inputTypeLabel = document.createElement("label");
+  inputTypeLabel.setAttribute("for", "input-type-select");
+  inputTypeLabel.textContent = "Select Input Type";
+  inputTypeLabel.className = "form-label";
+
+  const inputTypeSelect = document.createElement("select");
+  inputTypeSelect.id = "input-type-select";
+  inputTypeSelect.className = "form-select";
+  inputTypeSelect.setAttribute("data-label", "input-type-select");
+
+  const optionArray = [
+    { value: "prebuilt", text: "Use Pre-Built", selected: true },
+    { value: "custom", text: "Upload Custom Resume" },
+  ];
+
+  for (let i = 0; i < optionArray.length; i++) {
+    const optionData = optionArray[i];
+    const option = document.createElement("option");
+    option.value = optionData.value;
+    option.textContent = optionData.text;
+    if (optionData.selected) option.selected = true;
+
+    inputTypeSelect.append(option);
+  }
+
+  inputTypeListItem.append(inputTypeLabel, inputTypeSelect);
+
+  return inputTypeListItem;
+};
+
+//----------
+
 export const buildSelectRowListItem = async () => {
   const selectRowContainer = document.createElement("li");
   selectRowContainer.id = "select-row-container";
   selectRowContainer.className = "form-list-item form-row";
 
-  const selectAIListItem = await buildSelectAIListItem();
-  const selectModelListItem = await buildSelectModelListItem();
-  const modelOptionsListItem = await buildModelOptionsListItem();
+  const selectAIDiv = await buildSelectAIDiv();
+  const selectModelDiv = await buildSelectModelDiv();
+  const modelOptionsToggle = await buildModelOptionsToggle();
 
-  selectRowContainer.append(selectAIListItem, selectModelListItem, modelOptionsListItem);
+  selectRowContainer.append(selectAIDiv, selectModelDiv, modelOptionsToggle);
 
   return selectRowContainer;
 };
 
-export const buildSelectAIListItem = async () => {
-  const selectAIListItem = document.createElement("li");
-  selectAIListItem.id = "select-ai-list-item";
-  selectAIListItem.className = "form-select-half";
+export const buildSelectAIDiv = async () => {
+  const selectAIDiv = document.createElement("div");
+  selectAIDiv.id = "select-ai-div";
+  selectAIDiv.className = "form-select-half";
 
   const selectAILabel = document.createElement("label");
   selectAILabel.setAttribute("for", "ai-type-select");
@@ -80,15 +119,15 @@ export const buildSelectAIListItem = async () => {
     aiSelectType.append(option);
   }
 
-  selectAIListItem.append(selectAILabel, aiSelectType);
+  selectAIDiv.append(selectAILabel, aiSelectType);
 
-  return selectAIListItem;
+  return selectAIDiv;
 };
 
-export const buildSelectModelListItem = async () => {
-  const selectModelListItem = document.createElement("div");
-  selectModelListItem.id = "select-model-list-item";
-  selectModelListItem.className = "form-select-half";
+export const buildSelectModelDiv = async () => {
+  const selectModelDiv = document.createElement("div");
+  selectModelDiv.id = "select-model-div";
+  selectModelDiv.className = "form-select-half";
 
   const selectModelLabel = document.createElement("label");
   selectModelLabel.setAttribute("for", "model-select");
@@ -117,19 +156,19 @@ export const buildSelectModelListItem = async () => {
     modelSelect.append(option);
   }
 
-  selectModelListItem.append(selectModelLabel, modelSelect);
+  selectModelDiv.append(selectModelLabel, modelSelect);
 
-  return selectModelListItem;
+  return selectModelDiv;
 };
 
-export const buildModelOptionsListItem = async () => {
-  const modelOptionsListItem = document.createElement("li");
-  modelOptionsListItem.id = "model-options-list-item";
-  modelOptionsListItem.className = "form-select-half";
+export const buildModelOptionsToggle = async () => {
+  const modelOptionsToggle = document.createElement("div");
+  modelOptionsToggle.id = "model-options-toggle";
+  modelOptionsToggle.className = "form-select-half";
 
   const modelOptionsLabel = document.createElement("label");
   modelOptionsLabel.setAttribute("for", "model-options-select");
-  modelOptionsLabel.textContent = "Model Options";
+  modelOptionsLabel.textContent = "Options";
   modelOptionsLabel.className = "form-label";
 
   const toggleWrapper = document.createElement("div");
@@ -137,7 +176,7 @@ export const buildModelOptionsListItem = async () => {
   toggleWrapper.setAttribute("data-label", "modelOptionsToggle");
 
   const toggleButton = document.createElement("button");
-  toggleButton.id = "model-options-toggle";
+  toggleButton.id = "toggle-button";
   toggleButton.className = "model-options-toggle-btn";
   toggleButton.setAttribute("data-label", "modelOptionsToggle");
   toggleButton.setAttribute("aria-expanded", "false");
@@ -146,24 +185,25 @@ export const buildModelOptionsListItem = async () => {
 
   toggleWrapper.append(toggleButton);
 
-  modelOptionsListItem.append(modelOptionsLabel, toggleWrapper);
+  modelOptionsToggle.append(modelOptionsLabel, toggleWrapper);
 
-  return modelOptionsListItem;
+  return modelOptionsToggle;
 };
 
 //----
 
-export const buildModelOptionsContentWrapper = async () => {
-  const modelOptionsContentWrapper = document.createElement("div");
-  modelOptionsContentWrapper.id = "model-options-content-wrapper";
-  modelOptionsContentWrapper.className = "form-list-item form-row";
-  modelOptionsContentWrapper.classList.add("hidden");
+export const buildModelOptionsListItem = async () => {
+  const modelOptionsListItem = document.createElement("li");
+  modelOptionsListItem.id = "model-options-list-item";
+  modelOptionsListItem.className = "form-list-item form-row";
+  modelOptionsListItem.classList.add("hidden");
 
   const priorityDiv = await buildPriorityDiv();
   const maxTokensDiv = await buildMaxTokensDiv();
   const temperatureDiv = await buildTemperatureDiv();
-  modelOptionsContentWrapper.append(priorityDiv, maxTokensDiv, temperatureDiv);
-  return modelOptionsContentWrapper;
+  modelOptionsListItem.append(priorityDiv, maxTokensDiv, temperatureDiv);
+
+  return modelOptionsListItem;
 };
 
 //for service_tier
@@ -255,45 +295,15 @@ export const buildTemperatureDiv = async () => {
 
 //----------------
 
-export const buildInputTypeListItem = async () => {
-  const inputTypeListItem = document.createElement("li");
-  inputTypeListItem.id = "input-type-list-item";
-  inputTypeListItem.className = "form-list-item";
-
-  const inputTypeLabel = document.createElement("label");
-  inputTypeLabel.setAttribute("for", "input-type-select");
-  inputTypeLabel.textContent = "Select Input Type";
-  inputTypeLabel.className = "form-label";
-
-  const inputTypeSelect = document.createElement("select");
-  inputTypeSelect.id = "input-type-select";
-  inputTypeSelect.className = "form-select";
-  inputTypeSelect.setAttribute("data-label", "input-type-select");
-
-  const optionArray = [
-    { value: "prebuilt", text: "Use Pre-Built", selected: true },
-    { value: "custom", text: "Upload Custom Resume" },
-  ];
-
-  for (let i = 0; i < optionArray.length; i++) {
-    const optionData = optionArray[i];
-    const option = document.createElement("option");
-    option.value = optionData.value;
-    option.textContent = optionData.text;
-    if (optionData.selected) option.selected = true;
-
-    inputTypeSelect.append(option);
-  }
-
-  inputTypeListItem.append(inputTypeLabel, inputTypeSelect);
-
-  return inputTypeListItem;
-};
-
 export const buildPasteJobListItem = async () => {
   const pasteJobListItem = document.createElement("li");
   pasteJobListItem.id = "paste-job-list-item";
   pasteJobListItem.className = "form-list-item";
+
+  const pasteJobLabel = document.createElement("label");
+  pasteJobLabel.setAttribute("for", "paste-job-input");
+  pasteJobLabel.textContent = "Job Description";
+  pasteJobLabel.className = "form-label";
 
   const pasteJobInput = document.createElement("textarea");
   // pasteJobInput.rows = 15;
@@ -303,7 +313,7 @@ export const buildPasteJobListItem = async () => {
   pasteJobInput.className = "form-textarea";
   pasteJobInput.placeholder = "[Paste the ENTIRE job description here]";
 
-  pasteJobListItem.append(pasteJobInput);
+  pasteJobListItem.append(pasteJobLabel, pasteJobInput);
 
   return pasteJobListItem;
 };
@@ -312,6 +322,7 @@ export const buildUploadListItem = async () => {
   const uploadListItem = document.createElement("li");
   uploadListItem.id = "upload-list-item";
   uploadListItem.className = "form-list-item";
+  uploadListItem.classList.add("hidden");
 
   // Create hidden file input for file upload
   const fileInput = document.createElement("input");

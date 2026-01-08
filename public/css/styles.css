@@ -115,23 +115,41 @@ h3 {
   padding: 1rem 2rem;
 }
 
+/* SETS HEIGHT FOR LIST ITEMS */
 .form-list-item {
   padding: 1rem 2rem;
 }
 
 .form-list-item:first-child {
-  padding-top: 1.5rem;
+  padding-top: 1.25rem;
+}
+
+.form-list-item:last-child {
+  padding-top: 0.5rem;
+  padding-bottom: 1.25rem;
 }
 
 .form-row {
   display: flex;
   gap: 1.5rem;
+  align-items: flex-end;
 }
 
 .form-select-half {
   flex: 1;
   display: flex;
   flex-direction: column;
+}
+
+/* override for toggle */
+#model-options-toggle {
+  flex: 0 0 auto; /* Don't grow, don't shrink, use auto width */
+  min-width: fit-content;
+}
+
+#model-options-toggle .toggle-wrapper {
+  width: fit-content;
+  min-width: fit-content;
 }
 
 .form-label {

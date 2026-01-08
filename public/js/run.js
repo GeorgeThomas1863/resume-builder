@@ -1,5 +1,6 @@
 import { EYE_OPEN_SVG, EYE_CLOSED_SVG } from "./util/define-things.js";
 import { sendToBack } from "./util/api-front.js";
+import { buildSubmitParams } from "./util/params.js";
 import { checkFile } from "./util/upload-front.js";
 import { showLoadStatus, hideLoadStatus } from "./display/loading.js";
 import { hideArray, unhideArray } from "./display/collapse.js";
@@ -11,14 +12,8 @@ export const runMainSubmit = async () => {
     return null;
   }
 
-  const params = {
-    route: "/submit",
-    aiType: document.getElementById("ai-type-select").value,
-    modelType: document.getElementById("model-select").value,
-    inputType: document.getElementById("input-type-select").value,
-    jobInput: jobInput,
-    inputPath: null,
-  };
+  const params = await buildSubmitParams();
+  params.jobInput = jobInput;
 
   const fileData = await checkFile();
   console.log("FILE DATA");
@@ -97,26 +92,45 @@ export const runPwToggle = async () => {
 
 export const runModelOptionsToggle = async () => {
   const modelOptionsListItem = document.getElementById("model-options-list-item");
-  const modelOptionsContentWrapper = document.getElementById("model-options-content-wrapper");
+  // const modelOptionsContentWrapper = document.getElementById("model-options-content-wrapper");
   const toggleButton = document.getElementById("model-options-toggle");
 
   //expanded to collapsed
   if (toggleButton.getAttribute("aria-expanded") === "true") {
-    await hideArray([modelOptionsContentWrapper]);
+    await hideArray([modelOptionsListItem]);
     toggleButton.setAttribute("aria-expanded", "false");
     toggleButton.classList.remove("expanded");
     modelOptionsListItem.style.borderBottom = "none";
+    modelOptionsListItem.style.borderTop = "none";
     modelOptionsListItem.style.paddingBottom = "0";
+    modelOptionsListItem.style.paddingTop = "0";
     return true;
   }
 
   //collapsed to expanded
-  await unhideArray([[modelOptionsContentWrapper]]);
+  await unhideArray([modelOptionsListItem]);
   toggleButton.setAttribute("aria-expanded", "true");
   toggleButton.classList.add("expanded");
   modelOptionsListItem.style.borderBottom = "1px solid rgba(209, 213, 219, 0.6)";
-  modelOptionsListItem.style.paddingBottom = "2rem";
+  modelOptionsListItem.style.borderTop = "1px solid rgba(209, 213, 219, 0.6)";
+  modelOptionsListItem.style.paddingBottom = "1.5rem";
+  modelOptionsListItem.style.paddingTop = "1.5rem";
 
+  return true;
+};
+
+export const runUploadButtonToggle = async () => {
+  const uploadListItem = document.getElementById("upload-list-item");
+  if (!uploadListItem) return null;
+
+  if (uploadListItem.classList.contains("hidden")) {
+    await unhideArray([uploadListItem]);
+    // uploadListItem.classList.remove("hidden");
+    return true;
+  }
+
+  await hideArray([uploadListItem]);
+  // uploadListItem.classList.add("hidden");
   return true;
 };
 
