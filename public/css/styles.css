@@ -125,7 +125,7 @@ h3 {
 
 .form-row {
   display: flex;
-  gap: 3rem;
+  gap: 1.5rem;
 }
 
 .form-select-half {
@@ -198,6 +198,31 @@ h3 {
 .upload-status {
   display: inline-block;
   vertical-align: middle;
+}
+
+.toggle-wrapper {
+  background: rgba(234, 235, 236, 0.9);
+  border-radius: 8px;
+  padding: 0.75rem 1rem;
+  cursor: pointer;
+}
+
+.model-options-toggle-btn {
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  color: #6b7280;
+  font-size: 14px;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+}
+
+.model-options-toggle-btn.expanded {
+  transform: rotate(45deg);
 }
 
 /* +++++++++++++++++++++++++++++++++++++++++++++++++ */

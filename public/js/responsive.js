@@ -1,4 +1,4 @@
-import { runPwToggle, runAuthSubmit, runUploadClick, runMainSubmit, runDeleteResume } from "./run.js";
+import { runPwToggle, runModelOptionsToggle, runAuthSubmit, runUploadClick, runMainSubmit, runDeleteResume } from "./run.js";
 import { runUploadFile } from "./util/upload-front.js";
 
 const authElement = document.getElementById("auth-element");
@@ -22,7 +22,7 @@ export const clickHandler = async (e) => {
   if (clickType === "delete-resume-button") await runDeleteResume();
 
   if (clickType === "pwToggle") await runPwToggle();
-  // if (clickType === "advancedToggle") await runAdvancedToggle();
+  if (clickType === "modelOptionsToggle") await runModelOptionsToggle();
   // if (clickType === "make-pretty") await runPrettyToggle(clickId);
   // if (clickType === "copy-return-data") await runCopyReturnData();
 };

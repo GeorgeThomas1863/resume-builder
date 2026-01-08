@@ -2,6 +2,7 @@ import { EYE_OPEN_SVG, EYE_CLOSED_SVG } from "./util/define-things.js";
 import { sendToBack } from "./util/api-front.js";
 import { checkFile } from "./util/upload-front.js";
 import { showLoadStatus, hideLoadStatus } from "./display/loading.js";
+import { hideArray, unhideArray } from "./display/collapse.js";
 
 export const runMainSubmit = async () => {
   const jobInput = document.getElementById("paste-job-input").value.trim();
@@ -91,6 +92,31 @@ export const runPwToggle = async () => {
 
   pwButton.innerHTML = EYE_CLOSED_SVG;
   pwInput.type = "password";
+  return true;
+};
+
+export const runModelOptionsToggle = async () => {
+  const modelOptionsListItem = document.getElementById("model-options-list-item");
+  const modelOptionsContentWrapper = document.getElementById("model-options-content-wrapper");
+  const toggleButton = document.getElementById("model-options-toggle");
+
+  //expanded to collapsed
+  if (toggleButton.getAttribute("aria-expanded") === "true") {
+    await hideArray([modelOptionsContentWrapper]);
+    toggleButton.setAttribute("aria-expanded", "false");
+    toggleButton.classList.remove("expanded");
+    modelOptionsListItem.style.borderBottom = "none";
+    modelOptionsListItem.style.paddingBottom = "0";
+    return true;
+  }
+
+  //collapsed to expanded
+  await unhideArray([[modelOptionsContentWrapper]]);
+  toggleButton.setAttribute("aria-expanded", "true");
+  toggleButton.classList.add("expanded");
+  modelOptionsListItem.style.borderBottom = "1px solid rgba(209, 213, 219, 0.6)";
+  modelOptionsListItem.style.paddingBottom = "2rem";
+
   return true;
 };
 
