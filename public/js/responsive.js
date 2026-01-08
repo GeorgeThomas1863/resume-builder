@@ -50,14 +50,14 @@ export const changeHandler = async (e) => {
   const changeElement = e.target;
   const changeId = changeElement.id;
 
-  if (changeId === "input-type-select") await runUploadButtonToggle();
-
   console.log("CHANGE HANDLER");
   console.log(changeId);
+  console.log("CHANGE ELEMENT VALUE");
+  console.log(changeElement.value);
+
+  if (changeId === "input-type-select") await runUploadButtonToggle(changeElement.value);
 
   if (changeId !== "upload-file-input") return null;
-
-  console.log("CHANGE HANDLER");
 
   const file = e.target.files[0];
   console.log("FILE");

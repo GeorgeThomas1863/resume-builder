@@ -3,13 +3,13 @@ import { buildMessageInput, buildSchema, runSendToAI } from "./ai.js";
 
 export const runResumeUnfucker = async (inputParams) => {
   if (!inputParams) return null;
-  const { inputPath, inputType, aiType, jobInput } = inputParams;
+  const { inputPath, inputType, jobInput } = inputParams;
 
   // console.log("RESUME UNFUCKER INPUT PARAMS");
   // console.log(inputParams);
 
   const resumeText = await extractResumeText(inputPath, inputType);
-  const messageInput = await buildMessageInput(resumeText, aiType, jobInput);
+  const messageInput = await buildMessageInput(resumeText, jobInput);
   const schema = await buildSchema();
 
   const aiParams = {

@@ -1,4 +1,5 @@
 import { sendToBack } from "./api-front.js";
+import { unhideArray } from "../display/collapse.js";
 
 export const runUploadFile = async (file) => {
   if (!file) return null;
@@ -54,6 +55,8 @@ export const checkFile = async () => {
   const uploadStatus = document.getElementById("upload-status");
   const uploadButton = document.getElementById("upload-button");
   const deleteButton = document.getElementById("delete-resume-button");
+  const uploadListItem = document.getElementById("upload-list-item");
+
   if (uploadButton) {
     uploadButton.textContent = "Change Resume";
     uploadButton.dataset.uploadedFile = fileData.filename;
@@ -68,6 +71,11 @@ export const checkFile = async () => {
 
   if (deleteButton) {
     deleteButton.style.display = "inline-block";
+  }
+
+  if (uploadListItem.classList.contains("hidden")) {
+    await unhideArray([uploadListItem]);
+    return true;
   }
 
   return fileData;

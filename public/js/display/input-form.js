@@ -51,7 +51,7 @@ export const buildInputTypeListItem = async () => {
   const inputTypeSelect = document.createElement("select");
   inputTypeSelect.id = "input-type-select";
   inputTypeSelect.className = "form-select";
-  inputTypeSelect.setAttribute("data-label", "input-type-select");
+  // inputTypeSelect.setAttribute("data-label", "input-type-select");
 
   const optionArray = [
     { value: "prebuilt", text: "Use Pre-Built", selected: true },
