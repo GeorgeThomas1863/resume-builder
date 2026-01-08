@@ -12,13 +12,15 @@ export const buildInputForm = async () => {
   inputFormElement.id = "input-form-element";
   inputFormElement.className = "form-element";
 
-  const selectAIListItem = await buildSelectAIListItem();
   const selectFormatListItem = await buildSelectFormatListItem();
+  const selectRowContainer = await buildSelectRowContainer();
+  // const selectAIListItem = await buildSelectAIListItem();
+
   const uploadListItem = await buildUploadListItem();
   const pasteJobListItem = await buildPasteJobListItem();
   const submitListItem = await buildSubmitListItem();
 
-  inputFormElement.append(selectAIListItem, selectFormatListItem, uploadListItem, pasteJobListItem, submitListItem);
+  inputFormElement.append(selectFormatListItem, selectRowContainer, uploadListItem, pasteJobListItem, submitListItem);
 
   // Build collapse container
   const collapseContainer = await buildCollapseContainer({
@@ -32,42 +34,6 @@ export const buildInputForm = async () => {
   inputFormWrapper.append(collapseContainer);
 
   return inputFormWrapper;
-};
-
-export const buildSelectAIListItem = async () => {
-  const selectAIListItem = document.createElement("li");
-  selectAIListItem.id = "select-ai-list-item";
-  selectAIListItem.className = "form-list-item";
-
-  const selectAILabel = document.createElement("label");
-  selectAILabel.setAttribute("for", "ai-type-select");
-  selectAILabel.textContent = "Select AI";
-  selectAILabel.className = "form-label";
-
-  const aiSelectType = document.createElement("select");
-  aiSelectType.id = "ai-type-select";
-  aiSelectType.className = "form-select";
-  aiSelectType.setAttribute("data-label", "ai-type-select");
-
-  const optionArray = [
-    { value: "chatgpt", text: "ChatGPT", selected: true },
-    { value: "local", text: "Local LLM"},
-    
-  ];
-
-  for (let i = 0; i < optionArray.length; i++) {
-    const optionData = optionArray[i];
-    const option = document.createElement("option");
-    option.value = optionData.value;
-    option.textContent = optionData.text;
-    if (optionData.selected) option.selected = true;
-
-    aiSelectType.append(option);
-  }
-
-  selectAIListItem.append(selectAILabel, aiSelectType);
-
-  return selectAIListItem;
 };
 
 export const buildSelectFormatListItem = async () => {
@@ -103,6 +69,89 @@ export const buildSelectFormatListItem = async () => {
   selectFormatListItem.append(selectFormatLabel, formatTypeSelect);
 
   return selectFormatListItem;
+};
+
+export const buildSelectRowContainer = async () => {
+  const selectRowContainer = document.createElement("li");
+  selectRowContainer.id = "select-row-container";
+  selectRowContainer.className = "form-list-item form-row";
+
+  const selectAIListItem = await buildSelectAIListItem();
+  const selectModelListItem = await buildSelectModelListItem();
+
+  selectRowContainer.append(selectAIListItem, selectModelListItem);
+
+  return selectRowContainer;
+};
+
+export const buildSelectAIListItem = async () => {
+  const selectAIListItem = document.createElement("li");
+  selectAIListItem.id = "select-ai-list-item";
+  selectAIListItem.className = "form-select-half";
+
+  const selectAILabel = document.createElement("label");
+  selectAILabel.setAttribute("for", "ai-type-select");
+  selectAILabel.textContent = "Select AI";
+  selectAILabel.className = "form-label";
+
+  const aiSelectType = document.createElement("select");
+  aiSelectType.id = "ai-type-select";
+  aiSelectType.className = "form-select";
+  aiSelectType.setAttribute("data-label", "ai-type-select");
+
+  const optionArray = [
+    { value: "chatgpt", text: "ChatGPT", selected: true },
+    { value: "local", text: "Local LLM" },
+  ];
+
+  for (let i = 0; i < optionArray.length; i++) {
+    const optionData = optionArray[i];
+    const option = document.createElement("option");
+    option.value = optionData.value;
+    option.textContent = optionData.text;
+    if (optionData.selected) option.selected = true;
+
+    aiSelectType.append(option);
+  }
+
+  selectAIListItem.append(selectAILabel, aiSelectType);
+
+  return selectAIListItem;
+};
+
+export const buildSelectModelListItem = async () => {
+  const selectModelListItem = document.createElement("div");
+  selectModelListItem.id = "select-model-list-item";
+  selectModelListItem.className = "form-select-half";
+
+  const selectModelLabel = document.createElement("label");
+  selectModelLabel.setAttribute("for", "model-select");
+  selectModelLabel.textContent = "Select Model";
+  selectModelLabel.className = "form-label";
+
+  const modelSelect = document.createElement("select");
+  modelSelect.id = "model-select";
+  modelSelect.className = "form-select";
+  modelSelect.setAttribute("data-label", "model-select");
+
+  const optionArray = [
+    { value: "option1", text: "Option 1", selected: true },
+    { value: "option2", text: "Option 2" },
+  ];
+
+  for (let i = 0; i < optionArray.length; i++) {
+    const optionData = optionArray[i];
+    const option = document.createElement("option");
+    option.value = optionData.value;
+    option.textContent = optionData.text;
+    if (optionData.selected) option.selected = true;
+
+    modelSelect.append(option);
+  }
+
+  selectModelListItem.append(selectModelLabel, modelSelect);
+
+  return selectModelListItem;
 };
 
 export const buildPasteJobListItem = async () => {
