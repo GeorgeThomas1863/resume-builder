@@ -24,8 +24,6 @@ export const runSendToAI = async (aiType, messageInput, schema) => {
 //FIX PARAMS SENT TO OPENAI HERE
 export const runChatGPT = async (messageInput, schema) => {
   console.log("RUNNING CHATGPT");
-  // console.log(messageInput);
-  // console.log(schema);
 
   //OPEN AI THROWS ERROR, NEED CATCH TO SEE
   try {
@@ -34,9 +32,10 @@ export const runChatGPT = async (messageInput, schema) => {
       input: messageInput,
       text: {
         format: {
-          name: "fuck_me",
+          type: "json_schema",
+          name: schema.name,
+          schema: schema.schema,
           strict: true,
-          schema: schema,
         },
       },
     });
@@ -44,19 +43,13 @@ export const runChatGPT = async (messageInput, schema) => {
     console.log("CHATGPT RESPONSE");
     console.log(data);
 
-    return data.output_parsed;
+    return data.output_text;
   } catch (e) {
     console.log("ERROR RUNNING CHATGPT, ERROR MESSAGE:");
     console.log(e);
     return null;
   }
 };
-
-//testing
-//  const data = await openaiClient.responses.create({
-//   model: "gpt-5-nano", //testing
-//   input: "What is the capital of Ohio?",
-// });
 
 export const runLocalAI = async (messageInput, schema) => {
   console.log("RUNNING CUSTOM AI");
@@ -157,49 +150,47 @@ export const buildSchema = async () => {
   if (!jobArray || !jobArray.length) return null;
 
   const schema = {
-    type: "json_schema",
-    json_schema: {
-      name: "resume_enhancement",
-      schema: {
-        type: "object",
-        properties: {
-          summary: {
-            type: "string",
-            description: "Tailored professional summary",
-          },
-          experience: {
-            type: "array",
-            items: {
-              type: "object",
-              properties: {
-                role: {
-                  type: "string",
-                  description: "Job title/role",
-                },
-                company: {
-                  type: "string",
-                  description: "Company name",
-                },
-                timeframe: {
-                  type: "string",
-                  description: "Employment timeframe or empty string",
-                },
-                bullets: {
-                  type: "array",
-                  items: {
-                    type: "string",
-                  },
-                  description: "Array of bullet points describing responsibilities",
-                },
+    name: "resume_enhancement",
+    schema: {
+      type: "object",
+      additionalProperties: false,
+      required: ["summary", "experience"],
+      properties: {
+        summary: {
+          type: "string",
+          description: "Tailored professional summary",
+        },
+        experience: {
+          type: "array",
+          minItems: jobArray.length,
+          maxItems: jobArray.length,
+          items: {
+            type: "object",
+            additionalProperties: false,
+            required: ["role", "company", "timeframe", "bullets"],
+            properties: {
+              role: {
+                type: "string",
+                description: "Job title/role",
               },
-              required: ["role", "company", "timeframe", "bullets"],
+              company: {
+                type: "string",
+                description: "Company name",
+              },
+              timeframe: {
+                type: "string",
+                description: "Employment timeframe or empty string",
+              },
+              bullets: {
+                type: "array",
+                items: {
+                  type: "string",
+                },
+                description: "Array of bullet points describing responsibilities",
+              },
             },
-            minItems: jobArray.length,
-            maxItems: jobArray.length,
           },
         },
-        required: ["summary", "experience"],
-        additionalProperties: false,
       },
     },
   };
