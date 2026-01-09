@@ -1,7 +1,7 @@
 import { OpenAI } from "openai";
 import CONFIG from "../config/config.js";
-import OBJ from "../config/input-data.js";
-import { buildMessageNoResume, buildMessageWithResume } from "../config/input-data.js";
+// import OBJ from "../config/input-data.js";
+import { buildMessageNoResume, buildMessageWithResume, buildSchemaChatGPT, buildSchemaLocal } from "../config/input-data.js";
 
 const { openaiKey, openaiURL, localKey, localURL } = CONFIG;
 
@@ -88,7 +88,7 @@ export const runLocalAI = async (inputParams) => {
   }
 };
 
-//MAKE THIS BETTER
+//Both defined in config
 export const buildMessageInput = async (resumeText, jobInput) => {
   if (!jobInput) return null;
 
@@ -96,56 +96,56 @@ export const buildMessageInput = async (resumeText, jobInput) => {
   return await buildMessageWithResume(resumeText, jobInput);
 };
 
-//BUILD IN FOR LOOP
-export const buildSchema = async () => {
-  const { jobArray } = OBJ;
-  if (!jobArray || !jobArray.length) return null;
-
-  const schema = {
-    name: "resume_enhancement",
-    schema: {
-      type: "object",
-      additionalProperties: false,
-      required: ["summary", "experience"],
-      properties: {
-        summary: {
-          type: "string",
-          description: "Tailored professional summary",
-        },
-        experience: {
-          type: "array",
-          minItems: jobArray.length,
-          maxItems: jobArray.length,
-          items: {
-            type: "object",
-            additionalProperties: false,
-            required: ["role", "company", "timeframe", "bullets"],
-            properties: {
-              role: {
-                type: "string",
-                description: "Job title/role",
-              },
-              company: {
-                type: "string",
-                description: "Company name",
-              },
-              timeframe: {
-                type: "string",
-                description: "Employment timeframe or empty string",
-              },
-              bullets: {
-                type: "array",
-                items: {
-                  type: "string",
-                },
-                description: "Array of bullet points describing responsibilities",
-              },
-            },
-          },
-        },
-      },
-    },
-  };
-
-  return schema;
+export const buildSchema = async (model) => {
+  if (!model) return null;
+  if (model === "chatgpt") return await buildSchemaChatGPT();
+  return await buildSchemaLocal();
 };
+
+// const schema = {
+//   name: "resume_enhancement",
+//   schema: {
+//     type: "object",
+//     additionalProperties: false,
+//     required: ["summary", "experience"],
+//     properties: {
+//       summary: {
+//         type: "string",
+//         description: "Tailored professional summary",
+//       },
+//       experience: {
+//         type: "array",
+//         minItems: jobArray.length,
+//         maxItems: jobArray.length,
+//         items: {
+//           type: "object",
+//           additionalProperties: false,
+//           required: ["role", "company", "timeframe", "bullets"],
+//           properties: {
+//             role: {
+//               type: "string",
+//               description: "Job title/role",
+//             },
+//             company: {
+//               type: "string",
+//               description: "Company name",
+//             },
+//             timeframe: {
+//               type: "string",
+//               description: "Employment timeframe or empty string",
+//             },
+//             bullets: {
+//               type: "array",
+//               items: {
+//                 type: "string",
+//               },
+//               description: "Array of bullet points describing responsibilities",
+//             },
+//           },
+//         },
+//       },
+//     },
+//   },
+// };
+
+// return schema;

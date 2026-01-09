@@ -277,7 +277,7 @@ export const buildTemperatureDiv = async () => {
   const temperatureLabel = document.createElement("label");
   temperatureLabel.setAttribute("for", "temperature-input");
   temperatureLabel.className = "form-label";
-  temperatureLabel.textContent = "Temperature";
+  temperatureLabel.textContent = "Temp";
 
   const temperatureInput = document.createElement("input");
   temperatureInput.type = "number";

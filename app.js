@@ -1,6 +1,6 @@
-//GET LOCAL WORKING
+//perfect resume spacing
 
-//fix front option display (priority half page)
+//fix options display for temp / max tokens
 
 //finalize resume output (change font, spacing, etc)
 

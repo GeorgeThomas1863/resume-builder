@@ -43,7 +43,7 @@ export const buildNewResume = async (aiText, inputParams) => {
       alignment: AlignmentType.CENTER,
       spacing: {
         before: 0,
-        after: 0,
+        after: 160, //8pt
       },
       children: [
         new TextRun({
@@ -68,8 +68,8 @@ export const buildNewResume = async (aiText, inputParams) => {
       },
       spacing: {
         before: 0,
-        after: 0,
-        line: 40, // Added - sets exact line height (240 twips = 12pt)
+        after: 40,
+        line: 20, // Added - sets exact line height (240 twips = 12pt)
         lineRule: LineRuleType.EXACT, // Added - use exact line height
       },
     })
@@ -104,9 +104,9 @@ export const buildNewResume = async (aiText, inputParams) => {
         },
       },
       spacing: {
-        before: 0,
-        after: 0,
-        line: 40, // Added - sets exact line height (240 twips = 12pt)
+        before: 40,
+        after: 60,
+        line: 20, // Added - sets exact line height (240 twips = 12pt)
         lineRule: LineRuleType.EXACT, // Added - use exact line height
       },
     })
@@ -141,9 +141,9 @@ export const buildNewResume = async (aiText, inputParams) => {
         },
       },
       spacing: {
-        before: 0,
-        after: 0,
-        line: 40, // Added - sets exact line height (240 twips = 12pt)
+        before: 60,
+        after: 40,
+        line: 20, // Added - sets exact line height (240 twips = 12pt)
         lineRule: LineRuleType.EXACT, // Added - use exact line height
       },
     })
@@ -175,9 +175,9 @@ export const buildNewResume = async (aiText, inputParams) => {
         },
       },
       spacing: {
-        before: 0,
+        before: 40,
         after: 0,
-        line: 40, // Added - sets exact line height (240 twips = 12pt)
+        line: 20, // Added - sets exact line height (240 twips = 12pt)
         lineRule: LineRuleType.EXACT, // Added - use exact line height
       },
     })
@@ -194,7 +194,7 @@ export const buildNewResume = async (aiText, inputParams) => {
           size: 24,
         }),
         new TextRun({
-          text: " ".repeat(30), // 30 spaces
+          text: " ".repeat(74), // 74 spaces
         }),
         new TextRun({
           text: "2010-Present",
@@ -204,7 +204,7 @@ export const buildNewResume = async (aiText, inputParams) => {
           size: 24,
         }),
       ],
-      spacing: { before: 0, after: 0 },
+      spacing: { before: 160, after: 160 },
     })
   );
 

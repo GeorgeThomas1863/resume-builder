@@ -152,6 +152,20 @@ h3 {
   min-width: fit-content;
 }
 
+#model-options-list-item {
+  gap: 3rem;
+}
+
+#priority-div {
+  flex: 3;
+}
+
+#max-tokens-div,
+#temperature-div {
+  flex: 1;
+  text-align: center;
+}
+
 .form-label {
   display: block;
   font-size: 0.9rem;
@@ -204,6 +218,12 @@ h3 {
   color: #555555;
   font-size: 1.1rem;
   padding: 0;
+}
+
+#temperature-input,
+#max-tokens-input {
+  text-align: right;
+  width: auto;
 }
 
 .upload-row-wrapper {
