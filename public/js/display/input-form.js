@@ -6,7 +6,7 @@ export const buildInputForm = async () => {
   inputFormWrapper.id = "input-form-wrapper";
 
   const inputTitleElement = document.createElement("h2");
-  inputTitleElement.textContent = `Tool to auto unfuck your resume ("align it with a job description")`;
+  inputTitleElement.textContent = `Tool to unfuck your resume ("auto align it with a job description")`;
   inputTitleElement.className = "form-title";
 
   const inputFormElement = document.createElement("div");
@@ -54,7 +54,7 @@ export const buildInputTypeListItem = async () => {
   // inputTypeSelect.setAttribute("data-label", "input-type-select");
 
   const optionArray = [
-    { value: "prebuilt", text: "Use Pre-Built", selected: true },
+    { value: "prebuilt", text: "Use Pre-Built Input (dev only)", selected: true },
     { value: "custom", text: "Upload Custom Resume" },
   ];
 

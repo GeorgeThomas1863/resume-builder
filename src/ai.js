@@ -25,8 +25,8 @@ export const runSendToAI = async (inputParams) => {
 
 export const runChatGPT = async (inputParams) => {
   const { messageInput, schema, modelType, serviceTier, maxTokens, temperature } = inputParams;
-  console.log("CHAT GPT INPUT PARAMS");
-  console.log(inputParams);
+  // console.log("CHAT GPT INPUT PARAMS");
+  // console.log(inputParams);
 
   //OPEN AI THROWS ERROR, NEED CATCH TO SEE
   try {
@@ -73,12 +73,12 @@ export const runLocalAI = async (inputParams) => {
       temperature: +temperature,
     };
 
-    console.log("AI PARAMS");
-    console.log(params);
+    // console.log("AI PARAMS");
+    // console.log(params);
 
     const data = await localClient.chat.completions.create(params);
-    console.log("MODEL RESPONSE");
-    console.log(data);
+    // console.log("MODEL RESPONSE");
+    // console.log(data);
 
     return data.choices[0].message.content;
   } catch (e) {

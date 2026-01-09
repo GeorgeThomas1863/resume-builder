@@ -1,5 +1,6 @@
 import mammoth from "mammoth";
-import { Document, Paragraph, Packer, TextRun, AlignmentType, BorderStyle, LineRuleType, TabStopType, TabStopPosition } from "docx";
+import { Document, Paragraph, Packer, TextRun, AlignmentType, BorderStyle, LineRuleType } from "docx";
+import OBJ from "../config/input-data.js";
 import { otherObj } from "../config/input-data.js";
 
 export const extractResumeText = async (inputPath, inputType = "prebuilt") => {
@@ -15,6 +16,7 @@ export const extractResumeText = async (inputPath, inputType = "prebuilt") => {
 //add format type later
 export const buildNewResume = async (aiText, inputParams) => {
   const { name, email } = otherObj;
+  const { jobArray } = OBJ;
 
   const inputObj = JSON.parse(aiText);
   const paragraphArray = [];
@@ -55,7 +57,7 @@ export const buildNewResume = async (aiText, inputParams) => {
     })
   );
 
-  //line
+  //line, summary top
   paragraphArray.push(
     new Paragraph({
       border: {
@@ -69,7 +71,7 @@ export const buildNewResume = async (aiText, inputParams) => {
       spacing: {
         before: 0,
         after: 40,
-        line: 20, // Added - sets exact line height (240 twips = 12pt)
+        line: 20,
         lineRule: LineRuleType.EXACT, // Added - use exact line height
       },
     })
@@ -92,7 +94,7 @@ export const buildNewResume = async (aiText, inputParams) => {
     })
   );
 
-  //line
+  //line summary bottom
   paragraphArray.push(
     new Paragraph({
       border: {
@@ -105,7 +107,7 @@ export const buildNewResume = async (aiText, inputParams) => {
       },
       spacing: {
         before: 40,
-        after: 60,
+        after: 100,
         line: 20, // Added - sets exact line height (240 twips = 12pt)
         lineRule: LineRuleType.EXACT, // Added - use exact line height
       },
@@ -129,7 +131,7 @@ export const buildNewResume = async (aiText, inputParams) => {
     })
   );
 
-  //line
+  //line professional experience top
   paragraphArray.push(
     new Paragraph({
       border: {
@@ -141,7 +143,7 @@ export const buildNewResume = async (aiText, inputParams) => {
         },
       },
       spacing: {
-        before: 60,
+        before: 120,
         after: 40,
         line: 20, // Added - sets exact line height (240 twips = 12pt)
         lineRule: LineRuleType.EXACT, // Added - use exact line height
@@ -163,7 +165,7 @@ export const buildNewResume = async (aiText, inputParams) => {
     })
   );
 
-  //line
+  //line professional experience bottom
   paragraphArray.push(
     new Paragraph({
       border: {
@@ -209,20 +211,27 @@ export const buildNewResume = async (aiText, inputParams) => {
   );
 
   //job loop
+  let spaceLength = 0;
   for (let i = 0; i < inputObj.experience.length; i++) {
-    const job = inputObj.experience[i];
+    const jobAI = inputObj.experience[i];
+    const jobConfig = jobArray[i];
+    let inputLength = jobConfig.role.length + jobConfig.timeframe.length;
+    spaceLength = 153 - inputLength; //153 per line
 
     paragraphArray.push(
       new Paragraph({
         children: [
           new TextRun({
-            text: `- ${job.role}, ${job.company}, `,
+            text: `- ${jobConfig.role}`,
             bold: true,
             font: "Times New Roman",
             size: 22, // 22 half-points = 11pt
           }),
           new TextRun({
-            text: job.timeframe,
+            text: " ".repeat(spaceLength),
+          }),
+          new TextRun({
+            text: jobConfig.timeframe,
             bold: true,
             italics: true,
             font: "Times New Roman",
@@ -232,15 +241,21 @@ export const buildNewResume = async (aiText, inputParams) => {
         spacing: { before: 0, after: 0 },
       })
     );
+    console.log(jobConfig.role);
+    console.log(jobConfig.role.length + jobConfig.timeframe.length);
+    console.log(`SPACE LENGTH: ${spaceLength}`);
+    console.log(`INPUT LENGTH: ${inputLength}`);
+    console.log(`TOTAL LENGTH: ${spaceLength + inputLength}`);
+    console.log("--------------------------------");
 
     // Bullets - 11pt
-    for (let j = 0; j < job.bullets.length; j++) {
+    for (let j = 0; j < jobAI.bullets.length; j++) {
       paragraphArray.push(
         new Paragraph({
           bullet: { level: 0 },
           children: [
             new TextRun({
-              text: job.bullets[j],
+              text: jobAI.bullets[j],
               font: "Times New Roman",
               size: 22,
             }),
@@ -249,16 +264,6 @@ export const buildNewResume = async (aiText, inputParams) => {
         })
       );
     }
-
-    // Add space between jobs //TURN ON
-    // if (i < inputObj.experience.length - 1) {
-    //   paragraphArray.push(
-    //     new Paragraph({
-    //       text: "",
-    //       spacing: { before: 0, after: 0 },
-    //     })
-    //   );
-    // }
   }
 
   //line
@@ -319,7 +324,8 @@ export const buildNewResume = async (aiText, inputParams) => {
     new Paragraph({
       children: [
         new TextRun({
-          text: "Georgetown University, Master of Arts in Security Studies",
+          // text: "Georgetown University, Master of Arts in Security Studies",
+          text: `${OBJ.education[1].school}, ${OBJ.education[1].degree}`,
           bold: true,
           font: "Times New Roman",
           size: 22,
@@ -341,13 +347,14 @@ export const buildNewResume = async (aiText, inputParams) => {
     new Paragraph({
       children: [
         new TextRun({
-          text: "Catholic University of America, Bachelor of Arts in International Relations; Economics; History",
+          // text: "Catholic University of America, Bachelor of Arts in International Relations; Economics; History",
+          text: `${OBJ.education[0].school}, Bachelor of Arts in Economics and International Relations`,
           bold: true,
           font: "Times New Roman",
           size: 22,
         }),
         new TextRun({
-          text: "May 2010",
+          text: `${OBJ.education[0].timeframe}`,
           bold: true,
           italics: true,
           font: "Times New Roman",
@@ -358,20 +365,12 @@ export const buildNewResume = async (aiText, inputParams) => {
     })
   );
 
-  // space, //TURN ON
-  // paragraphArray.push(
-  //   new Paragraph({
-  //     text: "",
-  //     spacing: { before: 0, after: 0 },
-  //   })
-  // );
-
   paragraphArray.push(
     new Paragraph({
       spacing: { before: 0, after: 0 },
       children: [
         new TextRun({
-          text: "Certifications: GIAC Red Team Professional (GRTP), GIAC Certified Incident Handler (GCIH), GIAC Cyber Threat Intelligence (GCTI)",
+          text: "Certs: GIAC Red Team Professional (GRTP), GIAC Certified Incident Handler (GCIH), GIAC Cyber Threat Intelligence (GCTI)",
           font: "Times New Roman",
           size: 22,
           bold: true,
