@@ -1,5 +1,5 @@
 import mammoth from "mammoth";
-import { Document, Paragraph, Packer, TextRun, AlignmentType, BorderStyle, LineRuleType } from "docx";
+import { Document, Paragraph, Packer, TextRun, AlignmentType, BorderStyle, LineRuleType, TabStopType, TabStopPosition } from "docx";
 import OBJ from "../config/input-data.js";
 import { otherObj } from "../config/input-data.js";
 
@@ -72,7 +72,7 @@ export const buildNewResume = async (aiText, inputParams) => {
         before: 0,
         after: 40,
         line: 20,
-        lineRule: LineRuleType.EXACT, // Added - use exact line height
+        lineRule: LineRuleType.EXACT,
       },
     })
   );
@@ -108,8 +108,8 @@ export const buildNewResume = async (aiText, inputParams) => {
       spacing: {
         before: 40,
         after: 100,
-        line: 20, // Added - sets exact line height (240 twips = 12pt)
-        lineRule: LineRuleType.EXACT, // Added - use exact line height
+        line: 20,
+        lineRule: LineRuleType.EXACT,
       },
     })
   );
@@ -145,8 +145,8 @@ export const buildNewResume = async (aiText, inputParams) => {
       spacing: {
         before: 120,
         after: 40,
-        line: 20, // Added - sets exact line height (240 twips = 12pt)
-        lineRule: LineRuleType.EXACT, // Added - use exact line height
+        line: 20,
+        lineRule: LineRuleType.EXACT,
       },
     })
   );
@@ -179,8 +179,8 @@ export const buildNewResume = async (aiText, inputParams) => {
       spacing: {
         before: 40,
         after: 0,
-        line: 20, // Added - sets exact line height (240 twips = 12pt)
-        lineRule: LineRuleType.EXACT, // Added - use exact line height
+        line: 20,
+        lineRule: LineRuleType.EXACT,
       },
     })
   );
@@ -196,31 +196,35 @@ export const buildNewResume = async (aiText, inputParams) => {
           size: 24,
         }),
         new TextRun({
-          text: " ".repeat(74), // 74 spaces
-        }),
-        new TextRun({
-          text: "2010-Present",
+          text: `\t2010-Present`,
           bold: true,
           italics: true,
           font: "Times New Roman",
           size: 24,
         }),
       ],
-      spacing: { before: 160, after: 160 },
+      tabStops: [
+        {
+          type: TabStopType.RIGHT,
+          position: 10800,
+        },
+      ],
+      spacing: { before: 120, after: 160 },
     })
   );
 
   //job loop
-  let spaceLength = 0;
   for (let i = 0; i < inputObj.experience.length; i++) {
     const jobAI = inputObj.experience[i];
     const jobConfig = jobArray[i];
-    let inputLength = jobConfig.role.length + jobConfig.timeframe.length;
-    spaceLength = 153 - inputLength; //153 per line
 
     paragraphArray.push(
       new Paragraph({
         children: [
+          new TextRun({
+            // text: " ".repeat(2),
+            text: " ", //1 space indent
+          }),
           new TextRun({
             text: `- ${jobConfig.role}`,
             bold: true,
@@ -228,25 +232,24 @@ export const buildNewResume = async (aiText, inputParams) => {
             size: 22, // 22 half-points = 11pt
           }),
           new TextRun({
-            text: " ".repeat(spaceLength),
-          }),
-          new TextRun({
-            text: jobConfig.timeframe,
+            text: `\t${jobConfig.timeframe}`,
             bold: true,
             italics: true,
             font: "Times New Roman",
             size: 22,
           }),
         ],
-        spacing: { before: 0, after: 0 },
+        tabStops: [
+          {
+            type: TabStopType.RIGHT,
+            // position: TabStopPosition.MAX,
+            position: 10800,
+            // position: 10400,
+          },
+        ],
+        spacing: { before: 160, after: 0 },
       })
     );
-    console.log(jobConfig.role);
-    console.log(jobConfig.role.length + jobConfig.timeframe.length);
-    console.log(`SPACE LENGTH: ${spaceLength}`);
-    console.log(`INPUT LENGTH: ${inputLength}`);
-    console.log(`TOTAL LENGTH: ${spaceLength + inputLength}`);
-    console.log("--------------------------------");
 
     // Bullets - 11pt
     for (let j = 0; j < jobAI.bullets.length; j++) {
@@ -260,13 +263,13 @@ export const buildNewResume = async (aiText, inputParams) => {
               size: 22,
             }),
           ],
-          spacing: { before: 0, after: 0 },
+          spacing: { before: 20, after: 0 },
         })
       );
     }
   }
 
-  //line
+  //line education top
   paragraphArray.push(
     new Paragraph({
       border: {
@@ -278,9 +281,9 @@ export const buildNewResume = async (aiText, inputParams) => {
         },
       },
       spacing: {
-        before: 0,
-        after: 0,
-        line: 40, // Added - sets exact line height (240 twips = 12pt)
+        before: 160,
+        after: 40,
+        line: 20, // Added - sets exact line height (240 twips = 12pt)
         lineRule: LineRuleType.EXACT, // Added - use exact line height
       },
     })
@@ -300,7 +303,7 @@ export const buildNewResume = async (aiText, inputParams) => {
     })
   );
 
-  //line
+  //line education bottom
   paragraphArray.push(
     new Paragraph({
       border: {
@@ -312,9 +315,9 @@ export const buildNewResume = async (aiText, inputParams) => {
         },
       },
       spacing: {
-        before: 0,
-        after: 0,
-        line: 40, // Added - sets exact line height (240 twips = 12pt)
+        before: 40,
+        after: 120,
+        line: 20, // Added - sets exact line height (240 twips = 12pt)
         lineRule: LineRuleType.EXACT, // Added - use exact line height
       },
     })
@@ -331,14 +334,19 @@ export const buildNewResume = async (aiText, inputParams) => {
           size: 22,
         }),
         new TextRun({
-          text: "May 2019",
+          text: `\tMay 2019`,
           bold: true,
           italics: true,
           font: "Times New Roman",
           size: 22,
         }),
       ],
-
+      tabStops: [
+        {
+          type: TabStopType.RIGHT,
+          position: 10800,
+        },
+      ],
       spacing: { before: 0, after: 0 },
     })
   );
@@ -354,26 +362,38 @@ export const buildNewResume = async (aiText, inputParams) => {
           size: 22,
         }),
         new TextRun({
-          text: `${OBJ.education[0].timeframe}`,
+          text: `\t${OBJ.education[0].timeframe}`,
           bold: true,
           italics: true,
           font: "Times New Roman",
           size: 22,
         }),
       ],
-      spacing: { before: 0, after: 0 },
+      tabStops: [
+        {
+          type: TabStopType.RIGHT,
+          position: 10800,
+        },
+      ],
+      spacing: { before: 160, after: 0 },
     })
   );
 
   paragraphArray.push(
     new Paragraph({
-      spacing: { before: 0, after: 0 },
+      spacing: { before: 160, after: 0 },
       children: [
         new TextRun({
-          text: "Certs: GIAC Red Team Professional (GRTP), GIAC Certified Incident Handler (GCIH), GIAC Cyber Threat Intelligence (GCTI)",
+          text: "Certs: ",
           font: "Times New Roman",
           size: 22,
           bold: true,
+        }),
+        new TextRun({
+          text: "GIAC Red Team Professional (GRTP), GIAC Certified Incident Handler (GCIH), GIAC Cyber Threat Intelligence (GCTI)",
+          font: "Times New Roman",
+          size: 22,
+          bold: false,
         }),
       ],
     })
