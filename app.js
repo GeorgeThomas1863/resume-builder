@@ -1,10 +1,8 @@
-//try to figure out resume job spacing; variable spaces per line? ask claude
-
-//perfect resume spacing
-
 //fix options display for temp / max tokens
 
 //finalize resume output (change font, spacing, etc)
+
+//deploy?
 
 //fix cancel of resume download
 
