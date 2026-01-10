@@ -6,7 +6,7 @@ export const buildInputForm = async () => {
   inputFormWrapper.id = "input-form-wrapper";
 
   const inputTitleElement = document.createElement("h2");
-  inputTitleElement.textContent = `Tool to unfuck your resume ("auto align it with a job description")`;
+  inputTitleElement.textContent = `Tool to prettify your resume ("align it with a job description")`;
   inputTitleElement.className = "form-title";
 
   const inputFormElement = document.createElement("div");
@@ -51,11 +51,10 @@ export const buildInputTypeListItem = async () => {
   const inputTypeSelect = document.createElement("select");
   inputTypeSelect.id = "input-type-select";
   inputTypeSelect.className = "form-select";
-  // inputTypeSelect.setAttribute("data-label", "input-type-select");
 
   const optionArray = [
-    { value: "prebuilt", text: "Use Pre-Built Input (dev only)", selected: true },
-    { value: "custom", text: "Upload Custom Resume" },
+    { value: "custom", text: "Upload Custom Resume", selected: true },
+    { value: "prebuilt", text: "Use Pre-Built Input (DEV ONLY, DONT USE)" },
   ];
 
   for (let i = 0; i < optionArray.length; i++) {
@@ -71,6 +70,49 @@ export const buildInputTypeListItem = async () => {
   inputTypeListItem.append(inputTypeLabel, inputTypeSelect);
 
   return inputTypeListItem;
+};
+
+export const buildUploadListItem = async () => {
+  const uploadListItem = document.createElement("li");
+  uploadListItem.id = "upload-list-item";
+  uploadListItem.className = "form-list-item";
+
+  // Create hidden file input for file upload
+  const fileInput = document.createElement("input");
+  fileInput.type = "file";
+  fileInput.id = "upload-file-input";
+  fileInput.accept = ".pdf,.doc,.docx";
+  fileInput.style.display = "none";
+
+  const uploadButton = document.createElement("button");
+  uploadButton.type = "button";
+  uploadButton.className = "btn-upload";
+  uploadButton.id = "upload-button";
+  uploadButton.textContent = "Upload your GARBAGE resume";
+  uploadButton.setAttribute("data-label", "upload-button");
+
+  const uploadRowWrapper = document.createElement("div");
+  uploadRowWrapper.className = "upload-row-wrapper";
+
+  const uploadStatus = document.createElement("span");
+  uploadStatus.id = "upload-status";
+  uploadStatus.className = "upload-status";
+  uploadStatus.style.marginLeft = "10px";
+  uploadStatus.style.display = "none";
+
+  const deleteButton = document.createElement("button");
+  deleteButton.type = "button";
+  deleteButton.className = "btn-delete";
+  deleteButton.id = "delete-resume-button";
+  deleteButton.textContent = "Delete Resume";
+  deleteButton.setAttribute("data-label", "delete-resume-button");
+  deleteButton.style.display = "none";
+
+  uploadRowWrapper.append(uploadStatus, deleteButton);
+
+  uploadListItem.append(fileInput, uploadButton, uploadRowWrapper);
+
+  return uploadListItem;
 };
 
 //----------
@@ -106,7 +148,7 @@ export const buildSelectAIDiv = async () => {
 
   const optionArray = [
     { value: "chatgpt", text: "ChatGPT", selected: true },
-    { value: "local", text: "Local LLM" },
+    { value: "local", text: "Local LLM [if running your own]" },
   ];
 
   for (let i = 0; i < optionArray.length; i++) {
@@ -140,9 +182,9 @@ export const buildSelectModelDiv = async () => {
   modelSelect.setAttribute("data-label", "model-select");
 
   const optionArray = [
-    { value: "gpt-5-nano", text: "GPT 5 Nano", selected: true },
-    { value: "gpt-5-mini", text: "GPT 5 Mini" },
-    { value: "gpt-5", text: "GPT 5" },
+    { value: "gpt-5", text: "GPT 5", selected: true },
+    { value: "gpt-5-nano", text: "GPT 5 Nano" },
+    { value: "gpt-5-mini", text: "GPT 5 Mini" },   
     { value: "gpt-5.2", text: "GPT 5.2" },
   ];
 
@@ -316,50 +358,6 @@ export const buildPasteJobListItem = async () => {
   pasteJobListItem.append(pasteJobLabel, pasteJobInput);
 
   return pasteJobListItem;
-};
-
-export const buildUploadListItem = async () => {
-  const uploadListItem = document.createElement("li");
-  uploadListItem.id = "upload-list-item";
-  uploadListItem.className = "form-list-item";
-  uploadListItem.classList.add("hidden");
-
-  // Create hidden file input for file upload
-  const fileInput = document.createElement("input");
-  fileInput.type = "file";
-  fileInput.id = "upload-file-input";
-  fileInput.accept = ".pdf,.doc,.docx";
-  fileInput.style.display = "none";
-
-  const uploadButton = document.createElement("button");
-  uploadButton.type = "button";
-  uploadButton.className = "btn-upload";
-  uploadButton.id = "upload-button";
-  uploadButton.textContent = "Upload your GARBAGE resume";
-  uploadButton.setAttribute("data-label", "upload-button");
-
-  const uploadRowWrapper = document.createElement("div");
-  uploadRowWrapper.className = "upload-row-wrapper";
-
-  const uploadStatus = document.createElement("span");
-  uploadStatus.id = "upload-status";
-  uploadStatus.className = "upload-status";
-  uploadStatus.style.marginLeft = "10px";
-  uploadStatus.style.display = "none";
-
-  const deleteButton = document.createElement("button");
-  deleteButton.type = "button";
-  deleteButton.className = "btn-delete";
-  deleteButton.id = "delete-resume-button";
-  deleteButton.textContent = "Delete Resume";
-  deleteButton.setAttribute("data-label", "delete-resume-button");
-  deleteButton.style.display = "none";
-
-  uploadRowWrapper.append(uploadStatus, deleteButton);
-
-  uploadListItem.append(fileInput, uploadButton, uploadRowWrapper);
-
-  return uploadListItem;
 };
 
 export const buildSubmitListItem = async () => {
