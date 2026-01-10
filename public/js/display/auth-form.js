@@ -32,8 +32,7 @@ export const buildAuthPwListItem = async () => {
   authPwInput.className = "password-input";
 
   //REMOVE
-  authPwInput.value = "1776";
-  // authPwInput.placeholder = "Input the site password here";
+  authPwInput.placeholder = "Input the site password here";
 
   const toggleAuthPwButton = document.createElement("button");
   toggleAuthPwButton.type = "button";
