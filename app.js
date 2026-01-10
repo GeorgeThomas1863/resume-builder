@@ -1,8 +1,8 @@
 //add hidden prompt
 
-//finalize resume output (change font, spacing, etc)
+//should prob add sessions... for the files and save inputs / outputs
 
-//deploy?
+//finalize resume output (change font, spacing, etc)
 
 //fix cancel of resume download
 
