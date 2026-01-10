@@ -15,6 +15,9 @@ export const runMainSubmit = async () => {
   const params = await buildSubmitParams();
   params.jobInput = jobInput;
 
+  console.log("SUBMIT PARAMS");
+  console.dir(params);
+
   const fileData = await checkFile();
   console.log("FILE DATA");
   console.log(fileData);

@@ -18,7 +18,7 @@ if (!fs.existsSync(uploadDir)) {
 
 // File filter
 const fileFilter = (req, file, cb) => {
-  const allowedTypes = /doc|docx/;
+  const allowedTypes = /doc|docx|pdf/;
   const extname = allowedTypes.test(path.extname(file.originalname).toLowerCase());
   const mimetype = allowedTypes.test(file.mimetype);
 

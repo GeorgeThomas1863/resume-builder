@@ -88,7 +88,7 @@ export const buildUploadListItem = async () => {
   uploadButton.type = "button";
   uploadButton.className = "btn-upload";
   uploadButton.id = "upload-button";
-  uploadButton.textContent = "Upload your GARBAGE resume";
+  uploadButton.textContent = "Upload your pretty little resume";
   uploadButton.setAttribute("data-label", "upload-button");
 
   const uploadRowWrapper = document.createElement("div");

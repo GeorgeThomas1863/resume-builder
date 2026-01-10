@@ -1,4 +1,6 @@
+import fsPromises from "fs/promises";
 import mammoth from "mammoth";
+import { PDFParse } from "pdf-parse";
 import { Document, Paragraph, Packer, TextRun, AlignmentType, BorderStyle, LineRuleType, TabStopType, TabStopPosition } from "docx";
 import OBJ from "../config/input-data.js";
 import { otherObj } from "../config/input-data.js";
@@ -7,13 +9,41 @@ export const extractResumeText = async (inputPath, inputType = "prebuilt") => {
   //TURNED OFF FOR CUSTOM
   if (!inputPath || inputType === "prebuilt") return null;
 
+  if (inputPath.endsWith(".pdf")) return await extractTextPDF(inputPath);
+
   const data = await mammoth.extractRawText({ path: inputPath });
   if (!data) return null;
 
   return data.value;
 };
 
-//add format type later
+export const extractTextPDF = async (inputPath) => {
+  console.log("EXTRACTING TEXT FROM PDF");
+  console.log("INPUT PATH");
+  console.log(inputPath);
+
+  try {
+    const buffer = await fsPromises.readFile(inputPath);
+    const uint8Array = new Uint8Array(buffer);
+    const parser = new PDFParse(uint8Array);
+
+    const data = await parser.getText();
+    console.log("DATA");
+    console.log(data);
+    await parser.destroy();
+    if (!data) return null;
+
+    return data.text;
+  } catch (e) {
+    console.log("ERROR EXTRACTING TEXT FROM PDF");
+    console.log(e);
+    return null;
+  }
+};
+
+//++++++++++++++++++++++++++++++
+
+//MAIN FUNCTION
 export const buildNewResume = async (aiText, inputParams) => {
   const { inputType } = inputParams;
 
