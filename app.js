@@ -1,6 +1,8 @@
-//add hidden prompt
+//add hidden prompt!!
 
-//should prob add sessions... for the files and save inputs / outputs
+//change pw
+
+//store resume uploads and AI submissions in mongo
 
 //finalize resume output (change font, spacing, etc)
 
