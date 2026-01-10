@@ -19,7 +19,7 @@ export const uploadResumeController = async (req, res) => {
     return res.status(400).json({ error: "No file uploaded" });
   }
 
-  const clearFilesData = await runClearFiles(req.file);
+  const clearFilesData = await runClearFiles(req.file, req.session.id);
   if (!clearFilesData.success) return res.status(500).json({ error: clearFilesData.message });
 
   const data = {
@@ -34,7 +34,7 @@ export const uploadResumeController = async (req, res) => {
 };
 
 export const checkRouteController = async (req, res) => {
-  const data = await runCheckFile();
+  const data = await runCheckFile(req.session.id);
   if (!data) return res.json({ success: false, message: "Something crashed, no clue why" });
   return res.json(data);
 };
@@ -56,7 +56,7 @@ export const submitRouteController = async (req, res) => {
 
 export const deleteResumeController = async (req, res) => {
   try {
-    const data = await clearUploadDirectory();
+    const data = await clearUploadDirectory(req.session.id);
     console.log("CLEAR UPLOAD DIRECTORY DATA");
     console.log("DATA");
     console.log(data);

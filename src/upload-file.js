@@ -29,13 +29,19 @@ const fileFilter = (req, file, cb) => {
   }
 };
 
-// Configure storage
+//storage unique to each session
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, uploadDir);
+    // Create session-specific directory
+    const sessionDir = path.join(uploadDir, req.session.id);
+
+    if (!fs.existsSync(sessionDir)) {
+      fs.mkdirSync(sessionDir, { recursive: true });
+    }
+
+    cb(null, sessionDir);
   },
   filename: function (req, file, cb) {
-    // keep the original name since we're only storing one file
     cb(null, file.originalname);
   },
 });
@@ -50,16 +56,15 @@ export const upload = multer({
 //-------------
 
 //deletes all files except one just uploaded
-export const runClearFiles = async (file) => {
-  // Get all files currently in the directory
-
+export const runClearFiles = async (file, sessionId) => {
   try {
-    const fileArray = fs.readdirSync(uploadDir);
+    const sessionDir = path.join(uploadDir, sessionId);
+    const fileArray = fs.readdirSync(sessionDir);
 
     // Delete all files EXCEPT the one that was just uploaded
     for (let i = 0; i < fileArray.length; i++) {
       if (fileArray[i] !== file.filename) {
-        const filePath = path.join(uploadDir, fileArray[i]);
+        const filePath = path.join(sessionDir, fileArray[i]);
         if (fs.statSync(filePath).isFile()) {
           fs.unlinkSync(filePath);
         }
@@ -73,16 +78,18 @@ export const runClearFiles = async (file) => {
   return { success: true, message: "Files cleared successfully" };
 };
 
-export const runCheckFile = async () => {
+export const runCheckFile = async (sessionId) => {
   try {
-    const fileArray = fs.readdirSync(uploadDir);
+    const sessionDir = path.join(uploadDir, sessionId);
+    if (!fs.existsSync(sessionDir)) return { success: false, message: "No files found" };
 
+    const fileArray = fs.readdirSync(sessionDir);
     if (!fileArray || !fileArray.length) return { success: false, message: "No files found" };
     if (fileArray.length > 1) return { success: false, message: "Multiple files found" };
 
     const filename = fileArray[0];
 
-    const filePath = path.join(uploadDir, filename);
+    const filePath = path.join(sessionDir, filename);
     if (!fs.existsSync(filePath)) return { success: false, message: "File not found" };
 
     const returnObj = {
@@ -100,15 +107,22 @@ export const runCheckFile = async () => {
 };
 
 // Helper function to clear all files in upload directory
-export const clearUploadDirectory = async () => {
+export const clearUploadDirectory = async (sessionId) => {
   try {
-    const files = fs.readdirSync(uploadDir);
+    const sessionDir = path.join(uploadDir, sessionId);
+    if (!fs.existsSync(sessionDir)) return { success: true, message: "No files to delete" };
+
+    const files = fs.readdirSync(sessionDir);
     files.forEach((file) => {
-      const filePath = path.join(uploadDir, file);
+      const filePath = path.join(sessionDir, file);
       if (fs.statSync(filePath).isFile()) {
         fs.unlinkSync(filePath);
       }
     });
+
+    //can remove, optional
+    fs.rmdirSync(sessionDir);
+
     return { success: true, message: "All files deleted" };
   } catch (error) {
     console.error("Error clearing upload directory:", error);
