@@ -1,4 +1,4 @@
-//fix options display for temp / max tokens
+//add hidden prompt
 
 //finalize resume output (change font, spacing, etc)
 

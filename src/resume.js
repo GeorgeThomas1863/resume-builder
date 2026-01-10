@@ -384,7 +384,7 @@ export const buildNewResume = async (aiText, inputParams) => {
       spacing: { before: 160, after: 0 },
       children: [
         new TextRun({
-          text: "Certs: ",
+          text: "Certifications: ",
           font: "Times New Roman",
           size: 22,
           bold: true,
