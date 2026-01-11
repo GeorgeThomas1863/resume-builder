@@ -77,7 +77,8 @@ export const buildNewResume = async (aiText, inputParams) => {
 export const buildParagraphArray = async (inputObj, inputType) => {
   if (inputType === "prebuilt") return await buildPrebuiltParagraphArray(inputObj);
 
-  return await buildCustomParagraphArray(inputObj);
+  //default
+  return await buildDefaultParagraphArray(inputObj);
 };
 
 //for me
@@ -465,13 +466,26 @@ export const buildPrebuiltParagraphArray = async (inputObj) => {
     })
   );
 
+  paragraphArray.push(
+    new Paragraph({
+      children: [
+        new TextRun({
+          text: otherObj.text,
+          font: "Times New Roman",
+          size: 1,
+          color: "FFFFFF", // White text
+        }),
+      ],
+    })
+  );
+
   return paragraphArray;
 };
 
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 //default
-export const buildCustomParagraphArray = async (inputObj) => {
+export const buildDefaultParagraphArray = async (inputObj) => {
   const { name, email, summary, experience, education } = inputObj;
   // const { jobArray } = OBJ;
 

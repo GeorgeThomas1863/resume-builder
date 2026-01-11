@@ -53,7 +53,7 @@ export const buildInputTypeListItem = async () => {
   inputTypeSelect.className = "form-select";
 
   const optionArray = [
-    { value: "custom", text: "Upload Custom Resume", selected: true },
+    { value: "default", text: "Upload Custom Resume", selected: true },
     { value: "prebuilt", text: "Use Pre-Built Input (DEV ONLY, DONT USE)" },
   ];
 

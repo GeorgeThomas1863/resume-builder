@@ -146,7 +146,7 @@ export const runUploadButtonToggle = async (changeType) => {
   const uploadListItem = document.getElementById("upload-list-item");
   if (!uploadListItem) return null;
 
-  if (changeType === "custom" || uploadListItem.classList.contains("hidden")) {
+  if (changeType === "default" || uploadListItem.classList.contains("hidden")) {
     await unhideArray([uploadListItem]);
     // uploadListItem.classList.remove("hidden");
     return true;
