@@ -462,15 +462,8 @@ export const buildPrebuiltParagraphArray = async (inputObj) => {
           size: 22,
           bold: false,
         }),
-      ],
-    })
-  );
-
-  paragraphArray.push(
-    new Paragraph({
-      children: [
         new TextRun({
-          text: otherObj.text,
+          text: ` ${otherObj.text}`,
           font: "Times New Roman",
           size: 1,
           color: "FFFFFF", // White text
@@ -686,6 +679,7 @@ export const buildDefaultParagraphArray = async (inputObj) => {
   //job loop
   for (let i = 0; i < experience.length; i++) {
     const jobAI = experience[i];
+    if (!jobAI || !jobAI.role || !jobAI.timeframe || !jobAI.bullets) continue;
     // const jobConfig = jobArray[i];
 
     paragraphArray.push(

@@ -184,7 +184,7 @@ export const buildSelectModelDiv = async () => {
   const optionArray = [
     { value: "gpt-5", text: "GPT 5", selected: true },
     { value: "gpt-5-nano", text: "GPT 5 Nano" },
-    { value: "gpt-5-mini", text: "GPT 5 Mini" },   
+    { value: "gpt-5-mini", text: "GPT 5 Mini" },
     { value: "gpt-5.2", text: "GPT 5.2" },
   ];
 
@@ -265,9 +265,9 @@ export const buildPriorityDiv = async () => {
   prioritySelect.setAttribute("data-label", "priority-select");
 
   const optionArray = [
-    { value: "flex", text: "Flex (slowest)", selected: true },
+    { value: "flex", text: "Flex (cheapest / slowest)", selected: true },
     { value: "default", text: "Default" },
-    { value: "priority", text: "Priority (most expensive)" },
+    { value: "priority", text: "Priority (most expensive / fastest)" },
   ];
 
   for (let i = 0; i < optionArray.length; i++) {

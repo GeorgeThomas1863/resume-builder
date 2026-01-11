@@ -25,8 +25,8 @@ export const runSendToAI = async (inputParams) => {
 
 export const runChatGPT = async (inputParams) => {
   const { messageInput, schema, modelType, serviceTier, maxTokens, temperature } = inputParams;
-  // console.log("CHAT GPT INPUT PARAMS");
-  // console.log(inputParams);
+  console.log("SENDING TO CHATGPT");
+
 
   //OPEN AI THROWS ERROR, NEED CATCH TO SEE
   try {

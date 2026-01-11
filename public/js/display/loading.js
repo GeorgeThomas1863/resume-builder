@@ -11,7 +11,7 @@ export const buildLoadingOverlay = async () => {
 
   const loadingText = document.createElement("div");
   loadingText.className = "loading-text";
-  loadingText.textContent = "Processing your garbage, should take 20-30 seconds, inshaAllah";
+  loadingText.textContent = "Processing your garbage, should take 30-60 seconds, inshaAllah";
 
   loadingOverlay.append(spinner, loadingText);
 
