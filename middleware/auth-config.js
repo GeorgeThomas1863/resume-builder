@@ -8,4 +8,12 @@ const requireAuth = (req, res, next) => {
   }
 };
 
+export const requireAdminAuth = (req, res, next) => {
+  if (req.session.isAdmin) {
+    next();
+  } else {
+    res.sendFile(path.join(process.cwd(), "html", "admin-auth.html"));
+  }
+};
+
 export default requireAuth;
