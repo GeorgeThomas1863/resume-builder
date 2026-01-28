@@ -1,16 +1,16 @@
-import CONFIG from "../config/config.js";
+// import CONFIG from "../config/config.js";
 
 import { runClearFiles, runCheckFile, clearUploadDirectory } from "../src/upload-file.js";
 import { runResumeUnfucker } from "../src/src.js";
 
-export const getBackendValueController = async (req, res) => {
-  const { key } = req.body;
-  if (!key) return null;
+// export const getBackendValueController = async (req, res) => {
+//   const { key } = req.body;
+//   if (!key) return null;
 
-  const value = CONFIG[key];
+//   const value = CONFIG[key];
 
-  return res.json(value);
-};
+//   return res.json(value);
+// };
 
 //-------------------------
 

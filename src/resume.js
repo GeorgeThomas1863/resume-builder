@@ -2,8 +2,8 @@ import fsPromises from "fs/promises";
 import mammoth from "mammoth";
 import { PDFParse } from "pdf-parse";
 import { Document, Paragraph, Packer, TextRun, AlignmentType, BorderStyle, LineRuleType, TabStopType, TabStopPosition } from "docx";
-import OBJ from "../config/input-data.js";
-import { otherObj } from "../config/input-data.js";
+// import OBJ from "../config/input-data.js";
+// import { otherObj } from "../config/input-data.js";
 
 export const extractResumeText = async (inputPath, inputType = "prebuilt") => {
   //TURNED OFF FOR CUSTOM
