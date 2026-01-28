@@ -121,7 +121,7 @@ h3 {
 }
 
 .form-list-item:first-child {
-  padding-top: 1.25rem;
+  padding-top: 2rem;
 }
 
 .form-list-item:last-child {
@@ -153,17 +153,42 @@ h3 {
 }
 
 #model-options-list-item {
-  gap: 3rem;
+  gap: 1.5rem;
 }
 
 #priority-div {
-  flex: 3;
+  flex: 0 0 50%;
 }
 
-#max-tokens-div,
+#max-tokens-div {
+  flex: 0 0 15%;
+}
+
 #temperature-div {
-  flex: 1;
-  text-align: center;
+  flex: 0 0 10%;
+ 
+}
+
+.checkbox-wrapper {
+  flex: 0 0 auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.checkbox-container {
+  border-radius: 8px;
+  padding: 0.75rem 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 42px;
+}
+
+.form-checkbox {
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+  accent-color: #2563a8;
 }
 
 .form-label {
@@ -223,7 +248,7 @@ h3 {
 #temperature-input,
 #max-tokens-input {
   text-align: right;
-  width: auto;
+  /* width: auto; */
 }
 
 .upload-row-wrapper {

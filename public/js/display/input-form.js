@@ -13,7 +13,7 @@ export const buildInputForm = async () => {
   inputFormElement.id = "input-form-element";
   inputFormElement.className = "form-element";
 
-  const inputTypeListItem = await buildInputTypeListItem();
+  // const inputTypeListItem = await buildInputTypeListItem();
   const uploadListItem = await buildUploadListItem();
 
   const selectRowListItem = await buildSelectRowListItem();
@@ -22,7 +22,8 @@ export const buildInputForm = async () => {
   const pasteJobListItem = await buildPasteJobListItem();
   const submitListItem = await buildSubmitListItem();
 
-  inputFormElement.append(inputTypeListItem, uploadListItem, selectRowListItem, modelOptionsListItem, pasteJobListItem, submitListItem);
+  // inputFormElement.append(inputTypeListItem, uploadListItem, selectRowListItem, modelOptionsListItem, pasteJobListItem, submitListItem);
+  inputFormElement.append(uploadListItem, selectRowListItem, modelOptionsListItem, pasteJobListItem, submitListItem);
 
   // Build collapse container
   const collapseContainer = await buildCollapseContainer({
@@ -38,39 +39,39 @@ export const buildInputForm = async () => {
   return inputFormWrapper;
 };
 
-export const buildInputTypeListItem = async () => {
-  const inputTypeListItem = document.createElement("li");
-  inputTypeListItem.id = "input-type-list-item";
-  inputTypeListItem.className = "form-list-item";
+// export const buildInputTypeListItem = async () => {
+//   const inputTypeListItem = document.createElement("li");
+//   inputTypeListItem.id = "input-type-list-item";
+//   inputTypeListItem.className = "form-list-item";
 
-  const inputTypeLabel = document.createElement("label");
-  inputTypeLabel.setAttribute("for", "input-type-select");
-  inputTypeLabel.textContent = "Select Input Type";
-  inputTypeLabel.className = "form-label";
+//   const inputTypeLabel = document.createElement("label");
+//   inputTypeLabel.setAttribute("for", "input-type-select");
+//   inputTypeLabel.textContent = "Select Input Type";
+//   inputTypeLabel.className = "form-label";
 
-  const inputTypeSelect = document.createElement("select");
-  inputTypeSelect.id = "input-type-select";
-  inputTypeSelect.className = "form-select";
+//   const inputTypeSelect = document.createElement("select");
+//   inputTypeSelect.id = "input-type-select";
+//   inputTypeSelect.className = "form-select";
 
-  const optionArray = [
-    { value: "default", text: "Upload Custom Resume", selected: true },
-    { value: "prebuilt", text: "Use Pre-Built Input (DEV ONLY, DONT USE)" },
-  ];
+//   const optionArray = [
+//     { value: "default", text: "Upload Custom Resume", selected: true },
+//     { value: "prebuilt", text: "Use Pre-Built Input (DEV ONLY, DONT USE)" },
+//   ];
 
-  for (let i = 0; i < optionArray.length; i++) {
-    const optionData = optionArray[i];
-    const option = document.createElement("option");
-    option.value = optionData.value;
-    option.textContent = optionData.text;
-    if (optionData.selected) option.selected = true;
+//   for (let i = 0; i < optionArray.length; i++) {
+//     const optionData = optionArray[i];
+//     const option = document.createElement("option");
+//     option.value = optionData.value;
+//     option.textContent = optionData.text;
+//     if (optionData.selected) option.selected = true;
 
-    inputTypeSelect.append(option);
-  }
+//     inputTypeSelect.append(option);
+//   }
 
-  inputTypeListItem.append(inputTypeLabel, inputTypeSelect);
+//   inputTypeListItem.append(inputTypeLabel, inputTypeSelect);
 
-  return inputTypeListItem;
-};
+//   return inputTypeListItem;
+// };
 
 export const buildUploadListItem = async () => {
   const uploadListItem = document.createElement("li");
@@ -243,7 +244,8 @@ export const buildModelOptionsListItem = async () => {
   const priorityDiv = await buildPriorityDiv();
   const maxTokensDiv = await buildMaxTokensDiv();
   const temperatureDiv = await buildTemperatureDiv();
-  modelOptionsListItem.append(priorityDiv, maxTokensDiv, temperatureDiv);
+  const prebuiltCheckbox = await buildPrebuiltCheckbox();
+  modelOptionsListItem.append(priorityDiv, maxTokensDiv, temperatureDiv, prebuiltCheckbox);
 
   return modelOptionsListItem;
 };
@@ -333,6 +335,31 @@ export const buildTemperatureDiv = async () => {
 
   temperatureDiv.append(temperatureLabel, temperatureInput);
   return temperatureDiv;
+};
+
+export const buildPrebuiltCheckbox = async () => {
+  const prebuiltCheckboxDiv = document.createElement("div");
+  prebuiltCheckboxDiv.id = "prebuilt-checkbox-div";
+  prebuiltCheckboxDiv.className = "form-select-half checkbox-wrapper";
+
+  const prebuiltLabel = document.createElement("label");
+  prebuiltLabel.setAttribute("for", "prebuilt-input-checkbox");
+  prebuiltLabel.textContent = "Blow Up Ohio?";
+  prebuiltLabel.className = "form-label";
+
+  const checkboxContainer = document.createElement("div");
+  checkboxContainer.className = "checkbox-container";
+
+  const prebuiltCheckbox = document.createElement("input");
+  prebuiltCheckbox.type = "checkbox";
+  prebuiltCheckbox.id = "prebuilt-input-checkbox";
+  prebuiltCheckbox.className = "form-checkbox";
+  prebuiltCheckbox.setAttribute("data-label", "prebuilt-input-checkbox");
+
+  checkboxContainer.append(prebuiltCheckbox);
+  prebuiltCheckboxDiv.append(prebuiltLabel, checkboxContainer);
+
+  return prebuiltCheckboxDiv;
 };
 
 //----------------
