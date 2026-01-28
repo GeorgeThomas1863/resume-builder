@@ -2,7 +2,10 @@
 config/
 /config*
 /config/*
+
 .env
+.env.local
+.env.*
 
 data/*
 **/data/*

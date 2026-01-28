@@ -1,6 +1,6 @@
 import express from "express";
 
-import requireAuth from "../middleware/auth.js";
+import requireAuth from "../middleware/auth-config.js";
 import { displayMain, display401, display404, display500 } from "../controllers/display-control.js";
 import { authController } from "../controllers/auth-control.js";
 import { uploadResumeController, getBackendValueController, submitRouteController, checkRouteController, deleteResumeController } from "../controllers/data-control.js";
