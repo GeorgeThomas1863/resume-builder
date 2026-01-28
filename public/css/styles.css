@@ -165,7 +165,7 @@ h3 {
 }
 
 #temperature-div {
-  flex: 0 0 10%;
+  flex: 0 0 12%;
  
 }
 
@@ -173,6 +173,7 @@ h3 {
   flex: 0 0 auto;
   display: flex;
   flex-direction: column;
+  text-align: center;
 }
 
 .checkbox-container {

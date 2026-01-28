@@ -89,7 +89,7 @@ export const buildUploadListItem = async () => {
   uploadButton.type = "button";
   uploadButton.className = "btn-upload";
   uploadButton.id = "upload-button";
-  uploadButton.textContent = "Upload your pretty little resume";
+  uploadButton.textContent = "Upload your default resume";
   uploadButton.setAttribute("data-label", "upload-button");
 
   const uploadRowWrapper = document.createElement("div");
@@ -301,9 +301,9 @@ export const buildMaxTokensDiv = async () => {
   maxTokensInput.type = "number";
   maxTokensInput.id = "max-tokens-input";
   maxTokensInput.className = "form-input";
-  maxTokensInput.min = "1";
+  maxTokensInput.min = "1000";
   maxTokensInput.max = "1000000";
-  maxTokensInput.step = "1";
+  maxTokensInput.step = "1000";
   maxTokensInput.value = "50000";
   maxTokensInput.placeholder = "50000";
 
@@ -344,7 +344,7 @@ export const buildPrebuiltCheckbox = async () => {
 
   const prebuiltLabel = document.createElement("label");
   prebuiltLabel.setAttribute("for", "prebuilt-input-checkbox");
-  prebuiltLabel.textContent = "Blow Up Ohio?";
+  prebuiltLabel.textContent = "Nuke Ohio?";
   prebuiltLabel.className = "form-label";
 
   const checkboxContainer = document.createElement("div");
