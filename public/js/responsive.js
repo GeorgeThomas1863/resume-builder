@@ -14,7 +14,6 @@ import {
 import { runUploadFile } from "./util/upload-front.js";
 
 const authElement = document.getElementById("auth-element");
-const adminAuthElement = document.getElementById("admin-auth-element");
 const displayElement = document.getElementById("display-element");
 
 export const clickHandler = async (e) => {
@@ -91,11 +90,6 @@ export const changeHandler = async (e) => {
 if (authElement) {
   authElement.addEventListener("click", clickHandler);
   authElement.addEventListener("keydown", keyHandler);
-}
-
-if (adminAuthElement) {
-  adminAuthElement.addEventListener("click", clickHandler);
-  adminAuthElement.addEventListener("keydown", keyHandler);
 }
 
 if (displayElement) {
