@@ -1,4 +1,4 @@
-//figure out redirect when submitting with admin auth
+//finish modal; fucking finish backend
 
 //fix backend
 

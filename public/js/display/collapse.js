@@ -82,6 +82,5 @@ export const unhideArray = async (inputs) => {
 //   const selectModelListItem = document.getElementById("select-model-list-item");
 //   const tokenTempListItem = document.getElementById("token-temp-list-item");
 
-
 //   return [selectModelListItem, tokenTempListItem, systemPromptListItem];
 // };

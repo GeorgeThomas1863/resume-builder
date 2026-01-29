@@ -4,6 +4,7 @@ import { buildSubmitParams } from "./util/params.js";
 import { checkFile } from "./util/upload-front.js";
 import { showLoadStatus, hideLoadStatus } from "./display/loading.js";
 import { hideArray, unhideArray } from "./display/collapse.js";
+import { unhideAdminAuthModal, hideAdminAuthModal } from "./display/auth-form.js";
 
 export const runMainSubmit = async () => {
   const jobInput = document.getElementById("paste-job-input").value.trim();
@@ -30,22 +31,29 @@ export const runMainSubmit = async () => {
   console.dir(params);
 
   if (params.nukeOhio) {
-    const checkAdminAuth = await sendToBack({ route: "/check-admin-auth" }, "GET");
-    console.log("CHECK ADMIN AUTH");
-    console.log(checkAdminAuth);
-    if (!checkAdminAuth.isAdmin) {
-      window.location.href = checkAdminAuth.redirect;
+    const adminAuthData = await checkAdminAuth();
+
+    if (!adminAuthData.isAdmin) {
+      // Show modal and wait for auth
+      await unhideAdminAuthModal();
+      // Store params for later use
+      window.pendingSubmitParams = params;
+      return null;
     }
   }
 
+  await executeSubmit(params);
+
+  return true;
+};
+
+export const executeSubmit = async (params) => {
   await showLoadStatus();
 
   const data = await sendToBack(params, "POST", true);
   await hideLoadStatus();
 
   if (!data) return null;
-  console.log("DATA");
-  console.log(data);
 
   const blob = await data.blob();
   const url = window.URL.createObjectURL(blob);
@@ -58,6 +66,14 @@ export const runMainSubmit = async () => {
   a.remove();
 
   return true;
+};
+
+export const checkAdminAuth = async () => {
+  const data = await sendToBack({ route: "/check-admin-auth" }, "GET");
+  console.log("CHECK ADMIN AUTH");
+  console.log(data);
+
+  return data;
 };
 
 //----------------------
@@ -73,20 +89,53 @@ export const runAuthSubmit = async () => {
   return data;
 };
 
-export const runAdminAuthSubmit = async () => {
-  console.log("RUN ADMIN AUTH SUBMIT");
-  const adminAuthPwInput = document.getElementById("admin-auth-pw-input");
-  if (!adminAuthPwInput || !adminAuthPwInput.value) return null;
+// export const runAdminAuthSubmit = async () => {
+//   console.log("RUN ADMIN AUTH SUBMIT");
+//   const adminAuthPwInput = document.getElementById("admin-auth-pw-input");
+//   if (!adminAuthPwInput || !adminAuthPwInput.value) return null;
 
-  const data = await sendToBack({ route: "/admin-auth-submit", pw: adminAuthPwInput.value });
-  // if (!data || !data.redirect) return null;
+//   const data = await sendToBack({ route: "/admin-auth-submit", pw: adminAuthPwInput.value });
+//   // if (!data || !data.redirect) return null;
 
-  console.log("DATA");
-  console.dir(data);
+//   console.log("DATA");
+//   console.dir(data);
 
-  //maybe do submit here too?
-  window.location.href = data.redirect;
-  return data;
+//   //maybe do submit here too?
+//   window.location.href = data.redirect;
+//   return data;
+// };
+
+export const runAdminAuthModalSubmit = async () => {
+  const input = document.getElementById("admin-auth-modal-input");
+  if (!input || !input.value) return null;
+
+  const data = await sendToBack({
+    route: "/admin-auth-submit",
+    pw: input.value,
+  });
+
+  if (!data || !data.success) {
+    alert("Invalid admin password");
+    return null;
+  }
+
+  // Auth successful, hide modal
+  await hideAdminAuthModal();
+
+  // Continue with pending submission
+  if (window.pendingSubmitParams) {
+    const params = window.pendingSubmitParams;
+    window.pendingSubmitParams = null;
+    await executeSubmit(params);
+  }
+
+  return true;
+};
+
+export const runAdminAuthModalCancel = async () => {
+  await hideAdminAuthModal();
+  window.pendingSubmitParams = null;
+  return true;
 };
 
 export const runUploadClick = async () => {

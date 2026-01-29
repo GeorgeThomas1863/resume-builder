@@ -296,6 +296,57 @@ h3 {
   transform: rotate(45deg);
 }
 
+/* ++++++++++++++++++++++++++++++++++++++++++++++++++++++++ */
+
+.modal-overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.7);
+  z-index: 9999;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-overlay.active {
+  display: flex;
+}
+
+.modal-content {
+  background: white;
+  padding: 2rem;
+  border-radius: 8px;
+  max-width: 500px;
+  width: 90%;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.modal-title {
+  margin: 0 0 1.5rem 0;
+  text-align: center;
+}
+
+.modal-button-wrapper {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+.modal-button-wrapper button {
+  flex: 1;
+}
+
+.btn-cancel {
+  background: #6b7280;
+}
+
+.btn-cancel:hover {
+  background: #4b5563;
+}
+
 /* +++++++++++++++++++++++++++++++++++++++++++++++++ */
 
 /* CLASSES */

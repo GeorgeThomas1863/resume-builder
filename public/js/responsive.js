@@ -4,7 +4,9 @@ import {
   runAIModelSelect,
   runUploadButtonToggle,
   runAuthSubmit,
-  runAdminAuthSubmit,
+  // runAdminAuthSubmit,
+  runAdminAuthModalSubmit,
+  runAdminAuthModalCancel,
   runUploadClick,
   runMainSubmit,
   runDeleteResume,
@@ -28,10 +30,13 @@ export const clickHandler = async (e) => {
   console.log(clickType);
 
   if (clickType === "auth-submit") await runAuthSubmit();
-  if (clickType === "admin-auth-submit") await runAdminAuthSubmit();
+  // if (clickType === "admin-auth-submit") await runAdminAuthSubmit();
   if (clickType === "submit-button") await runMainSubmit();
   if (clickType === "upload-button") await runUploadClick();
   if (clickType === "delete-resume-button") await runDeleteResume();
+
+  if (clickType === "admin-auth-modal-submit") await runAdminAuthModalSubmit();
+  if (clickType === "admin-auth-modal-cancel") await runAdminAuthModalCancel();
 
   if (clickType === "pwToggle") await runPwToggle();
   if (clickType === "modelOptionsToggle") await runModelOptionsToggle();
@@ -50,7 +55,8 @@ export const keyHandler = async (e) => {
   console.log(keyId);
 
   if (keyId === "auth-pw-input") await runAuthSubmit();
-  if (keyId === "admin-auth-pw-input") await runAdminAuthSubmit();
+  // if (keyId === "admin-auth-pw-input") await runAdminAuthSubmit();
+  if (keyId === "admin-auth-modal-input") await runAdminAuthModalSubmit();
 
   // if (!displayElement) return null;
   // await runMainSubmit();
