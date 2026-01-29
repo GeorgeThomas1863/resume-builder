@@ -16,6 +16,8 @@ export const authController = (req, res) => {
 };
 
 export const adminAuthController = (req, res) => {
+  // console.log("ADMIN AUTH CONTROLLER");
+  // console.log(req.body);
   if (!req.body || !req.body.pw) {
     res.json({ success: false, redirect: "/401" });
     return;
@@ -27,11 +29,16 @@ export const adminAuthController = (req, res) => {
     return;
   }
 
+  // console.log("ADMIN AUTH CONTROLLER LATER");
+  // console.log(req.body);
+
   // set admin auth
   req.session.isAdmin = true;
-  res.json({ success: true, redirect: "/" });
+  return res.json({ success: true, redirect: "/" });
 };
 
 export const checkAdminAuthController = (req, res) => {
-  res.json({ isAdmin: !!req.session.isAdmin });
+  // console.log("CHECK ADMIN AUTH CONTROLLER");
+  // console.log(req.session.isAdmin);
+  res.json({ isAdmin: !!req.session.isAdmin, redirect: "/admin-auth-display" });
 };

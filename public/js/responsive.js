@@ -1,7 +1,18 @@
-import { runPwToggle, runModelOptionsToggle, runAIModelSelect, runUploadButtonToggle, runAuthSubmit, runUploadClick, runMainSubmit, runDeleteResume } from "./run.js";
+import {
+  runPwToggle,
+  runModelOptionsToggle,
+  runAIModelSelect,
+  runUploadButtonToggle,
+  runAuthSubmit,
+  runAdminAuthSubmit,
+  runUploadClick,
+  runMainSubmit,
+  runDeleteResume,
+} from "./run.js";
 import { runUploadFile } from "./util/upload-front.js";
 
 const authElement = document.getElementById("auth-element");
+const adminAuthElement = document.getElementById("admin-auth-element");
 const displayElement = document.getElementById("display-element");
 
 export const clickHandler = async (e) => {
@@ -17,6 +28,7 @@ export const clickHandler = async (e) => {
   console.log(clickType);
 
   if (clickType === "auth-submit") await runAuthSubmit();
+  if (clickType === "admin-auth-submit") await runAdminAuthSubmit();
   if (clickType === "submit-button") await runMainSubmit();
   if (clickType === "upload-button") await runUploadClick();
   if (clickType === "delete-resume-button") await runDeleteResume();
@@ -38,6 +50,7 @@ export const keyHandler = async (e) => {
   console.log(keyId);
 
   if (keyId === "auth-pw-input") await runAuthSubmit();
+  if (keyId === "admin-auth-pw-input") await runAdminAuthSubmit();
 
   // if (!displayElement) return null;
   // await runMainSubmit();
@@ -72,6 +85,11 @@ export const changeHandler = async (e) => {
 if (authElement) {
   authElement.addEventListener("click", clickHandler);
   authElement.addEventListener("keydown", keyHandler);
+}
+
+if (adminAuthElement) {
+  adminAuthElement.addEventListener("click", clickHandler);
+  adminAuthElement.addEventListener("keydown", keyHandler);
 }
 
 if (displayElement) {

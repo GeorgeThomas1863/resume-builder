@@ -1,4 +1,6 @@
-//finish updating admin auth
+//figure out redirect when submitting with admin auth
+
+//fix backend
 
 //store resume uploads and AI submissions in mongo
 

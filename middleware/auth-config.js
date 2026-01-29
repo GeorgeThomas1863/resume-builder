@@ -9,6 +9,8 @@ const requireAuth = (req, res, next) => {
 };
 
 export const requireAdminAuth = (req, res, next) => {
+  // console.log("REQUIRE ADMIN AUTH");
+  // console.log(req.session.isAdmin);
   if (req.session.isAdmin) {
     next();
   } else {

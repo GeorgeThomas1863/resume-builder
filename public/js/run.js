@@ -13,23 +13,30 @@ export const runMainSubmit = async () => {
   }
 
   const params = await buildSubmitParams();
-  params.jobInput = jobInput;
-
-  console.log("SUBMIT PARAMS");
-  console.dir(params);
+  if (!params) return null;
 
   const fileData = await checkFile();
   console.log("FILE DATA");
   console.log(fileData);
-  if (!fileData && params.formatType === "none") {
+  if (!fileData && !params.nukeOhio) {
     alert("You forgot to upload a resume. Please upload a resume and try again.");
     return null;
   }
 
   if (fileData) params.inputPath = fileData.filePath;
+  params.jobInput = jobInput;
 
   console.log("RUN MAIN SUBMIT PARAMS");
   console.dir(params);
+
+  if (params.nukeOhio) {
+    const checkAdminAuth = await sendToBack({ route: "/check-admin-auth" }, "GET");
+    console.log("CHECK ADMIN AUTH");
+    console.log(checkAdminAuth);
+    if (!checkAdminAuth.isAdmin) {
+      window.location.href = checkAdminAuth.redirect;
+    }
+  }
 
   await showLoadStatus();
 
@@ -62,6 +69,22 @@ export const runAuthSubmit = async () => {
   const data = await sendToBack({ route: "/site-auth-route", pw: authPwInput.value });
   if (!data || !data.redirect) return null;
 
+  window.location.href = data.redirect;
+  return data;
+};
+
+export const runAdminAuthSubmit = async () => {
+  console.log("RUN ADMIN AUTH SUBMIT");
+  const adminAuthPwInput = document.getElementById("admin-auth-pw-input");
+  if (!adminAuthPwInput || !adminAuthPwInput.value) return null;
+
+  const data = await sendToBack({ route: "/admin-auth-submit", pw: adminAuthPwInput.value });
+  // if (!data || !data.redirect) return null;
+
+  console.log("DATA");
+  console.dir(data);
+
+  //maybe do submit here too?
   window.location.href = data.redirect;
   return data;
 };

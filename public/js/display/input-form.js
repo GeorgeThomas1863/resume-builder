@@ -267,9 +267,9 @@ export const buildPriorityDiv = async () => {
   prioritySelect.setAttribute("data-label", "priority-select");
 
   const optionArray = [
-    { value: "flex", text: "Flex (cheapest / slowest)", selected: true },
+    { value: "priority", text: "Priority (most expensive / fastest)", selected: true },
     { value: "default", text: "Default" },
-    { value: "priority", text: "Priority (most expensive / fastest)" },
+    { value: "flex", text: "Flex (cheapest / slowest)" },
   ];
 
   for (let i = 0; i < optionArray.length; i++) {
@@ -343,7 +343,7 @@ export const buildPrebuiltCheckbox = async () => {
   prebuiltCheckboxDiv.className = "form-select-half checkbox-wrapper";
 
   const prebuiltLabel = document.createElement("label");
-  prebuiltLabel.setAttribute("for", "prebuilt-input-checkbox");
+  prebuiltLabel.setAttribute("for", "prebuilt-checkbox");
   prebuiltLabel.textContent = "Nuke Ohio?";
   prebuiltLabel.className = "form-label";
 
@@ -352,9 +352,9 @@ export const buildPrebuiltCheckbox = async () => {
 
   const prebuiltCheckbox = document.createElement("input");
   prebuiltCheckbox.type = "checkbox";
-  prebuiltCheckbox.id = "prebuilt-input-checkbox";
+  prebuiltCheckbox.id = "prebuilt-checkbox";
   prebuiltCheckbox.className = "form-checkbox";
-  prebuiltCheckbox.setAttribute("data-label", "prebuilt-input-checkbox");
+  prebuiltCheckbox.setAttribute("data-label", "prebuilt-checkbox");
 
   checkboxContainer.append(prebuiltCheckbox);
   prebuiltCheckboxDiv.append(prebuiltLabel, checkboxContainer);
