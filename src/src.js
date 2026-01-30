@@ -12,10 +12,13 @@ export const runResumeUnfucker = async (inputParams) => {
   let infoObj = null;
   if (nukeOhio) infoObj = await buildInfoObj();
 
+  console.log("INFO OBJ");
+  console.log(infoObj);
+
   const resumeText = await extractResumeText(inputPath, nukeOhio);
   console.log("RESUME TEXT");
-  console.log(resumeText);  
-  
+  console.log(resumeText);
+
   const messageInput = await buildMessageInput(resumeText, jobInput, infoObj);
   console.log("MESSAGE INPUT");
   console.log(messageInput);
@@ -38,7 +41,7 @@ export const runResumeUnfucker = async (inputParams) => {
   console.log("AI TEXT");
   console.log(aiText);
 
-  const buffer = await buildNewResume(aiText, inputParams, infoObj);
+  const buffer = await buildNewResume(aiText, infoObj);
 
   return buffer;
 };

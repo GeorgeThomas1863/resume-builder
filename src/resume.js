@@ -44,12 +44,20 @@ export const extractTextPDF = async (inputPath) => {
 //++++++++++++++++++++++++++++++
 
 //MAIN FUNCTION
-export const buildNewResume = async (aiText, inputParams, infoObj) => {
-  const { inputType } = inputParams;
+export const buildNewResume = async (aiText, infoObj = null) => {
+  // console.log("AI TEXT");
+  // console.log(aiText);
+  // console.log("INFO OBJ");
+  // console.log(infoObj);
+  // console.log("INPUT PARAMS");
+  // console.log(inputParams);
 
   const aiObj = JSON.parse(aiText);
 
-  const paragraphArray = await buildParagraphArray(aiObj, inputType, infoObj);
+  console.log("AI OBJ");
+  console.log(aiObj);
+
+  const paragraphArray = await buildParagraphArray(aiObj, infoObj);
 
   //build document
   const doc = new Document({
@@ -74,8 +82,8 @@ export const buildNewResume = async (aiText, inputParams, infoObj) => {
   return buffer;
 };
 
-export const buildParagraphArray = async (aiObj, inputType, infoObj) => {
-  if (inputType === "prebuilt") return await buildPrebuiltParagraphArray(aiObj, infoObj);
+export const buildParagraphArray = async (aiObj, infoObj = null) => {
+  if (infoObj) return await buildPrebuiltParagraphArray(aiObj, infoObj);
 
   //default
   return await buildDefaultParagraphArray(aiObj);
@@ -84,6 +92,8 @@ export const buildParagraphArray = async (aiObj, inputType, infoObj) => {
 //for me
 export const buildPrebuiltParagraphArray = async (aiObj, infoObj) => {
   const paragraphArray = [];
+
+  console.log("ALLAHU AKBAR")
 
   //name header
   paragraphArray.push(
@@ -392,7 +402,7 @@ export const buildPrebuiltParagraphArray = async (aiObj, infoObj) => {
       children: [
         new TextRun({
           // text: "Georgetown University, Master of Arts in Security Studies",
-          text: `${infoObj.education[1].school}, ${infoObj.education[1].degree}`,
+          text: `${infoObj.education[1].school}, ${infoObj.education[1].degree1}`,
           bold: true,
           font: "Times New Roman",
           size: 22,

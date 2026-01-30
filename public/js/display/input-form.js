@@ -39,40 +39,6 @@ export const buildInputForm = async () => {
   return inputFormWrapper;
 };
 
-// export const buildInputTypeListItem = async () => {
-//   const inputTypeListItem = document.createElement("li");
-//   inputTypeListItem.id = "input-type-list-item";
-//   inputTypeListItem.className = "form-list-item";
-
-//   const inputTypeLabel = document.createElement("label");
-//   inputTypeLabel.setAttribute("for", "input-type-select");
-//   inputTypeLabel.textContent = "Select Input Type";
-//   inputTypeLabel.className = "form-label";
-
-//   const inputTypeSelect = document.createElement("select");
-//   inputTypeSelect.id = "input-type-select";
-//   inputTypeSelect.className = "form-select";
-
-//   const optionArray = [
-//     { value: "default", text: "Upload Custom Resume", selected: true },
-//     { value: "prebuilt", text: "Use Pre-Built Input (DEV ONLY, DONT USE)" },
-//   ];
-
-//   for (let i = 0; i < optionArray.length; i++) {
-//     const optionData = optionArray[i];
-//     const option = document.createElement("option");
-//     option.value = optionData.value;
-//     option.textContent = optionData.text;
-//     if (optionData.selected) option.selected = true;
-
-//     inputTypeSelect.append(option);
-//   }
-
-//   inputTypeListItem.append(inputTypeLabel, inputTypeSelect);
-
-//   return inputTypeListItem;
-// };
-
 export const buildUploadListItem = async () => {
   const uploadListItem = document.createElement("li");
   uploadListItem.id = "upload-list-item";
@@ -267,9 +233,9 @@ export const buildPriorityDiv = async () => {
   prioritySelect.setAttribute("data-label", "priority-select");
 
   const optionArray = [
-    { value: "priority", text: "Priority (most expensive / fastest)", selected: true },
-    { value: "default", text: "Default" },
-    { value: "flex", text: "Flex (cheapest / slowest)" },
+    { value: "priority", text: "Priority (most expensive / Decent Speed)", selected: true },
+    { value: "default", text: "Default (SLOW)" },
+    { value: "flex", text: "Flex (cheapest / VERY SLOW)" },
   ];
 
   for (let i = 0; i < optionArray.length; i++) {
