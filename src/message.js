@@ -260,7 +260,7 @@ export const buildMessagePrebuiltWithResume = async (resumeText, jobInput, infoO
   ];
 };
 
-export const buildMessageDefault = async (jobInput, resumeText) => {
+export const buildMessageDefault = async (resumeText, jobInput) => {
   return [
     {
       role: "system",
@@ -403,7 +403,17 @@ export const buildSchemaLocal = async () => {
       name: "resume_enhancement",
       schema: {
         type: "object",
+        additionalProperties: false,
+        required: ["name", "email", "summary", "experience", "education"],
         properties: {
+          name: {
+            type: "string",
+            description: "Candidate's full name",
+          },
+          email: {
+            type: "string",
+            description: "Candidate's email address",
+          },
           summary: {
             type: "string",
             description: "Tailored professional summary",
@@ -439,8 +449,28 @@ export const buildSchemaLocal = async () => {
             maxItems: 7,
           },
         },
-        required: ["summary", "experience"],
-        additionalProperties: false,
+        education: {
+          type: "array",
+          items: {
+            type: "object",
+            additionalProperties: false,
+            required: ["degree", "school", "timeframe"],
+            properties: {
+              degree: {
+                type: "string",
+                description: "Degree or certification earned",
+              },
+              school: {
+                type: "string",
+                description: "School or institution name",
+              },
+              timeframe: {
+                type: "string",
+                description: "Graduation year or timeframe",
+              },
+            },
+          },
+        },
       },
     },
   };

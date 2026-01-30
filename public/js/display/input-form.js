@@ -233,7 +233,7 @@ export const buildPriorityDiv = async () => {
   prioritySelect.setAttribute("data-label", "priority-select");
 
   const optionArray = [
-    { value: "priority", text: "Priority (most expensive / Decent Speed)", selected: true },
+    { value: "priority", text: "Priority (Decent Speed)", selected: true },
     { value: "default", text: "Default (SLOW)" },
     { value: "flex", text: "Flex (cheapest / VERY SLOW)" },
   ];
