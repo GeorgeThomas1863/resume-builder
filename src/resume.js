@@ -5,9 +5,9 @@ import { Document, Paragraph, Packer, TextRun, AlignmentType, BorderStyle, LineR
 // import OBJ from "../config/input-data.js";
 // import { otherObj } from "../config/input-data.js";
 
-export const extractResumeText = async (inputPath, inputType = "prebuilt") => {
+export const extractResumeText = async (inputPath, nukeOhio = null) => {
   //TURNED OFF FOR CUSTOM
-  if (!inputPath || inputType === "prebuilt") return null;
+  if (!inputPath || !nukeOhio) return null;
 
   if (inputPath.endsWith(".pdf")) return await extractTextPDF(inputPath);
 
@@ -475,8 +475,8 @@ export const buildPrebuiltParagraphArray = async (aiObj, infoObj) => {
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 //default
-export const buildDefaultParagraphArray = async (inputObj) => {
-  const { name, email, summary, experience, education } = inputObj;
+export const buildDefaultParagraphArray = async (aiObj) => {
+  const { name, email, summary, experience, education } = aiObj;
   // const { jobArray } = OBJ;
 
   const paragraphArray = [];
