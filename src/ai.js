@@ -37,9 +37,11 @@ export const runChatGPT = async (inputParams) => {
   const { messageInput, schema, modelType, serviceTier, maxTokens, temperature } = inputParams;
   console.log("SENDING TO CHATGPT");
 
+  const client = buildOpenAIClient();
+
   //OPEN AI THROWS ERROR, NEED CATCH TO SEE
   try {
-    const data = await openaiClient.responses.create({
+    const data = await client.responses.create({
       // model: "gpt-5-nano", //testing
       model: modelType,
       input: messageInput,
@@ -72,6 +74,8 @@ export const runLocalAI = async (inputParams) => {
   console.log("RUNNING CUSTOM AI");
   // console.log(inputParams);
 
+  const client = buildLocalClient();
+
   try {
     const params = {
       // model: "meta-llama-3.1-8b-instruct",
@@ -85,7 +89,7 @@ export const runLocalAI = async (inputParams) => {
     // console.log("AI PARAMS");
     // console.log(params);
 
-    const data = await localClient.chat.completions.create(params);
+    const data = await client.chat.completions.create(params);
     // console.log("MODEL RESPONSE");
     // console.log(data);
 

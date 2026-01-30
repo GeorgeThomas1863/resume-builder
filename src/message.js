@@ -1,6 +1,5 @@
-export const buildMessageInput = async (resumeText, jobInput) => {
+export const buildMessageInput = async (resumeText, jobInput, infoObj) => {
   if (!jobInput) return null;
-  const infoObj = await buildInfoObj();
   if (!resumeText) return await buildMessageNoResume(jobInput, infoObj);
 
   return await buildMessageWithResume(resumeText, jobInput);
@@ -269,7 +268,7 @@ export const buildSchemaChatGPT = async () => {
         },
         experience: {
           type: "array",
-          minItems: 4,
+          minItems: 7,
           maxItems: 7,
           items: {
             type: "object",
@@ -364,7 +363,7 @@ export const buildSchemaLocal = async () => {
               },
               required: ["role", "company", "timeframe", "bullets"],
             },
-            minItems: 4,
+            minItems: 7,
             maxItems: 7,
           },
         },

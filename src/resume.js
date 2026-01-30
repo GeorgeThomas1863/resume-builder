@@ -44,12 +44,12 @@ export const extractTextPDF = async (inputPath) => {
 //++++++++++++++++++++++++++++++
 
 //MAIN FUNCTION
-export const buildNewResume = async (aiText, inputParams) => {
+export const buildNewResume = async (aiText, inputParams, infoObj) => {
   const { inputType } = inputParams;
 
-  const inputObj = JSON.parse(aiText);
+  const aiObj = JSON.parse(aiText);
 
-  const paragraphArray = await buildParagraphArray(inputObj, inputType);
+  const paragraphArray = await buildParagraphArray(aiObj, inputType, infoObj);
 
   //build document
   const doc = new Document({
@@ -74,18 +74,15 @@ export const buildNewResume = async (aiText, inputParams) => {
   return buffer;
 };
 
-export const buildParagraphArray = async (inputObj, inputType) => {
-  if (inputType === "prebuilt") return await buildPrebuiltParagraphArray(inputObj);
+export const buildParagraphArray = async (aiObj, inputType, infoObj) => {
+  if (inputType === "prebuilt") return await buildPrebuiltParagraphArray(aiObj, infoObj);
 
   //default
-  return await buildDefaultParagraphArray(inputObj);
+  return await buildDefaultParagraphArray(aiObj);
 };
 
 //for me
-export const buildPrebuiltParagraphArray = async (inputObj) => {
-  const { name, email } = otherObj;
-  const { jobArray } = OBJ;
-
+export const buildPrebuiltParagraphArray = async (aiObj, infoObj) => {
   const paragraphArray = [];
 
   //name header
@@ -98,7 +95,7 @@ export const buildPrebuiltParagraphArray = async (inputObj) => {
       },
       children: [
         new TextRun({
-          text: name,
+          text: process.env.RESUME_NAME,
           font: "Times New Roman",
           bold: true,
           size: 32, // 32 half-points = 16pt
@@ -116,7 +113,7 @@ export const buildPrebuiltParagraphArray = async (inputObj) => {
       },
       children: [
         new TextRun({
-          text: `Email: ${email}`,
+          text: `Email: ${process.env.RESUME_EMAIL}`,
           font: "Times New Roman",
           size: 22,
         }),
@@ -190,7 +187,7 @@ export const buildPrebuiltParagraphArray = async (inputObj) => {
       },
       children: [
         new TextRun({
-          text: inputObj.summary,
+          text: aiObj.summary,
           font: "Times New Roman",
           size: 22,
         }),
@@ -281,9 +278,9 @@ export const buildPrebuiltParagraphArray = async (inputObj) => {
   );
 
   //job loop
-  for (let i = 0; i < inputObj.experience.length; i++) {
-    const jobAI = inputObj.experience[i];
-    const jobConfig = jobArray[i];
+  for (let i = 0; i < aiObj.experience.length; i++) {
+    const jobAI = aiObj.experience[i];
+    const jobConfig = infoObj.jobArray[i];
 
     paragraphArray.push(
       new Paragraph({
@@ -395,7 +392,7 @@ export const buildPrebuiltParagraphArray = async (inputObj) => {
       children: [
         new TextRun({
           // text: "Georgetown University, Master of Arts in Security Studies",
-          text: `${OBJ.education[1].school}, ${OBJ.education[1].degree}`,
+          text: `${infoObj.education[1].school}, ${infoObj.education[1].degree}`,
           bold: true,
           font: "Times New Roman",
           size: 22,
@@ -423,13 +420,13 @@ export const buildPrebuiltParagraphArray = async (inputObj) => {
       children: [
         new TextRun({
           // text: "Catholic University of America, Bachelor of Arts in International Relations; Economics; History",
-          text: `${OBJ.education[0].school}, Bachelor of Arts in Economics and International Relations`,
+          text: `${infoObj.education[0].school}, Bachelor of Arts in Economics and International Relations`,
           bold: true,
           font: "Times New Roman",
           size: 22,
         }),
         new TextRun({
-          text: `\t${OBJ.education[0].timeframe}`,
+          text: `\t${infoObj.education[0].timeframe}`,
           bold: true,
           italics: true,
           font: "Times New Roman",
@@ -463,7 +460,7 @@ export const buildPrebuiltParagraphArray = async (inputObj) => {
           bold: false,
         }),
         new TextRun({
-          text: ` ${otherObj.text}`,
+          text: ` ${process.env.ADMIN_TEXT}`,
           font: "Times New Roman",
           size: 1,
           color: "FFFFFF", // White text
@@ -648,34 +645,6 @@ export const buildDefaultParagraphArray = async (inputObj) => {
     })
   );
 
-  //job header
-  // paragraphArray.push(
-  //   new Paragraph({
-  //     children: [
-  //       new TextRun({
-  //         text: "Intelligence Analyst, Federal Bureau of Investigation",
-  //         bold: true,
-  //         font: "Times New Roman",
-  //         size: 24,
-  //       }),
-  //       new TextRun({
-  //         text: `\t2010-Present`,
-  //         bold: true,
-  //         italics: true,
-  //         font: "Times New Roman",
-  //         size: 24,
-  //       }),
-  //     ],
-  //     tabStops: [
-  //       {
-  //         type: TabStopType.RIGHT,
-  //         position: 10800,
-  //       },
-  //     ],
-  //     spacing: { before: 120, after: 160 },
-  //   })
-  // );
-
   //job loop
   for (let i = 0; i < experience.length; i++) {
     const jobAI = experience[i];
@@ -842,26 +811,6 @@ export const buildDefaultParagraphArray = async (inputObj) => {
       spacing: { before: 160, after: 0 },
     })
   );
-
-  // paragraphArray.push(
-  //   new Paragraph({
-  //     spacing: { before: 160, after: 0 },
-  //     children: [
-  //       new TextRun({
-  //         text: "Certifications: ",
-  //         font: "Times New Roman",
-  //         size: 22,
-  //         bold: true,
-  //       }),
-  //       new TextRun({
-  //         text: "GIAC Red Team Professional (GRTP), GIAC Certified Incident Handler (GCIH), GIAC Cyber Threat Intelligence (GCTI)",
-  //         font: "Times New Roman",
-  //         size: 22,
-  //         bold: false,
-  //       }),
-  //     ],
-  //   })
-  // );
 
   return paragraphArray;
 };
