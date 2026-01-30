@@ -1,5 +1,6 @@
 import { extractResumeText, buildNewResume } from "./resume.js";
-import { buildMessageInput, buildSchema, runSendToAI } from "./ai.js";
+import { runSendToAI } from "./ai.js";
+import { buildMessageInput, buildSchema } from "./message.js";
 
 export const runResumeUnfucker = async (inputParams) => {
   if (!inputParams) return null;
@@ -12,7 +13,11 @@ export const runResumeUnfucker = async (inputParams) => {
   console.log("RESUME TEXT");
   console.log(resumeText);
   const messageInput = await buildMessageInput(resumeText, jobInput);
+  console.log("MESSAGE INPUT");
+  console.log(messageInput);
   const schema = await buildSchema(aiType);
+  console.log("SCHEMA");
+  console.log(schema);
 
   const aiParams = {
     ...inputParams,

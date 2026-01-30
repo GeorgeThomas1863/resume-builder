@@ -89,22 +89,6 @@ export const runAuthSubmit = async () => {
   return data;
 };
 
-// export const runAdminAuthSubmit = async () => {
-//   console.log("RUN ADMIN AUTH SUBMIT");
-//   const adminAuthPwInput = document.getElementById("admin-auth-pw-input");
-//   if (!adminAuthPwInput || !adminAuthPwInput.value) return null;
-
-//   const data = await sendToBack({ route: "/admin-auth-submit", pw: adminAuthPwInput.value });
-//   // if (!data || !data.redirect) return null;
-
-//   console.log("DATA");
-//   console.dir(data);
-
-//   //maybe do submit here too?
-//   window.location.href = data.redirect;
-//   return data;
-// };
-
 export const runAdminAuthModalSubmit = async () => {
   const input = document.getElementById("admin-auth-modal-input");
   if (!input || !input.value) return null;
