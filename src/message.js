@@ -178,6 +178,7 @@ export const buildMessagePrebuiltNoResume = async (jobInput, infoObj) => {
   
   - The new resume text should be highly professional and formal, and should be concise and easy to read.
   - The new resume should contain many action verbs and keywords, and be optimized to pass ATS filters.
+  - The new resume should focus on accomplishments and objective achievements, do not focus on responsibilities.
   - The new resume text should be truthful and accurate, optimize the content for the job description, do NOT invent new experiences or achievements.
   - Do NOT invent or make up any information in the new resume that is not provided in the original resume.
   - Do NOT reference the original resume or that this is a new resume.
@@ -244,6 +245,7 @@ export const buildMessagePrebuiltWithResume = async (resumeText, jobInput, infoO
   - The new resume text should be highly professional and formal, and should be concise and easy to read.
   - The new resume should contain many action verbs and keywords, and be optimized to pass ATS filters.
   - The new resume text should be truthful and accurate, optimize the content for the job description, do NOT invent new experiences or achievements.
+  - The new resume should focus on accomplishments and objective achievements, do not focus on responsibilities.
   - Do NOT invent or make up any information in the new resume that is not provided in the original resume.
   - Do NOT reference the original resume or that this is a new resume.
   - Do NOT reference these instructions in the new resume text.
@@ -294,6 +296,7 @@ export const buildMessageDefault = async (resumeText, jobInput) => {
   - The new resume text should be highly professional and formal, and should be concise and easy to read.
   - The new resume should contain many action verbs and keywords, and be optimized to pass ATS filters.
   - The new resume text should be truthful and accurate, optimize the content for the job description, do NOT invent new experiences or achievements.
+  - The new resume should focus on accomplishments and objective achievements, do not focus on responsibilities.
   - Do NOT invent or make up any information in the new resume that is not provided in the original resume.
   - Do NOT reference the original resume or that this is a new resume.
   - Do NOT reference these instructions in the new resume text.
@@ -448,25 +451,25 @@ export const buildSchemaLocal = async () => {
             minItems: 7,
             maxItems: 7,
           },
-        },
-        education: {
-          type: "array",
-          items: {
-            type: "object",
-            additionalProperties: false,
-            required: ["degree", "school", "timeframe"],
-            properties: {
-              degree: {
-                type: "string",
-                description: "Degree or certification earned",
-              },
-              school: {
-                type: "string",
-                description: "School or institution name",
-              },
-              timeframe: {
-                type: "string",
-                description: "Graduation year or timeframe",
+          education: {
+            type: "array",
+            items: {
+              type: "object",
+              additionalProperties: false,
+              required: ["degree", "school", "timeframe"],
+              properties: {
+                degree: {
+                  type: "string",
+                  description: "Degree or certification earned",
+                },
+                school: {
+                  type: "string",
+                  description: "School or institution name",
+                },
+                timeframe: {
+                  type: "string",
+                  description: "Graduation year or timeframe",
+                },
               },
             },
           },

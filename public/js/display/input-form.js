@@ -115,7 +115,8 @@ export const buildSelectAIDiv = async () => {
 
   const optionArray = [
     { value: "chatgpt", text: "ChatGPT", selected: true },
-    { value: "local", text: "Local LLM [if running your own]" },
+    { value: "claude", text: "Claude [DOES NOT WORK]" },
+    { value: "local", text: "Local LLM [DOES NOT WORK]" },
   ];
 
   for (let i = 0; i < optionArray.length; i++) {
@@ -149,10 +150,10 @@ export const buildSelectModelDiv = async () => {
   modelSelect.setAttribute("data-label", "model-select");
 
   const optionArray = [
-    { value: "gpt-5", text: "GPT 5", selected: true },
-    { value: "gpt-5-nano", text: "GPT 5 Nano" },
+    { value: "gpt-5.2", text: "GPT 5.2", selected: true },
+    { value: "gpt-5", text: "GPT 5" },
     { value: "gpt-5-mini", text: "GPT 5 Mini" },
-    { value: "gpt-5.2", text: "GPT 5.2" },
+    { value: "gpt-5-nano", text: "GPT 5 Nano" },
   ];
 
   for (let i = 0; i < optionArray.length; i++) {
