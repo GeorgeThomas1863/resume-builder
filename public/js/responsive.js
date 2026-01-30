@@ -95,5 +95,5 @@ if (authElement) {
 if (displayElement) {
   displayElement.addEventListener("click", clickHandler);
   displayElement.addEventListener("change", changeHandler);
-  // displayElement.addEventListener("keydown", keyHandler);
+  displayElement.addEventListener("keydown", keyHandler);
 }

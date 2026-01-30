@@ -4,7 +4,7 @@ import { buildSubmitParams } from "./util/params.js";
 import { checkFile } from "./util/upload-front.js";
 import { showLoadStatus, hideLoadStatus } from "./display/loading.js";
 import { hideArray, unhideArray } from "./display/collapse.js";
-import { unhideAdminAuthModal, hideAdminAuthModal } from "./display/auth-form.js";
+import { unhideAdminAuthModal, hideAdminAuthModal } from "./display/modal.js";
 
 export const runMainSubmit = async () => {
   const jobInput = document.getElementById("paste-job-input").value.trim();

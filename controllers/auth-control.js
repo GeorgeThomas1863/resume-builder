@@ -40,5 +40,5 @@ export const adminAuthController = (req, res) => {
 export const checkAdminAuthController = (req, res) => {
   // console.log("CHECK ADMIN AUTH CONTROLLER");
   // console.log(req.session.isAdmin);
-  res.json({ isAdmin: !!req.session.isAdmin, redirect: "/admin-auth-display" });
+  res.json({ isAdmin: !!req.session.isAdmin });
 };
