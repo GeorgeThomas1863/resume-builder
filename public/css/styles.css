@@ -176,6 +176,12 @@ h3 {
   flex: 0 0 12%;
 }
 
+#prebuilt-checkbox-div {
+  margin-left: -1rem;
+  flex: 0 0 15%;
+  text-align: center;
+}
+
 .checkbox-wrapper {
   flex: 0 0 auto;
   display: flex;
@@ -185,9 +191,9 @@ h3 {
 
 .checkbox-container {
   border-radius: 8px;
-  padding: 0.75rem 2rem;
+  padding: 0.25rem 0;
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
   min-height: 42px;
 }
@@ -255,7 +261,7 @@ h3 {
 
 #temperature-input,
 #max-tokens-input {
-  text-align: right;
+  text-align: left;
   /* width: auto; */
 }
 

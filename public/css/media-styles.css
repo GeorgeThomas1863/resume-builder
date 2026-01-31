@@ -44,33 +44,6 @@
     font-size: 1.2rem;
   }
 
-  /* .form-list-item {
-    padding: 0.75rem 1.25rem;
-  }
-
-  .form-list-item:first-child {
-    padding-top: 1rem;
-  }
-
-  .form-list-item:last-child {
-    padding-bottom: 1rem;
-  } */
-
-  /* #model-options-list-item {
-    gap: 0;
-  } */
-
-  #priority-div,
-  #max-tokens-div,
-  #temperature-div {
-    text-align: left;
-  }
-
-  /* #max-tokens-div:last-child,
-  #temperature-div:last-child {
-    margin-bottom: 0;
-  } */
-
   .form-select,
   .form-input,
   .form-textarea {
@@ -86,16 +59,12 @@
   }
 
   #max-tokens-div {
-    flex: 0 0 15%;
-  }
-
-  #temperature-div {
     flex: 0 0 20%;
   }
 
-  /* .form-textarea {
-    min-height: 120px;
-  } */
+  #temperature-div {
+    flex: 0 0 15%;
+  }
 
   .btn-submit,
   .btn-upload {
@@ -149,28 +118,18 @@
     border-radius: 6px;
   }
 
-  /* .form-title {
-    font-size: 1.15rem;
-    padding: 0.625rem 1rem;
-    line-height: 1.25;
+  .form-row {
+    gap: 1rem;
   }
 
-  .form-list-item {
-    padding: 0.625rem 1rem;
+  #model-options-list-item {
+    gap: 1rem;
   }
 
-  .form-list-item:first-child {
-    padding-top: 0.875rem;
+  #prebuilt-checkbox-div {
+    margin-left: -0.75rem;
+    flex: 0 0 20%;
   }
-
-  .form-list-item:last-child {
-    padding-bottom: 0.875rem;
-  } */
-
-  /* .form-label {
-    font-size: 0.8rem;
-    margin-bottom: 0.25rem;
-  } */
 
   .form-select,
   .form-input,
@@ -179,18 +138,34 @@
     font-size: 16px;
   }
 
+  .toggle-wrapper {
+    padding: 10px 12px;
+  }
+
+  .model-options-toggle-btn {
+    width: 22px;
+    height: 22px;
+  }
+
+  #priority-select,
+  #max-tokens-input,
+  #temperature-input,
+  #prebuilt-checkbox {
+    font-size: 12px;
+  }
+
+  .checkbox-container {
+    min-height: 36px;
+  }
+
   .form-select {
     padding-right: 36px;
     background-position: right 12px center;
   }
 
-  /* .form-textarea {
-    min-height: 100px;
-  }
-
   .form-textarea::placeholder {
     font-size: 1rem;
-  } */
+  }
 
   .btn-submit,
   .btn-upload {
@@ -204,11 +179,6 @@
     font-size: 11px;
     margin-top: 0.75rem;
   }
-
-  /* h3 {
-    font-size: 1.75rem;
-    margin-top: 1.5rem;
-  } */
 
   #auth-label {
     font-size: 1.25rem;
@@ -245,53 +215,17 @@
   }
 
   .form-title {
-    font-size: 1.05rem;
-    padding: 0.5rem 0.875rem;
-    line-height: 1.2;
+    font-size: 1.5rem;
+    text-align: center;
   }
 
-  .form-list-item {
-    padding: 0.5rem 0.875rem;
-  }
-
-  .form-list-item:first-child {
-    padding-top: 0.75rem;
-  }
-
-  .form-list-item:last-child {
-    padding-bottom: 0.75rem;
-  }
-
-  /* .form-row {
-    gap: 0;
-  } */
-
-  .form-select-half {
-    margin-bottom: 0.875rem;
-  }
-
-  .form-label {
-    font-size: 0.8rem;
-  }
-
-  .form-select,
-  .form-input,
-  .form-textarea {
-    padding: 9px 11px;
-    font-size: 16px;
-  }
-
-  .form-select {
-    padding-right: 34px;
-    background-position: right 10px center;
-  }
-
-  .form-textarea {
-    min-height: 85px;
+  .title-subtitle {
+    display: block;
+    font-size: 1rem;
   }
 
   .form-textarea::placeholder {
-    font-size: 0.95rem;
+    font-size: 0.8rem;
   }
 
   .btn-submit,
@@ -348,15 +282,6 @@
     width: 40px;
     height: 40px;
     border-width: 4px;
-  }
-
-  .model-options-toggle-btn {
-    width: 22px;
-    height: 22px;
-  }
-
-  .toggle-wrapper {
-    padding: 0.65rem 0.875rem;
   }
 }
 
