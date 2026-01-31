@@ -23,10 +23,10 @@ export const clickHandler = async (e) => {
   const clickId = clickElement.id;
   const clickType = clickElement.getAttribute("data-label");
 
-  console.log("CLICK ID");
-  console.log(clickId);
-  console.log("CLICK TYPE");
-  console.log(clickType);
+  // console.log("CLICK ID");
+  // console.log(clickId);
+  // console.log("CLICK TYPE");
+  // console.log(clickType);
 
   if (clickType === "auth-submit") await runAuthSubmit();
   // if (clickType === "admin-auth-submit") await runAdminAuthSubmit();
@@ -39,8 +39,6 @@ export const clickHandler = async (e) => {
 
   if (clickType === "pwToggle") await runPwToggle();
   if (clickType === "modelOptionsToggle") await runModelOptionsToggle();
-  // if (clickType === "make-pretty") await runPrettyToggle(clickId);
-  // if (clickType === "copy-return-data") await runCopyReturnData();
 };
 
 export const keyHandler = async (e) => {
@@ -50,15 +48,11 @@ export const keyHandler = async (e) => {
   const keyElement = e.target;
   const keyId = keyElement.id;
 
-  console.log("KEY HANDLER");
-  console.log(keyId);
+  // console.log("KEY HANDLER");
+  // console.log(keyId);
 
   if (keyId === "auth-pw-input") await runAuthSubmit();
-  // if (keyId === "admin-auth-pw-input") await runAdminAuthSubmit();
   if (keyId === "admin-auth-modal-input") await runAdminAuthModalSubmit();
-
-  // if (!displayElement) return null;
-  // await runMainSubmit();
 
   return true;
 };
@@ -68,10 +62,10 @@ export const changeHandler = async (e) => {
   const changeElement = e.target;
   const changeId = changeElement.id;
 
-  console.log("CHANGE HANDLER");
-  console.log(changeId);
-  console.log("CHANGE ELEMENT VALUE");
-  console.log(changeElement.value);
+  // console.log("CHANGE HANDLER");
+  // console.log(changeId);
+  // console.log("CHANGE ELEMENT VALUE");
+  // console.log(changeElement.value);
 
   if (changeId === "ai-type-select") await runAIModelSelect(changeElement.value);
 
@@ -80,8 +74,8 @@ export const changeHandler = async (e) => {
   if (changeId !== "upload-file-input") return null;
 
   const file = e.target.files[0];
-  console.log("FILE");
-  console.log(file);
+  // console.log("FILE");
+  // console.log(file);
   if (!file) return null;
 
   await runUploadFile(file);

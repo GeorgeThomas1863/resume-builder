@@ -22,7 +22,7 @@ export const sendToBack = async (inputParams, method = "POST", raw = false) => {
 
     return data;
   } catch (e) {
-    console.log(e);
+    // console.log(e);
     return "FAIL";
   }
 };

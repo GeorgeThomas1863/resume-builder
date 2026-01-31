@@ -10,15 +10,6 @@
     margin: 1.5rem auto;
   }
 
-  /* .form-title {
-    font-size: 1.5rem;
-    padding: 0.875rem 1.5rem;
-  } */
-
-  /* .form-list-item {
-    padding: 0.875rem 1.5rem;
-  } */
-
   h3 {
     font-size: 2.5rem;
     margin-top: 2.5rem;
@@ -198,6 +189,11 @@
     padding: 0 0.75rem;
   }
 
+  .modal-title {
+    font-size: 1.1rem;
+    margin: 0 0 1rem 0;
+  }
+
   .spinner {
     width: 45px;
     height: 45px;
@@ -248,6 +244,11 @@
   h3 {
     font-size: 1.5rem;
     margin-top: 1.25rem;
+  }
+
+  .modal-title {
+    font-size: 0.9rem;
+    margin: 0 0 0.5rem 0;
   }
 
   #auth-label {
@@ -410,7 +411,6 @@
     padding-bottom: 0.75rem;
   }
 
-  /* Keep rows horizontal in landscape but with tighter spacing */
   .form-row {
     gap: 1rem;
   }
@@ -499,26 +499,6 @@
 /* ============================================= */
 /* ADDITIONAL RESPONSIVE UTILITIES */
 /* ============================================= */
-
-/* Ensure touch targets are large enough on all mobile devices */
-/* @media (max-width: 768px) {
-  button,
-  select,
-  input,
-  textarea {
-    min-height: 44px; 
-  }
-
-  .password-toggle-btn {
-    min-width: 44px;
-    min-height: 44px;
-  }
-
-  .model-options-toggle-btn {
-    min-width: 44px;
-    min-height: 44px;
-  }
-} */
 
 /* Prevent text inflation on iOS */
 @media (max-width: 768px) {

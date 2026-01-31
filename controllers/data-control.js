@@ -36,9 +36,9 @@ export const uploadResumeController = async (req, res) => {
 export const deleteResumeController = async (req, res) => {
   try {
     const data = await clearUploadDirectory(req.session.id);
-    console.log("CLEAR UPLOAD DIRECTORY DATA");
-    console.log("DATA");
-    console.log(data);
+    // console.log("CLEAR UPLOAD DIRECTORY DATA");
+    // console.log("DATA");
+    // console.log(data);
 
     if (!data || !data.success) {
       return res.status(500).json({ success: false, message: data.message });
@@ -64,8 +64,8 @@ export const submitRouteController = async (req, res) => {
 
   const buffer = await runResumeUnfucker(inputParams);
 
-  console.log("DATA");
-  console.log(buffer.length);
+  // console.log("DATA");
+  // console.log(buffer.length);
 
   res.setHeader("Content-Type", "application/vnd.openxmlformats-officedocument.wordprocessingml.document");
   res.setHeader("Content-Disposition", 'attachment; filename="new-resume.docx"');

@@ -18,9 +18,9 @@ export const extractResumeText = async (inputPath) => {
 };
 
 export const extractTextPDF = async (inputPath) => {
-  console.log("EXTRACTING TEXT FROM PDF");
-  console.log("INPUT PATH");
-  console.log(inputPath);
+  // console.log("EXTRACTING TEXT FROM PDF");
+  // console.log("INPUT PATH");
+  // console.log(inputPath);
 
   try {
     const buffer = await fsPromises.readFile(inputPath);
@@ -28,15 +28,15 @@ export const extractTextPDF = async (inputPath) => {
     const parser = new PDFParse(uint8Array);
 
     const data = await parser.getText();
-    console.log("DATA");
-    console.log(data);
+    // console.log("DATA");
+    // console.log(data);
     await parser.destroy();
     if (!data) return null;
 
     return data.text;
   } catch (e) {
-    console.log("ERROR EXTRACTING TEXT FROM PDF");
-    console.log(e);
+    // console.log("ERROR EXTRACTING TEXT FROM PDF");
+    // console.log(e);
     return null;
   }
 };
@@ -54,12 +54,12 @@ export const buildNewResume = async (aiText, infoObj = null) => {
 
   const aiObj = JSON.parse(aiText);
 
-  console.log("AI OBJ");
-  console.log(aiObj);
+  // console.log("AI OBJ");
+  // console.log(aiObj);
 
   const paragraphArray = await buildParagraphArray(aiObj, infoObj);
-  console.log("PARAGRAPH ARRAY");
-  console.log(paragraphArray.length);
+  // console.log("PARAGRAPH ARRAY");
+  // console.log(paragraphArray.length);
 
   //build document
   const doc = new Document({
@@ -94,8 +94,6 @@ export const buildParagraphArray = async (aiObj, infoObj = null) => {
 //for me
 export const buildPrebuiltParagraphArray = async (aiObj, infoObj) => {
   const paragraphArray = [];
-
-  console.log("ALLAHU AKBAR")
 
   //name header
   paragraphArray.push(
@@ -491,9 +489,9 @@ export const buildDefaultParagraphArray = async (aiObj) => {
   const { name, email, summary, experience, education } = aiObj;
   // const { jobArray } = OBJ;
 
-  console.log("BUIILDING DEFAULT PARAGRAPH ARRAY")
-  console.log("AI OBJ");
-  console.log(aiObj);
+  // console.log("BUIILDING DEFAULT PARAGRAPH ARRAY")
+  // console.log("AI OBJ");
+  // console.log(aiObj);
 
   const paragraphArray = [];
 

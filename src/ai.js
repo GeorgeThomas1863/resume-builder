@@ -35,7 +35,7 @@ export const runSendToAI = async (inputParams) => {
 
 export const runChatGPT = async (inputParams) => {
   const { messageInput, schema, modelType, serviceTier, maxTokens, temperature } = inputParams;
-  console.log("SENDING TO CHATGPT");
+  // console.log("SENDING TO CHATGPT");
 
   const client = buildOpenAIClient();
 
@@ -58,20 +58,20 @@ export const runChatGPT = async (inputParams) => {
       },
     });
 
-    console.log("CHATGPT RESPONSE");
-    console.log(data);
+    // console.log("CHATGPT RESPONSE");
+    // console.log(data);
 
     return data.output_text;
   } catch (e) {
-    console.log("ERROR RUNNING CHATGPT, ERROR MESSAGE:");
-    console.log(e);
+    // console.log("ERROR RUNNING CHATGPT, ERROR MESSAGE:");
+    // console.log(e);
     return null;
   }
 };
 
 export const runLocalAI = async (inputParams) => {
   const { messageInput, schema, modelType, maxTokens, temperature } = inputParams;
-  console.log("RUNNING CUSTOM AI");
+  // console.log("RUNNING CUSTOM AI");
   // console.log(inputParams);
 
   const client = buildLocalClient();
@@ -95,8 +95,8 @@ export const runLocalAI = async (inputParams) => {
 
     return data.choices[0].message.content;
   } catch (e) {
-    console.log("ERROR RUNNING LOCAL AI, ERROR MESSAGE:");
-    console.log(e);
+    // console.log("ERROR RUNNING LOCAL AI, ERROR MESSAGE:");
+    // console.log(e);
     return null;
   }
 };

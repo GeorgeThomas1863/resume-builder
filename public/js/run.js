@@ -17,8 +17,8 @@ export const runMainSubmit = async () => {
   if (!params) return null;
 
   const fileData = await checkFile();
-  console.log("FILE DATA");
-  console.log(fileData);
+  // console.log("FILE DATA");
+  // console.log(fileData);
   if (!fileData && !params.nukeOhio) {
     alert("You forgot to upload a resume. Please upload a resume and try again.");
     return null;
@@ -27,16 +27,15 @@ export const runMainSubmit = async () => {
   if (fileData) params.inputPath = fileData.filePath;
   params.jobInput = jobInput;
 
-  console.log("RUN MAIN SUBMIT PARAMS");
-  console.dir(params);
+  // console.log("RUN MAIN SUBMIT PARAMS");
+  // console.dir(params);
 
   if (params.nukeOhio) {
-    const adminAuthData = await checkAdminAuth();
+    const adminAuthData = await sendToBack({ route: "/check-admin-auth" }, "GET");
 
     if (!adminAuthData.isAdmin) {
-      // Show modal and wait for auth
       await unhideAdminAuthModal();
-      // Store params for later use
+
       window.pendingSubmitParams = params;
       return null;
     }
@@ -66,14 +65,6 @@ export const executeSubmit = async (params) => {
   a.remove();
 
   return true;
-};
-
-export const checkAdminAuth = async () => {
-  const data = await sendToBack({ route: "/check-admin-auth" }, "GET");
-  console.log("CHECK ADMIN AUTH");
-  console.log(data);
-
-  return data;
 };
 
 //----------------------
@@ -134,8 +125,8 @@ export const runPwToggle = async () => {
   const pwButton = document.querySelector(".password-toggle-btn");
   const pwInput = document.querySelector(".password-input");
 
-  console.log(pwButton);
-  console.log(pwInput);
+  // console.log(pwButton);
+  // console.log(pwInput);
   const currentSvgId = pwButton.querySelector("svg").id;
 
   if (currentSvgId === "eye-closed-icon") {
@@ -152,8 +143,8 @@ export const runPwToggle = async () => {
 export const runAIModelSelect = async (modelType) => {
   if (!modelType) return null;
   const modelValue = modelMap[modelType];
-  console.log("MODEL VALUE");
-  console.log(modelValue);
+  // console.log("MODEL VALUE");
+  // console.log(modelValue);
 
   const modelSelect = document.getElementById("model-select");
   if (!modelSelect) return null;

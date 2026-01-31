@@ -16,17 +16,4 @@ export const buildAuthDisplay = async () => {
   authElement.appendChild(authForm);
 };
 
-// export const buildAdminAuthDisplay = async () => {
-//   if (!adminAuthElement) return null;
-
-//   const adminAuthForm = await buildAdminAuthForm();
-//   if (!adminAuthForm) {
-//     console.log("FAILED TO BUILD ADMIN AUTH FORM");
-//     return null;
-//   }
-
-//   adminAuthElement.appendChild(adminAuthForm);
-// };
-
 if (authElement) buildAuthDisplay();
-// if (adminAuthElement) buildAdminAuthDisplay();
