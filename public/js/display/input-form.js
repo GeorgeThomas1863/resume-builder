@@ -6,7 +6,7 @@ export const buildInputForm = async () => {
   inputFormWrapper.id = "input-form-wrapper";
 
   const inputTitleElement = document.createElement("h2");
-  inputTitleElement.textContent = `Tool to Prettify Your Resume ("align it with a job description")`;
+  inputTitleElement.innerHTML = `Tool to Prettify Your Resume <span class="title-subtitle">("align it with a job description")</span>`;
   inputTitleElement.className = "form-title";
 
   const inputFormElement = document.createElement("div");

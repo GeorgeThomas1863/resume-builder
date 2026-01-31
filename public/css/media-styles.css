@@ -10,14 +10,14 @@
     margin: 1.5rem auto;
   }
 
-  .form-title {
+  /* .form-title {
     font-size: 1.5rem;
     padding: 0.875rem 1.5rem;
-  }
+  } */
 
-  .form-list-item {
+  /* .form-list-item {
     padding: 0.875rem 1.5rem;
-  }
+  } */
 
   h3 {
     font-size: 2.5rem;
@@ -35,12 +35,16 @@
   }
 
   .form-title {
-    font-size: 1.3rem;
-    padding: 0.75rem 1.25rem;
-    line-height: 1.3;
+    font-size: 1.7rem;
+    text-align: center;
   }
 
-  .form-list-item {
+  .title-subtitle {
+    display: block;
+    font-size: 1.2rem;
+  }
+
+  /* .form-list-item {
     padding: 0.75rem 1.25rem;
   }
 
@@ -50,44 +54,22 @@
 
   .form-list-item:last-child {
     padding-bottom: 1rem;
-  }
+  } */
 
-  /* Stack the form rows vertically */
-  .form-row {
-    flex-direction: column;
+  /* #model-options-list-item {
     gap: 0;
-    align-items: stretch;
-  }
-
-  .form-select-half {
-    width: 100%;
-    margin-bottom: 1rem;
-  }
-
-  #model-options-toggle {
-    width: 100%;
-    flex: 1 1 auto;
-  }
-
-  #model-options-toggle .toggle-wrapper {
-    width: 100%;
-  }
-
-  #model-options-list-item {
-    gap: 0;
-  }
+  } */
 
   #priority-div,
   #max-tokens-div,
   #temperature-div {
-    flex: 1;
-    margin-bottom: 1rem;
+    text-align: left;
   }
 
-  #max-tokens-div:last-child,
+  /* #max-tokens-div:last-child,
   #temperature-div:last-child {
     margin-bottom: 0;
-  }
+  } */
 
   .form-select,
   .form-input,
@@ -95,9 +77,25 @@
     font-size: 16px; /* Prevents iOS zoom on focus */
   }
 
-  .form-textarea {
-    min-height: 120px;
+  #model-options-list-item .form-label {
+    font-size: 0.75rem;
   }
+
+  #priority-div {
+    flex: 0 0 40%;
+  }
+
+  #max-tokens-div {
+    flex: 0 0 15%;
+  }
+
+  #temperature-div {
+    flex: 0 0 20%;
+  }
+
+  /* .form-textarea {
+    min-height: 120px;
+  } */
 
   .btn-submit,
   .btn-upload {
@@ -151,7 +149,7 @@
     border-radius: 6px;
   }
 
-  .form-title {
+  /* .form-title {
     font-size: 1.15rem;
     padding: 0.625rem 1rem;
     line-height: 1.25;
@@ -167,12 +165,12 @@
 
   .form-list-item:last-child {
     padding-bottom: 0.875rem;
-  }
+  } */
 
-  .form-label {
-    font-size: 0.85rem;
+  /* .form-label {
+    font-size: 0.8rem;
     margin-bottom: 0.25rem;
-  }
+  } */
 
   .form-select,
   .form-input,
@@ -186,13 +184,13 @@
     background-position: right 12px center;
   }
 
-  .form-textarea {
+  /* .form-textarea {
     min-height: 100px;
   }
 
   .form-textarea::placeholder {
     font-size: 1rem;
-  }
+  } */
 
   .btn-submit,
   .btn-upload {
@@ -207,10 +205,10 @@
     margin-top: 0.75rem;
   }
 
-  h3 {
+  /* h3 {
     font-size: 1.75rem;
     margin-top: 1.5rem;
-  }
+  } */
 
   #auth-label {
     font-size: 1.25rem;
@@ -238,7 +236,7 @@
 }
 
 /* Small mobile devices - Portrait */
-@media (max-width: 405px) and (orientation: portrait) {
+@media (max-width: 420px) and (orientation: portrait) {
   #input-form-wrapper,
   #auth-form-wrapper {
     max-width: 95%;
@@ -264,9 +262,9 @@
     padding-bottom: 0.75rem;
   }
 
-  .form-row {
+  /* .form-row {
     gap: 0;
-  }
+  } */
 
   .form-select-half {
     margin-bottom: 0.875rem;
@@ -578,12 +576,12 @@
 /* ============================================= */
 
 /* Ensure touch targets are large enough on all mobile devices */
-@media (max-width: 768px) {
+/* @media (max-width: 768px) {
   button,
   select,
   input,
   textarea {
-    min-height: 44px; /* iOS recommended touch target */
+    min-height: 44px; 
   }
 
   .password-toggle-btn {
@@ -595,7 +593,7 @@
     min-width: 44px;
     min-height: 44px;
   }
-}
+} */
 
 /* Prevent text inflation on iOS */
 @media (max-width: 768px) {
