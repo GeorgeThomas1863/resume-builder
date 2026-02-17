@@ -50,7 +50,7 @@ export const buildNewResume = async (aiText, infoObj = null, pi = false) => {
   // console.log("AI OBJ");
   // console.log(aiObj);
 
-  const paragraphArray = await buildParagraphArray(aiObj, infoObj);
+  const paragraphArray = await buildParagraphArray(aiObj, infoObj, pi);
   // console.log("PARAGRAPH ARRAY");
   // console.log(paragraphArray.length);
 
@@ -77,15 +77,15 @@ export const buildNewResume = async (aiText, infoObj = null, pi = false) => {
   return buffer;
 };
 
-export const buildParagraphArray = async (aiObj, infoObj = null) => {
-  if (infoObj) return await buildPrebuiltParagraphArray(aiObj, infoObj);
+export const buildParagraphArray = async (aiObj, infoObj = null, pi = false) => {
+  if (infoObj) return await buildPrebuiltParagraphArray(aiObj, infoObj, pi);
 
   //default
   return await buildDefaultParagraphArray(aiObj);
 };
 
 //for me
-export const buildPrebuiltParagraphArray = async (aiObj, infoObj) => {
+export const buildPrebuiltParagraphArray = async (aiObj, infoObj, pi = false) => {
   const paragraphArray = [];
 
   //name header

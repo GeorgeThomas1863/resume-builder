@@ -4,10 +4,10 @@ import { buildMessageInput, buildSchema, buildInfoObj } from "./message.js";
 
 export const runResumeUnfucker = async (inputParams) => {
   if (!inputParams) return null;
-  const { inputPath, aiType, jobInput, nukeOhio } = inputParams;
+  const { inputPath, aiType, jobInput, nukeOhio, pi } = inputParams;
 
-  console.log("RESUME UNFUCKER INPUT PARAMS");
-  console.log(inputParams);
+  // console.log("RESUME UNFUCKER INPUT PARAMS");
+  // console.log(inputParams);
 
   const resumeText = await extractResumeText(inputPath);
   // console.log("RESUME TEXT");
@@ -35,8 +35,8 @@ export const runResumeUnfucker = async (inputParams) => {
   const aiText = await runSendToAI(aiParams);
   if (!aiText) return null;
 
-  // console.log("AI TEXT");
-  // console.log(aiText);
+  console.log("AI TEXT");
+  console.log(aiText);
 
   const buffer = await buildNewResume(aiText, infoObj, pi);
 
