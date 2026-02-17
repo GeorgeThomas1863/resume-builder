@@ -212,7 +212,9 @@ export const buildModelOptionsListItem = async () => {
   const maxTokensDiv = await buildMaxTokensDiv();
   const temperatureDiv = await buildTemperatureDiv();
   const prebuiltCheckbox = await buildPrebuiltCheckbox();
-  modelOptionsListItem.append(priorityDiv, maxTokensDiv, temperatureDiv, prebuiltCheckbox);
+  const piCheckbox = await buildPICheckbox();
+
+  modelOptionsListItem.append(priorityDiv, maxTokensDiv, temperatureDiv, prebuiltCheckbox, piCheckbox);
 
   return modelOptionsListItem;
 };
@@ -327,6 +329,31 @@ export const buildPrebuiltCheckbox = async () => {
   prebuiltCheckboxDiv.append(prebuiltLabel, checkboxContainer);
 
   return prebuiltCheckboxDiv;
+};
+
+export const buildPICheckbox = async () => {
+  const piCheckboxDiv = document.createElement("div");
+  piCheckboxDiv.id = "pi-checkbox-div";
+  piCheckboxDiv.className = "form-select-half checkbox-wrapper";
+
+  const piLabel = document.createElement("label");
+  piLabel.setAttribute("for", "pi-checkbox");
+  piLabel.textContent = "PI?";
+  piLabel.className = "form-label";
+
+  const piCheckboxContainer = document.createElement("div");
+  piCheckboxContainer.className = "checkbox-container";
+
+  const piCheckbox = document.createElement("input");
+  piCheckbox.type = "checkbox";
+  piCheckbox.id = "pi-checkbox";
+  piCheckbox.className = "form-checkbox";
+  piCheckbox.setAttribute("data-label", "pi-checkbox");
+
+  piCheckboxContainer.append(piCheckbox);
+  piCheckboxDiv.append(piLabel, piCheckboxContainer);
+
+  return piCheckboxDiv;
 };
 
 //----------------

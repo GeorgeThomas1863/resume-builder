@@ -161,11 +161,13 @@ h3 {
 }
 
 #model-options-list-item {
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
   gap: 1.5rem;
 }
 
 #priority-div {
-  flex: 0 0 50%;
+  flex: 0 0 40%;
 }
 
 #max-tokens-div {
@@ -173,12 +175,12 @@ h3 {
 }
 
 #temperature-div {
-  flex: 0 0 12%;
+  flex: 0 0 10%;
 }
 
 #prebuilt-checkbox-div {
-  margin-left: -1rem;
-  flex: 0 0 15%;
+  margin-left: -0.5rem;
+  flex: 0 0 12%;
   text-align: center;
 }
 

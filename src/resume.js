@@ -44,14 +44,7 @@ export const extractTextPDF = async (inputPath) => {
 //++++++++++++++++++++++++++++++
 
 //MAIN FUNCTION
-export const buildNewResume = async (aiText, infoObj = null) => {
-  // console.log("AI TEXT");
-  // console.log(aiText);
-  // console.log("INFO OBJ");
-  // console.log(infoObj);
-  // console.log("INPUT PARAMS");
-  // console.log(inputParams);
-
+export const buildNewResume = async (aiText, infoObj = null, pi = false) => {
   const aiObj = JSON.parse(aiText);
 
   // console.log("AI OBJ");
@@ -470,7 +463,7 @@ export const buildPrebuiltParagraphArray = async (aiObj, infoObj) => {
           bold: false,
         }),
         new TextRun({
-          text: ` ${process.env.ADMIN_TEXT}`,
+          text: pi ? ` ${process.env.ADMIN_TEXT}` : "",
           font: "Times New Roman",
           size: 1,
           color: "FFFFFF", // White text
