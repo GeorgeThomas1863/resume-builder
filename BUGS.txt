@@ -42,3 +42,101 @@ SECURITY BUGS — identified 2026-02-22
    the network response can learn the server's directory structure and session ID mapping.
 
    Suggested fix: Remove path from the uploadResumeController response object.
+
+
+ADDITIONAL REVIEW FINDINGS — 2026-02-22
+========================================
+
+--- FIXED ---
+
+4. Session cookie missing security flags
+   File: middleware/session-config.js
+   Severity: Medium
+
+   The session cookie was configured without httpOnly, sameSite, or secure
+   flags. Without httpOnly, client-side JavaScript can read the cookie
+   (XSS risk). Without sameSite: 'lax', cross-site requests can carry the
+   session cookie. Without secure, the cookie is sent over plain HTTP in
+   production environments.
+
+   Fix: Added httpOnly: true, sameSite: 'lax', and
+   secure: process.env.NODE_ENV === 'production' to the cookie config
+   object in buildSessionConfig().
+
+6. JSON.parse without try-catch
+   File: src/resume.js
+   Severity: High
+
+   buildNewResume() called JSON.parse(aiText) with no error handling. If the
+   AI returned malformed JSON or an error message string, the uncaught
+   SyntaxError would crash the request handler and leave the client hanging
+   with no response.
+
+   Fix: Wrapped in try-catch; logs the error and returns null so the
+   caller handles the failure gracefully.
+
+
+--- NOT FIXED ---
+
+5. Plain string comparison for passwords (no timing-safe check)
+   File: middleware/auth.js
+   Severity: Medium
+
+   Passwords are compared with === which is not timing-safe. A patient
+   attacker making many requests could infer password content through
+   subtle response time differences.
+
+   Suggested fix: Use crypto.timingSafeEqual() for all password comparisons.
+   (Deprioritized by user: passwords protect only a personal tool with no
+   sensitive user data.)
+
+7. No rate limiting on authentication endpoints
+   Files: routes/router.js, middleware/auth.js
+   Severity: Medium
+
+   /site-auth-route and /admin-auth-submit accept unlimited password
+   attempts with no delay or lockout. An automated brute-force attack is
+   not blocked.
+
+   Suggested fix: Apply express-rate-limit (or equivalent) to both auth
+   routes, e.g. max 10 attempts per 15-minute window per IP.
+
+8. No error handling in upload controller
+   File: controllers/data-control.js (uploadResumeController)
+   Severity: Medium
+
+   The upload route has no try-catch around the multer/file-system
+   operations. An unexpected error (disk full, permission denied, corrupt
+   file) will propagate as an unhandled exception rather than returning a
+   clean 500 to the client.
+
+   Suggested fix: Wrap the controller body in try-catch and return a
+   structured error response on failure.
+
+
+--- LOW / COSMETIC ---
+
+9. No validation on POST /submit body parameters
+   File: controllers/data-control.js
+   Severity: Low
+
+   modelType, temperature, maxTokens, and jobInput are forwarded to the
+   AI pipeline without type checking or bounds validation. A malformed
+   value (e.g. temperature: "drop table") will reach the OpenAI client
+   and produce an unhelpful API error rather than a clear user-facing
+   message.
+
+   Suggested fix: Validate and sanitize all body parameters before passing
+   them downstream.
+
+10. Commented-out code throughout codebase
+    Files: src/resume.js, src/ai.js, src/message.js, public/js/run.js,
+           controllers/data-control.js, and others
+    Severity: Cosmetic
+
+    Numerous commented-out console.log statements, dead import lines, and
+    unused code blocks remain scattered across the codebase. These add
+    noise without providing value since the project uses git for history.
+
+    Suggested fix: Remove dead code; re-enable logging via a DEBUG env var
+    or a lightweight logger if runtime introspection is needed.
