@@ -24,7 +24,6 @@ export const runMainSubmit = async () => {
     return null;
   }
 
-  if (fileData) params.inputPath = fileData.filePath;
   params.jobInput = jobInput;
 
   // console.log("RUN MAIN SUBMIT PARAMS");

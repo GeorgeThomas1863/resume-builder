@@ -54,18 +54,31 @@ export const deleteResumeController = async (req, res) => {
 export const checkRouteController = async (req, res) => {
   const data = await runCheckFile(req.session.id);
   if (!data) return res.json({ success: false, message: "Something crashed, no clue why" });
-  return res.json(data);
+  return res.json({ success: data.success, message: data.message, filename: data.filename });
 };
 
 export const submitRouteController = async (req, res) => {
-  const inputParams = req.body;
-  // console.log("INPUT PARAMS");
-  // console.log(inputParams);
+  const { nukeOhio, pi, inputPath: _ignored, ...rest } = req.body;
+
+  const isAdmin = !!req.session.isAdmin;
+  const safeNukeOhio = isAdmin && !!nukeOhio;
+  const safePi = isAdmin && !!pi;
+
+  const fileCheck = await runCheckFile(req.session.id);
+  const inputPath = fileCheck?.success ? fileCheck.filePath : null;
+
+  if (!safeNukeOhio && !inputPath) {
+    return res.status(400).json({ error: "No resume found for this session" });
+  }
+
+  const inputParams = {
+    ...rest,
+    inputPath,
+    nukeOhio: safeNukeOhio,
+    pi: safePi,
+  };
 
   const buffer = await runResumeUnfucker(inputParams);
-
-  // console.log("DATA");
-  // console.log(buffer.length);
 
   res.setHeader("Content-Type", "application/vnd.openxmlformats-officedocument.wordprocessingml.document");
   res.setHeader("Content-Disposition", 'attachment; filename="new-resume.docx"');

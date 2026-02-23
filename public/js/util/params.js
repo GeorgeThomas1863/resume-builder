@@ -1,7 +1,6 @@
 export const buildSubmitParams = async () => {
   return {
     route: "/submit",
-    inputPath: null,
     aiType: document.getElementById("ai-type-select").value,
     modelType: document.getElementById("model-select").value,
     serviceTier: document.getElementById("priority-select").value,

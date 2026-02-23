@@ -1,0 +1,44 @@
+SECURITY BUGS — identified 2026-02-22
+=====================================
+
+--- FIXED ---
+
+1. Arbitrary file read via client-controlled inputPath
+   Files: controllers/data-control.js, public/js/run.js, public/js/util/params.js
+   Severity: Critical
+
+   GET /check-file returned the full disk path of the uploaded file (filePath field).
+   The client sent it back in the POST /submit body as inputPath. The server used that
+   client-supplied value verbatim to read a file from disk via extractResumeText(inputPath).
+   Any authenticated user could craft a POST request with an arbitrary path (.env, source
+   files, etc.) and receive the contents embedded in the generated document.
+
+   Fix: filePath stripped from GET /check-file response. inputPath in POST /submit body is
+   now explicitly discarded. The server derives the file path server-side from the session
+   via runCheckFile(req.session.id).
+
+2. nukeOhio / pi flags not verified server-side
+   File: controllers/data-control.js
+   Severity: Critical
+
+   The admin-only prebuilt mode (nukeOhio) and hidden-text feature (pi) were gated only
+   in the browser via the admin modal flow. Any authenticated user could bypass the frontend
+   entirely and POST { nukeOhio: true, pi: true } to use prebuilt mode and embed the hidden
+   admin text in the output document.
+
+   Fix: nukeOhio and pi are now gated on req.session.isAdmin in submitRouteController.
+   Values from the request body are ignored unless the session carries admin status.
+
+
+--- NOT FIXED (out of scope, noted for follow-up) ---
+
+3. Full disk path exposed in POST /upload response
+   File: controllers/uploadResumeController (data-control.js)
+   Severity: Low (information leakage, not currently exploitable)
+
+   The upload response includes path: req.file.path, which is the full server-side disk path
+   of the uploaded file. The frontend currently discards the return value of runUploadFile(),
+   so this path is never used. However, it is still information leakage — a client inspecting
+   the network response can learn the server's directory structure and session ID mapping.
+
+   Suggested fix: Remove path from the uploadResumeController response object.
