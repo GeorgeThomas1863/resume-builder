@@ -8,7 +8,7 @@ config/
 .env.*
 .local.env
 
-BUGS.txt
+**/BUGS.txt
 
 data/*
 **/data/*
