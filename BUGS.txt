@@ -30,7 +30,7 @@ SECURITY BUGS — identified 2026-02-22
    Values from the request body are ignored unless the session carries admin status.
 
 
---- NOT FIXED (out of scope, noted for follow-up) ---
+--- FIXED ---
 
 3. Full disk path exposed in POST /upload response
    File: controllers/uploadResumeController (data-control.js)
@@ -41,7 +41,7 @@ SECURITY BUGS — identified 2026-02-22
    so this path is never used. However, it is still information leakage — a client inspecting
    the network response can learn the server's directory structure and session ID mapping.
 
-   Suggested fix: Remove path from the uploadResumeController response object.
+   Fix: Removed path from the uploadResumeController response object.
 
 
 ADDITIONAL REVIEW FINDINGS — 2026-02-22
@@ -76,7 +76,7 @@ ADDITIONAL REVIEW FINDINGS — 2026-02-22
    caller handles the failure gracefully.
 
 
---- NOT FIXED ---
+--- NOT FIXED (deprioritized by user — personal tool, no sensitive data) ---
 
 5. Plain string comparison for passwords (no timing-safe check)
    File: middleware/auth.js
@@ -90,16 +90,23 @@ ADDITIONAL REVIEW FINDINGS — 2026-02-22
    (Deprioritized by user: passwords protect only a personal tool with no
    sensitive user data.)
 
+
+--- FIXED ---
+
 7. No rate limiting on authentication endpoints
-   Files: routes/router.js, middleware/auth.js
+   Files: controllers/auth-control.js
    Severity: Medium
 
    /site-auth-route and /admin-auth-submit accept unlimited password
    attempts with no delay or lockout. An automated brute-force attack is
    not blocked.
 
-   Suggested fix: Apply express-rate-limit (or equivalent) to both auth
-   routes, e.g. max 10 attempts per 15-minute window per IP.
+   Fix: In-memory Maps in auth-control.js track failed attempts per IP.
+   After 10 failures in a 15-minute window, returns 429. Counter resets
+   on successful login. No external package needed.
+
+
+--- FIXED ---
 
 8. No error handling in upload controller
    File: controllers/data-control.js (uploadResumeController)
@@ -110,11 +117,13 @@ ADDITIONAL REVIEW FINDINGS — 2026-02-22
    file) will propagate as an unhandled exception rather than returning a
    clean 500 to the client.
 
-   Suggested fix: Wrap the controller body in try-catch and return a
-   structured error response on failure.
+   Fix: Wrapped controller body in try-catch; returns structured 500 on
+   failure. Also added null check in submitRouteController — previously
+   a failed AI call caused res.send(null) which silently downloaded an
+   empty file; now returns a clear 500 JSON response.
 
 
---- LOW / COSMETIC ---
+--- FIXED ---
 
 9. No validation on POST /submit body parameters
    File: controllers/data-control.js
@@ -126,8 +135,14 @@ ADDITIONAL REVIEW FINDINGS — 2026-02-22
    and produce an unhelpful API error rather than a clear user-facing
    message.
 
-   Suggested fix: Validate and sanitize all body parameters before passing
-   them downstream.
+   Fix: submitRouteController now explicitly destructures all known body
+   params (dropping the unintentional route field that previously leaked
+   through ...rest). Validates jobInput and modelType as non-empty strings;
+   temperature as a finite non-negative number; maxTokens as a positive
+   integer. Returns 400 with a clear message on failure.
+
+
+--- LOW / COSMETIC ---
 
 10. Commented-out code throughout codebase
     Files: src/resume.js, src/ai.js, src/message.js, public/js/run.js,

@@ -35,8 +35,8 @@ export const runResumeUnfucker = async (inputParams) => {
   const aiText = await runSendToAI(aiParams);
   if (!aiText) return null;
 
-  console.log("AI TEXT");
-  console.log(aiText);
+  // console.log("AI TEXT");
+  // console.log(aiText);
 
   const buffer = await buildNewResume(aiText, infoObj, pi);
 
