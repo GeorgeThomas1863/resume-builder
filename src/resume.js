@@ -56,31 +56,36 @@ export const buildNewResume = async (aiText, infoObj = null, pi = false) => {
   // console.log("AI OBJ");
   // console.log(aiObj);
 
-  const paragraphArray = await buildParagraphArray(aiObj, infoObj, pi);
-  // console.log("PARAGRAPH ARRAY");
-  // console.log(paragraphArray.length);
+  try {
+    const paragraphArray = await buildParagraphArray(aiObj, infoObj, pi);
+    // console.log("PARAGRAPH ARRAY");
+    // console.log(paragraphArray.length);
 
-  //build document
-  const doc = new Document({
-    sections: [
-      {
-        properties: {
-          page: {
-            margin: {
-              top: 720, // 720 twips = 0.5 inches
-              right: 720,
-              bottom: 720,
-              left: 720,
+    //build document
+    const doc = new Document({
+      sections: [
+        {
+          properties: {
+            page: {
+              margin: {
+                top: 720, // 720 twips = 0.5 inches
+                right: 720,
+                bottom: 720,
+                left: 720,
+              },
             },
           },
+          children: paragraphArray,
         },
-        children: paragraphArray,
-      },
-    ],
-  });
+      ],
+    });
 
-  const buffer = await Packer.toBuffer(doc);
-  return buffer;
+    const buffer = await Packer.toBuffer(doc);
+    return buffer;
+  } catch (e) {
+    console.error("Failed to build resume document:", e.message);
+    return null;
+  }
 };
 
 export const buildParagraphArray = async (aiObj, infoObj = null, pi = false) => {
@@ -287,9 +292,15 @@ export const buildPrebuiltParagraphArray = async (aiObj, infoObj, pi = false) =>
   );
 
   //job loop
+  if (!Array.isArray(aiObj.experience)) {
+    console.error("AI response missing or invalid 'experience' field (prebuilt mode)");
+    return paragraphArray;
+  }
   for (let i = 0; i < aiObj.experience.length; i++) {
     const jobAI = aiObj.experience[i];
+    if (i >= infoObj.jobArray.length) continue;
     const jobConfig = infoObj.jobArray[i];
+    if (!jobAI || !jobAI.bullets) continue;
 
     paragraphArray.push(
       new Paragraph({
@@ -659,6 +670,10 @@ export const buildDefaultParagraphArray = async (aiObj) => {
   );
 
   //job loop
+  if (!Array.isArray(experience)) {
+    console.error("AI response missing or invalid 'experience' field");
+    return paragraphArray;
+  }
   for (let i = 0; i < experience.length; i++) {
     const jobAI = experience[i];
     if (!jobAI || !jobAI.role || !jobAI.timeframe || !jobAI.bullets) continue;
@@ -769,61 +784,65 @@ export const buildDefaultParagraphArray = async (aiObj) => {
     })
   );
 
-  paragraphArray.push(
-    new Paragraph({
-      children: [
-        new TextRun({
-          // text: "Georgetown University, Master of Arts in Security Studies",
-          text: `${education[0].school}, ${education[0].degree}`,
-          bold: true,
-          font: "Times New Roman",
-          size: 22,
-        }),
-        new TextRun({
-          text: `\t${education[0].timeframe}`,
-          bold: true,
-          italics: true,
-          font: "Times New Roman",
-          size: 22,
-        }),
-      ],
-      tabStops: [
-        {
-          type: TabStopType.RIGHT,
-          position: 10800,
-        },
-      ],
-      spacing: { before: 0, after: 0 },
-    })
-  );
+  if (Array.isArray(education) && education.length >= 1) {
+    paragraphArray.push(
+      new Paragraph({
+        children: [
+          new TextRun({
+            // text: "Georgetown University, Master of Arts in Security Studies",
+            text: `${education[0].school}, ${education[0].degree}`,
+            bold: true,
+            font: "Times New Roman",
+            size: 22,
+          }),
+          new TextRun({
+            text: `\t${education[0].timeframe}`,
+            bold: true,
+            italics: true,
+            font: "Times New Roman",
+            size: 22,
+          }),
+        ],
+        tabStops: [
+          {
+            type: TabStopType.RIGHT,
+            position: 10800,
+          },
+        ],
+        spacing: { before: 0, after: 0 },
+      })
+    );
+  }
 
-  paragraphArray.push(
-    new Paragraph({
-      children: [
-        new TextRun({
-          // text: "Catholic University of America, Bachelor of Arts in International Relations; Economics; History",
-          text: `${education[1].school}, ${education[1].degree}`,
-          bold: true,
-          font: "Times New Roman",
-          size: 22,
-        }),
-        new TextRun({
-          text: `\t${education[1].timeframe}`,
-          bold: true,
-          italics: true,
-          font: "Times New Roman",
-          size: 22,
-        }),
-      ],
-      tabStops: [
-        {
-          type: TabStopType.RIGHT,
-          position: 10800,
-        },
-      ],
-      spacing: { before: 160, after: 0 },
-    })
-  );
+  if (Array.isArray(education) && education.length >= 2) {
+    paragraphArray.push(
+      new Paragraph({
+        children: [
+          new TextRun({
+            // text: "Catholic University of America, Bachelor of Arts in International Relations; Economics; History",
+            text: `${education[1].school}, ${education[1].degree}`,
+            bold: true,
+            font: "Times New Roman",
+            size: 22,
+          }),
+          new TextRun({
+            text: `\t${education[1].timeframe}`,
+            bold: true,
+            italics: true,
+            font: "Times New Roman",
+            size: 22,
+          }),
+        ],
+        tabStops: [
+          {
+            type: TabStopType.RIGHT,
+            position: 10800,
+          },
+        ],
+        spacing: { before: 160, after: 0 },
+      })
+    );
+  }
 
   return paragraphArray;
 };
