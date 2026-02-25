@@ -2,7 +2,8 @@
   "permissions": {
     "allow": [
       "Bash(head:*)",
-      "Bash(node:*)"
+      "Bash(node:*)",
+      "Skill(code-review:code-review)"
     ]
   }
 }

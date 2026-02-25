@@ -42,7 +42,7 @@ const storage = multer.diskStorage({
     cb(null, sessionDir);
   },
   filename: function (req, file, cb) {
-    cb(null, file.originalname);
+    cb(null, path.basename(file.originalname));
   },
 });
 

@@ -19,7 +19,7 @@ router.get("/401", display401);
 
 router.post("/upload", requireAuth, upload.single("resume"), uploadResumeController);
 router.get("/check-file", requireAuth, checkRouteController);
-router.get("/delete-resume", requireAuth, deleteResumeController);
+router.delete("/delete-resume", requireAuth, deleteResumeController);
 
 router.post("/submit", requireAuth, submitRouteController);
 
