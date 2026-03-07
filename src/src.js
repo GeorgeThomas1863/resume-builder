@@ -6,8 +6,8 @@ export const runResumeUnfucker = async (inputParams) => {
   if (!inputParams) return null;
   const { inputPath, aiType, jobInput, nukeOhio, pi } = inputParams;
 
-  // console.log("RESUME UNFUCKER INPUT PARAMS");
-  // console.log(inputParams);
+  console.log("RESUME UNFUCKER INPUT PARAMS");
+  console.log(inputParams);
 
   const resumeText = await extractResumeText(inputPath);
   // console.log("RESUME TEXT");
@@ -33,10 +33,11 @@ export const runResumeUnfucker = async (inputParams) => {
   // console.log(aiParams);
 
   const aiText = await runSendToAI(aiParams);
+  console.log("AI TEXT");
+  console.log(aiText);
   if (!aiText) return null;
 
-  // console.log("AI TEXT");
-  // console.log(aiText);
+
 
   const buffer = await buildNewResume(aiText, infoObj, pi);
 
