@@ -317,8 +317,51 @@ export const buildMessageDefault = async (resumeText, jobInput) => {
 
 export const buildSchema = async (model) => {
   if (!model) return null;
-  if (model === "chatgpt" || model === "claude") return await buildSchemaChatGPT();
+  if (model === "chatgpt") return await buildSchemaChatGPT();
+  if (model === "claude") return await buildSchemaClaude();
   return await buildSchemaLocal();
+};
+
+export const buildSchemaClaude = async () => {
+  return {
+    name: "resume_enhancement",
+    schema: {
+      type: "object",
+      required: ["name", "email", "summary", "experience", "education"],
+      properties: {
+        name: { type: "string", description: "Candidate's full name" },
+        email: { type: "string", description: "Candidate's email address" },
+        summary: { type: "string", description: "Tailored professional summary" },
+        experience: {
+          type: "array",
+          minItems: 7,
+          maxItems: 7,
+          items: {
+            type: "object",
+            required: ["role", "company", "timeframe", "bullets"],
+            properties: {
+              role: { type: "string" },
+              company: { type: "string" },
+              timeframe: { type: "string" },
+              bullets: { type: "array", items: { type: "string" } },
+            },
+          },
+        },
+        education: {
+          type: "array",
+          items: {
+            type: "object",
+            required: ["degree", "school", "timeframe"],
+            properties: {
+              degree: { type: "string" },
+              school: { type: "string" },
+              timeframe: { type: "string" },
+            },
+          },
+        },
+      },
+    },
+  };
 };
 
 export const buildSchemaChatGPT = async () => {

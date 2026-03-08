@@ -28,7 +28,7 @@ export const buildLocalClient = () => {
 };
 
 export const buildAnthropicClient = () => {
-  return new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
+  return new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY, timeout: 3_600_000 });
 };
 
 export const runSendToAI = async (inputParams) => {
@@ -104,6 +104,7 @@ export const runClaude = async (inputParams) => {
     if (!toolUseBlock) return null;
     return JSON.stringify(toolUseBlock.input);
   } catch (e) {
+    console.error("runClaude error:", e?.status, e?.message, e?.error);
     return null;
   }
 };
