@@ -1,4 +1,5 @@
 import { OpenAI } from "openai";
+import Anthropic from "@anthropic-ai/sdk";
 
 let openaiClient = null;
 let localClient = null;
@@ -6,6 +7,7 @@ let localClient = null;
 export const buildClient = async (aiType) => {
   if (aiType === "chatgpt") return buildOpenAIClient();
   if (aiType === "local") return buildLocalClient();
+  if (aiType === "claude") return buildAnthropicClient();
   return null;
 };
 
@@ -25,9 +27,14 @@ export const buildLocalClient = () => {
   return localClient;
 };
 
+export const buildAnthropicClient = () => {
+  return new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
+};
+
 export const runSendToAI = async (inputParams) => {
   const { aiType } = inputParams;
   if (aiType === "chatgpt") return await runChatGPT(inputParams);
+  if (aiType === "claude") return await runClaude(inputParams);
 
   //otherwise run local
   return await runLocalAI(inputParams);
@@ -65,6 +72,38 @@ export const runChatGPT = async (inputParams) => {
   } catch (e) {
     // console.log("ERROR RUNNING CHATGPT, ERROR MESSAGE:");
     // console.log(e);
+    return null;
+  }
+};
+
+export const runClaude = async (inputParams) => {
+  const { messageInput, schema, modelType, maxTokens, temperature } = inputParams;
+  const client = buildAnthropicClient();
+
+  const systemContent = messageInput.find((m) => m.role === "system")?.content || "";
+  const userMessages = messageInput.filter((m) => m.role !== "system");
+
+  try {
+    const response = await client.messages.create({
+      model: modelType,
+      max_tokens: +maxTokens,
+      temperature: Math.min(+temperature, 1),
+      system: systemContent,
+      messages: userMessages,
+      tools: [
+        {
+          name: schema.name,
+          description: "Output the tailored resume as structured JSON",
+          input_schema: schema.schema,
+        },
+      ],
+      tool_choice: { type: "tool", name: schema.name },
+    });
+
+    const toolUseBlock = response.content.find((b) => b.type === "tool_use");
+    if (!toolUseBlock) return null;
+    return JSON.stringify(toolUseBlock.input);
+  } catch (e) {
     return null;
   }
 };

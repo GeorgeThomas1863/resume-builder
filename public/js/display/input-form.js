@@ -115,8 +115,8 @@ export const buildSelectAIDiv = async () => {
 
   const optionArray = [
     { value: "chatgpt", text: "ChatGPT", selected: true },
-    { value: "claude", text: "Claude [DOES NOT WORK]" },
-    { value: "local", text: "Local LLM [DOES NOT WORK]" },
+    { value: "claude", text: "Claude" },
+    { value: "local", text: "Local LLM" },
   ];
 
   for (let i = 0; i < optionArray.length; i++) {

@@ -27,5 +27,10 @@ export const modelMap = {
     { value: "gpt-5-mini", text: "GPT 5 Mini" },
     { value: "gpt-5-nano", text: "GPT 5 Nano" },
   ],
+  claude: [
+    { value: "claude-opus-4-6", text: "Claude Opus 4.6", selected: true },
+    { value: "claude-sonnet-4-6", text: "Claude Sonnet 4.6" },
+    { value: "claude-haiku-4-5-20251001", text: "Claude Haiku 4.5" },
+  ],
   local: [{ value: "meta-llama-3.1-8b-instruct", text: "Meta-Llama 3.1 8B Instruct" }],
 };

@@ -317,7 +317,7 @@ export const buildMessageDefault = async (resumeText, jobInput) => {
 
 export const buildSchema = async (model) => {
   if (!model) return null;
-  if (model === "chatgpt") return await buildSchemaChatGPT();
+  if (model === "chatgpt" || model === "claude") return await buildSchemaChatGPT();
   return await buildSchemaLocal();
 };
 
