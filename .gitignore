@@ -7,6 +7,10 @@ config/
 .env.local
 .env.*
 .local.env
+.env.example
+
+.claude/pics
+.claude/pics/*
 
 **/BUGS.txt
 BUGS.txt
@@ -53,5 +57,3 @@ package-lock.json
 .vscode-test
 .vscode/
 
-#ignore readme
-*.md
