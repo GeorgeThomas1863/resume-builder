@@ -150,10 +150,12 @@ export const buildSelectModelDiv = async () => {
   modelSelect.setAttribute("data-label", "model-select");
 
   const optionArray = [
-    { value: "gpt-5.2", text: "GPT 5.2", selected: true },
+    { value: "gpt-5.4", text: "GPT 5.4", selected: true },
+    { value: "gpt-5.2", text: "GPT 5.2" },
     { value: "gpt-5", text: "GPT 5" },
     { value: "gpt-5-mini", text: "GPT 5 Mini" },
     { value: "gpt-5-nano", text: "GPT 5 Nano" },
+    { value: "gpt-4.1-nano", text: "GPT 4.1 Nano (cheapest)" },
   ];
 
   for (let i = 0; i < optionArray.length; i++) {

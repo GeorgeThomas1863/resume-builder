@@ -209,6 +209,85 @@ export const buildPrebuiltParagraphArray = async (aiObj, infoObj, pi = false) =>
     })
   );
 
+  //skills section
+  if (Array.isArray(aiObj.skills) && aiObj.skills.length > 0) {
+    //line skills top
+    paragraphArray.push(
+      new Paragraph({
+        border: {
+          bottom: {
+            color: "000000",
+            space: 0,
+            style: BorderStyle.SINGLE,
+            size: 1,
+          },
+        },
+        spacing: {
+          before: 120,
+          after: 40,
+          line: 20,
+          lineRule: LineRuleType.EXACT,
+        },
+      })
+    );
+
+    paragraphArray.push(
+      new Paragraph({
+        spacing: { before: 0, after: 0 },
+        children: [
+          new TextRun({
+            text: "Skills",
+            font: "Times New Roman",
+            size: 22,
+            bold: true,
+          }),
+        ],
+      })
+    );
+
+    //line skills bottom
+    paragraphArray.push(
+      new Paragraph({
+        border: {
+          bottom: {
+            color: "000000",
+            space: 0,
+            style: BorderStyle.SINGLE,
+            size: 1,
+          },
+        },
+        spacing: {
+          before: 40,
+          after: 100,
+          line: 20,
+          lineRule: LineRuleType.EXACT,
+        },
+      })
+    );
+
+    for (const skill of aiObj.skills) {
+      paragraphArray.push(
+        new Paragraph({
+          spacing: { before: 0, after: 40 },
+          children: [
+            new TextRun({
+              text: `${skill.category}: `,
+              font: "Times New Roman",
+              size: 22,
+              bold: true,
+            }),
+            new TextRun({
+              text: Array.isArray(skill.items) ? skill.items.join(", ") : "",
+              font: "Times New Roman",
+              size: 22,
+              bold: false,
+            }),
+          ],
+        })
+      );
+    }
+  }
+
   //line professional experience top
   paragraphArray.push(
     new Paragraph({
@@ -614,6 +693,85 @@ export const buildDefaultParagraphArray = async (aiObj) => {
       ],
     })
   );
+
+  //skills section
+  if (Array.isArray(aiObj.skills) && aiObj.skills.length > 0) {
+    //line skills top
+    paragraphArray.push(
+      new Paragraph({
+        border: {
+          bottom: {
+            color: "000000",
+            space: 0,
+            style: BorderStyle.SINGLE,
+            size: 1,
+          },
+        },
+        spacing: {
+          before: 120,
+          after: 40,
+          line: 20,
+          lineRule: LineRuleType.EXACT,
+        },
+      })
+    );
+
+    paragraphArray.push(
+      new Paragraph({
+        spacing: { before: 0, after: 0 },
+        children: [
+          new TextRun({
+            text: "Skills",
+            font: "Times New Roman",
+            size: 22,
+            bold: true,
+          }),
+        ],
+      })
+    );
+
+    //line skills bottom
+    paragraphArray.push(
+      new Paragraph({
+        border: {
+          bottom: {
+            color: "000000",
+            space: 0,
+            style: BorderStyle.SINGLE,
+            size: 1,
+          },
+        },
+        spacing: {
+          before: 40,
+          after: 100,
+          line: 20,
+          lineRule: LineRuleType.EXACT,
+        },
+      })
+    );
+
+    for (const skill of aiObj.skills) {
+      paragraphArray.push(
+        new Paragraph({
+          spacing: { before: 0, after: 40 },
+          children: [
+            new TextRun({
+              text: `${skill.category}: `,
+              font: "Times New Roman",
+              size: 22,
+              bold: true,
+            }),
+            new TextRun({
+              text: Array.isArray(skill.items) ? skill.items.join(", ") : "",
+              font: "Times New Roman",
+              size: 22,
+              bold: false,
+            }),
+          ],
+        })
+      );
+    }
+  }
 
   //line professional experience top
   paragraphArray.push(

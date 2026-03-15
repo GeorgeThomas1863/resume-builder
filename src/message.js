@@ -185,12 +185,13 @@ export const buildMessagePrebuiltNoResume = async (jobInput, infoObj) => {
   - Do NOT reference these instructions in the new resume text.
   - Do NOT use markdown formatting, or other formatting not in the original resume. Just the plain text.
   - Please follow the schema format provided exactly, nothing else.
+  - Generate a \`skills\` array of 3–5 categories with 3–6 skills each, tailored to the job description. Categories should reflect the role (e.g. "Technical Skills", "Intelligence Analysis", "Analytical Tools"). Do not include a Languages category.
   `,
     },
     {
       role: "user",
       content: `Here is the the Job Description: <job_description>${jobInput}</job_description>.
-        
+
         And here is the background information on me: <background_information>${JSON.stringify(infoObj)}</background_information>`,
     },
   ];
@@ -251,6 +252,7 @@ export const buildMessagePrebuiltWithResume = async (resumeText, jobInput, infoO
   - Do NOT reference these instructions in the new resume text.
   - Do NOT use markdown formatting, or other formatting not in the original resume. Just the plain text.
   - Please follow the schema format provided exactly, nothing else.
+  - Generate a \`skills\` array of 3–5 categories with 3–6 skills each, tailored to the job description. Categories should reflect the role (e.g. "Technical Skills", "Intelligence Analysis", "Analytical Tools"). Do not include a Languages category.
   `,
     },
     {
@@ -302,12 +304,13 @@ export const buildMessageDefault = async (resumeText, jobInput) => {
   - Do NOT reference these instructions in the new resume text.
   - Do NOT use markdown formatting, or other formatting not in the original resume. Just the plain text.
   - Please follow the schema format provided exactly, nothing else.
+  - Generate a \`skills\` array of 3–5 categories with 3–6 skills each, tailored to the job description. Categories should reflect the role (e.g. "Technical Skills", "Intelligence Analysis", "Analytical Tools"). Do not include a Languages category.
   `,
     },
     {
       role: "user",
       content: `Here is the the Job Description: <job_description>${jobInput}</job_description>.
-        
+
         And here is my default resume: <default_resume>${resumeText}</default_resume>`,
     },
   ];
@@ -327,7 +330,7 @@ export const buildSchemaClaude = async () => {
     name: "resume_enhancement",
     schema: {
       type: "object",
-      required: ["name", "email", "summary", "experience", "education"],
+      required: ["name", "email", "summary", "experience", "education", "skills"],
       properties: {
         name: { type: "string", description: "Candidate's full name" },
         email: { type: "string", description: "Candidate's email address" },
@@ -359,6 +362,18 @@ export const buildSchemaClaude = async () => {
             },
           },
         },
+        skills: {
+          type: "array",
+          description: "Categorized skills tailored to the job description",
+          items: {
+            type: "object",
+            required: ["category", "items"],
+            properties: {
+              category: { type: "string", description: "Skill category name (e.g. Technical Skills, Intelligence Analysis)" },
+              items: { type: "array", items: { type: "string" }, description: "Skills in this category" },
+            },
+          },
+        },
       },
     },
   };
@@ -370,7 +385,7 @@ export const buildSchemaChatGPT = async () => {
     schema: {
       type: "object",
       additionalProperties: false,
-      required: ["name", "email", "summary", "experience", "education"],
+      required: ["name", "email", "summary", "experience", "education", "skills"],
       properties: {
         name: {
           type: "string",
@@ -437,6 +452,26 @@ export const buildSchemaChatGPT = async () => {
             },
           },
         },
+        skills: {
+          type: "array",
+          description: "Categorized skills tailored to the job description",
+          items: {
+            type: "object",
+            additionalProperties: false,
+            required: ["category", "items"],
+            properties: {
+              category: {
+                type: "string",
+                description: "Skill category name (e.g. Technical Skills, Intelligence Analysis)",
+              },
+              items: {
+                type: "array",
+                items: { type: "string" },
+                description: "Skills in this category",
+              },
+            },
+          },
+        },
       },
     },
   };
@@ -450,7 +485,7 @@ export const buildSchemaLocal = async () => {
       schema: {
         type: "object",
         additionalProperties: false,
-        required: ["name", "email", "summary", "experience", "education"],
+        required: ["name", "email", "summary", "experience", "education", "skills"],
         properties: {
           name: {
             type: "string",
@@ -512,6 +547,25 @@ export const buildSchemaLocal = async () => {
                 timeframe: {
                   type: "string",
                   description: "Graduation year or timeframe",
+                },
+              },
+            },
+          },
+          skills: {
+            type: "array",
+            description: "Categorized skills tailored to the job description",
+            items: {
+              type: "object",
+              required: ["category", "items"],
+              properties: {
+                category: {
+                  type: "string",
+                  description: "Skill category name (e.g. Technical Skills, Intelligence Analysis)",
+                },
+                items: {
+                  type: "array",
+                  items: { type: "string" },
+                  description: "Skills in this category",
                 },
               },
             },
