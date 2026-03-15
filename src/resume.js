@@ -197,7 +197,7 @@ export const buildPrebuiltParagraphArray = async (aiObj, infoObj, pi = false) =>
     new Paragraph({
       spacing: {
         before: 0,
-        after: 0,
+        after: 120,
       },
       children: [
         new TextRun({
@@ -300,7 +300,7 @@ export const buildPrebuiltParagraphArray = async (aiObj, infoObj, pi = false) =>
         },
       },
       spacing: {
-        before: 120,
+        before: 200,
         after: 40,
         line: 20,
         lineRule: LineRuleType.EXACT,
@@ -335,7 +335,7 @@ export const buildPrebuiltParagraphArray = async (aiObj, infoObj, pi = false) =>
       },
       spacing: {
         before: 40,
-        after: 0,
+        after: 120,
         line: 20,
         lineRule: LineRuleType.EXACT,
       },
@@ -444,7 +444,7 @@ export const buildPrebuiltParagraphArray = async (aiObj, infoObj, pi = false) =>
         },
       },
       spacing: {
-        before: 160,
+        before: 120,
         after: 40,
         line: 20, // Added - sets exact line height (240 twips = 12pt)
         lineRule: LineRuleType.EXACT, // Added - use exact line height
@@ -682,7 +682,7 @@ export const buildDefaultParagraphArray = async (aiObj) => {
     new Paragraph({
       spacing: {
         before: 0,
-        after: 0,
+        after: 120,
       },
       children: [
         new TextRun({
@@ -785,7 +785,7 @@ export const buildDefaultParagraphArray = async (aiObj) => {
         },
       },
       spacing: {
-        before: 120,
+        before: 200,
         after: 40,
         line: 20,
         lineRule: LineRuleType.EXACT,
@@ -820,7 +820,7 @@ export const buildDefaultParagraphArray = async (aiObj) => {
       },
       spacing: {
         before: 40,
-        after: 0,
+        after: 120,
         line: 20,
         lineRule: LineRuleType.EXACT,
       },
@@ -900,7 +900,7 @@ export const buildDefaultParagraphArray = async (aiObj) => {
         },
       },
       spacing: {
-        before: 160,
+        before: 120,
         after: 40,
         line: 20, // Added - sets exact line height (240 twips = 12pt)
         lineRule: LineRuleType.EXACT, // Added - use exact line height
