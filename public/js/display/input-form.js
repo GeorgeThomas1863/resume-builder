@@ -398,3 +398,27 @@ export const buildSubmitListItem = async () => {
 
   return submitListItem;
 };
+
+//++++++++++++++++
+
+export const buildNewSection = async () => {
+  const wrapper = document.createElement("div");
+  wrapper.id = "new-section";
+  // wrapper.className = "form-list-item form-row";
+  wrapper.className = "form-row";
+
+  const input = document.createElement("input");
+  input.type = "text";
+  input.id = "new-section-input";
+  input.className = "form-input";
+
+  const button = document.createElement("button");
+  button.id = "new-section-button";
+  button.className = "btn-new-section";
+  button.type = "button";
+  button.textContent = "Go";
+  button.setAttribute("data-label", "new-section-button");
+
+  wrapper.append(input, button);
+  return wrapper;
+};

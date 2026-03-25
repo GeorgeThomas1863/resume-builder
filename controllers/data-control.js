@@ -1,7 +1,7 @@
 // import CONFIG from "../config/config.js";
 
 import { runClearFiles, runCheckFile, clearUploadDirectory } from "../src/upload-file.js";
-import { runResumeUnfucker } from "../src/src.js";
+import { runResumeUnfucker, getContactInfo } from "../src/src.js";
 
 // export const getBackendValueController = async (req, res) => {
 //   const { key } = req.body;
@@ -62,17 +62,7 @@ export const checkRouteController = async (req, res) => {
 };
 
 export const submitRouteController = async (req, res) => {
-  const {
-    nukeOhio,
-    pi,
-    inputPath: _ignored,
-    aiType,
-    modelType,
-    serviceTier,
-    maxTokens,
-    temperature,
-    jobInput,
-  } = req.body;
+  const { nukeOhio, pi, inputPath: _ignored, aiType, modelType, serviceTier, maxTokens, temperature, jobInput } = req.body;
 
   const isAdmin = !!req.session.isAdmin;
   const safeNukeOhio = isAdmin && !!nukeOhio;
@@ -121,4 +111,13 @@ export const submitRouteController = async (req, res) => {
   res.setHeader("Content-Type", "application/vnd.openxmlformats-officedocument.wordprocessingml.document");
   res.setHeader("Content-Disposition", 'attachment; filename="new-resume.docx"');
   return res.send(buffer);
+};
+
+//++++++++++++++++++++
+
+export const getContactInfoController = async (req, res) => {
+  const { linkText } = req.body;
+  if (!linkText) return res.status(500).json({ error: "linkText is required" });
+
+  const contactInfo = await getContactInfo(linkText);
 };

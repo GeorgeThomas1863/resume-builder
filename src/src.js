@@ -37,9 +37,13 @@ export const runResumeUnfucker = async (inputParams) => {
   console.log(aiText);
   if (!aiText) return null;
 
-
-
   const buffer = await buildNewResume(aiText, infoObj, pi);
 
   return buffer;
+};
+
+export const getContactInfo = async (linkText) => {
+  if (!linkText) return null;
+  console.log("GET CONTACT INFO LINK TEXT");
+  console.log(linkText);
 };

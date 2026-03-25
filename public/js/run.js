@@ -225,3 +225,26 @@ export const runDeleteResume = async () => {
 
   return true;
 };
+
+//++++++++++++++++++
+
+export const runNewSectionSubmit = async () => {
+  const newSectionInput = document.getElementById("new-section-input");
+  if (!newSectionInput || !newSectionInput.value) return null;
+
+  const params = {
+    route: "/get-contact-info",
+    linkText: newSectionInput.value,
+  };
+
+  const data = await sendToBack(params, "POST");
+  if (!data || !data.success) {
+    alert("Failed to get contact info. Please try again.");
+    return null;
+  }
+
+  console.log("CONTACT INFO");
+  console.log(data);
+
+  return true;
+};
