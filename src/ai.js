@@ -1,6 +1,5 @@
 import { OpenAI } from "openai";
 import Anthropic from "@anthropic-ai/sdk";
-import Perplexity from "@perplexity-ai/perplexity_ai";
 
 let openaiClient = null;
 let localClient = null;
@@ -9,7 +8,6 @@ export const buildClient = async (aiType) => {
   if (aiType === "chatgpt") return buildOpenAIClient();
   if (aiType === "local") return buildLocalClient();
   if (aiType === "claude") return buildAnthropicClient();
-  if (aiType === "perplexity") return buildPerplexityClient();
   return null;
 };
 
@@ -31,10 +29,6 @@ export const buildLocalClient = () => {
 
 export const buildAnthropicClient = () => {
   return new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY, timeout: 3_600_000 });
-};
-
-export const buildPerplexityClient = () => {
-  return new Perplexity({ apiKey: process.env.PERPLEXITY_API_KEY, timeout: 3_600_000 });
 };
 
 export const runSendToAI = async (inputParams) => {

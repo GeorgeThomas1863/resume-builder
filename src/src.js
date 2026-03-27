@@ -53,7 +53,7 @@ export const getContactInfo = async (linkText) => {
 
   const prompt = await buildContactPrompt(linkText);
   const schema = await buildContactSchema();
-  const client = await buildClient("perplexity");
+  const client = await buildClient("claude");
 
   const messages = [{ role: "user", content: prompt }];
 
@@ -61,6 +61,7 @@ export const getContactInfo = async (linkText) => {
     model: "sonar-deep-research",
     messages: messages,
     response_format: schema,
+    max_tokens: 10000,
   });
 
   console.log("PERPLEXITY RESPONSE");
