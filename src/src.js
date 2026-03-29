@@ -57,16 +57,18 @@ export const getContactInfo = async (linkText) => {
 
   const messages = [{ role: "user", content: prompt }];
 
-  const res = await client.chat.completions.create({
-    model: "sonar-deep-research",
-    messages: messages,
-    response_format: schema,
-    max_tokens: 10000,
-  });
+  //REBUILD
 
-  console.log("PERPLEXITY RESPONSE");
-  console.log(res);
-  console.log(res.choices[0].message.content);
+  // const res = await client.chat.completions.create({
+  //   model: "sonar-deep-research",
+  //   messages: messages,
+  //   response_format: schema,
+  //   max_tokens: 10000,
+  // });
+
+ 
+  // console.log(res);
+  // console.log(res.choices[0].message.content);
 
   return res.choices[0].message.content;
 };
