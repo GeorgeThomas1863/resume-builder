@@ -10,7 +10,6 @@ import {
   runUploadClick,
   runMainSubmit,
   runDeleteResume,
-  runNewSectionSubmit,
 } from "./run.js";
 import { runUploadFile } from "./util/upload-front.js";
 
@@ -40,8 +39,6 @@ export const clickHandler = async (e) => {
 
   if (clickType === "pwToggle") await runPwToggle();
   if (clickType === "modelOptionsToggle") await runModelOptionsToggle();
-
-  if (clickType === "new-section-button") await runNewSectionSubmit();
 };
 
 export const keyHandler = async (e) => {
