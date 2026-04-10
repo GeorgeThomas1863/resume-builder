@@ -2,6 +2,8 @@
 
 import { runClearFiles, runCheckFile, clearUploadDirectory } from "../src/upload-file.js";
 import { runResumeUnfucker } from "../src/src.js";
+import fs from "fs/promises";
+import { checkDocHasContent } from "../src/resume.js";
 
 // export const getBackendValueController = async (req, res) => {
 //   const { key } = req.body;
@@ -72,6 +74,9 @@ export const submitRouteController = async (req, res) => {
     maxTokens,
     temperature,
     jobInput,
+    injectDoc,
+    injectDocPath,
+    overwriteConfirmed,
   } = req.body;
 
   const isAdmin = !!req.session.isAdmin;
@@ -92,6 +97,25 @@ export const submitRouteController = async (req, res) => {
   const tokens = +maxTokens;
   if (!Number.isInteger(tokens) || tokens < 1) {
     return res.status(400).json({ error: "maxTokens must be a positive integer" });
+  }
+
+  if (injectDoc) {
+    const cleanPath = typeof injectDocPath === "string" ? injectDocPath.trim() : "";
+    if (!cleanPath || cleanPath.includes("\0") || !cleanPath.toLowerCase().endsWith(".docx")) {
+      return res.status(400).json({ error: "injectDocPath must be a valid .docx file path" });
+    }
+    try {
+      await fs.access(cleanPath);
+    } catch {
+      return res.status(400).json({ error: `File not found: ${cleanPath}` });
+    }
+    let hasContent = true;
+    try {
+      hasContent = await checkDocHasContent(cleanPath);
+    } catch { /* treat unreadable file as having content */ }
+    if (hasContent && !overwriteConfirmed) {
+      return res.json({ requiresConfirmation: true });
+    }
   }
 
   const fileCheck = await runCheckFile(req.session.id);
@@ -118,7 +142,21 @@ export const submitRouteController = async (req, res) => {
     return res.status(500).json({ error: "Failed to generate resume" });
   }
 
+  if (injectDoc) {
+    try {
+      await fs.writeFile(injectDocPath.trim(), buffer);
+    } catch (e) {
+      console.error("Error writing inject doc:", e);
+      return res.status(500).json({ error: "Failed to write to the specified file" });
+    }
+    return res.json({ success: true });
+  }
+
   res.setHeader("Content-Type", "application/vnd.openxmlformats-officedocument.wordprocessingml.document");
   res.setHeader("Content-Disposition", 'attachment; filename="new-resume.docx"');
   return res.send(buffer);
+};
+
+export const defaultInjectPathController = async (req, res) => {
+  return res.json({ path: process.env.INJECT_DOC_DEFAULT_PATH || "" });
 };

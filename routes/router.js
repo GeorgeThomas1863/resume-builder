@@ -4,7 +4,7 @@ import requireAuth from "../middleware/auth-config.js";
 import { requireAdminAuth } from "../middleware/auth-config.js";
 import { displayMain, display401, display404, display500 } from "../controllers/display-control.js";
 import { authController, adminAuthController, checkAdminAuthController } from "../controllers/auth-control.js";
-import { uploadResumeController, submitRouteController, checkRouteController, deleteResumeController } from "../controllers/data-control.js";
+import { uploadResumeController, submitRouteController, checkRouteController, deleteResumeController, defaultInjectPathController } from "../controllers/data-control.js";
 import { upload } from "../src/upload-file.js";
 
 const router = express.Router();
@@ -22,6 +22,8 @@ router.get("/check-file", requireAuth, checkRouteController);
 router.delete("/delete-resume", requireAuth, deleteResumeController);
 
 router.post("/submit", requireAuth, submitRouteController);
+
+router.get("/default-inject-path", requireAuth, defaultInjectPathController);
 
 router.get("/", requireAuth, displayMain);
 

@@ -7,6 +7,8 @@ export const buildSubmitParams = async () => {
     maxTokens: document.getElementById("max-tokens-input").value,
     temperature: document.getElementById("temperature-input").value,
     nukeOhio: document.getElementById("prebuilt-checkbox").checked,
-    pi: document.getElementById("pi-checkbox").checked
+    pi: document.getElementById("pi-checkbox").checked,
+    injectDoc: document.getElementById("inject-doc-checkbox").checked,
+    injectDocPath: document.getElementById("inject-doc-path-input").value.trim(),
   };
 };

@@ -16,6 +16,13 @@ export const runMainSubmit = async () => {
   const params = await buildSubmitParams();
   if (!params) return null;
 
+  if (params.injectDoc) {
+    if (!params.injectDocPath || !params.injectDocPath.toLowerCase().endsWith(".docx")) {
+      alert("Please enter a valid path to an existing .docx file.");
+      return null;
+    }
+  }
+
   const fileData = await checkFile();
   // console.log("FILE DATA");
   // console.log(fileData);
@@ -46,13 +53,51 @@ export const runMainSubmit = async () => {
 };
 
 export const executeSubmit = async (params) => {
-  await showLoadStatus();
+  if (params.injectDoc) {
+    await showLoadStatus();
+    let res;
+    try {
+      res = await fetch("/submit", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(params),
+      });
+    } catch {
+      await hideLoadStatus();
+      return null;
+    }
+    await hideLoadStatus();
 
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      alert(err.error || "Request failed");
+      return null;
+    }
+
+    const data = await res.json();
+
+    if (data.requiresConfirmation) {
+      const confirmed = window.confirm(
+        "The target document already has content. Overwrite it completely?"
+      );
+      if (!confirmed) return null;
+      return executeSubmit({ ...params, overwriteConfirmed: true });
+    }
+
+    if (data.success) {
+      alert(`Resume successfully written to:\n${params.injectDocPath}`);
+      return true;
+    }
+
+    alert("An unexpected error occurred. Please try again.");
+    return null;
+  }
+
+  // existing blob path (unchanged)
+  await showLoadStatus();
   const data = await sendToBack(params, "POST", true);
   await hideLoadStatus();
-
   if (!data) return null;
-
   const blob = await data.blob();
   const url = window.URL.createObjectURL(blob);
   const a = document.createElement("a");
@@ -62,7 +107,6 @@ export const executeSubmit = async (params) => {
   a.click();
   window.URL.revokeObjectURL(url);
   a.remove();
-
   return true;
 };
 
@@ -200,6 +244,16 @@ export const runUploadButtonToggle = async (changeType) => {
 
   await hideArray([uploadListItem]);
   // uploadListItem.classList.add("hidden");
+  return true;
+};
+
+export const runInjectDocToggle = async () => {
+  const checkbox = document.getElementById("inject-doc-checkbox");
+  const pathRow = document.getElementById("inject-doc-path-row");
+  if (!checkbox || !pathRow) return null;
+  checkbox.checked
+    ? pathRow.classList.remove("hidden")
+    : pathRow.classList.add("hidden");
   return true;
 };
 

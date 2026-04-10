@@ -17,6 +17,11 @@ export const extractResumeText = async (inputPath) => {
   return data.value;
 };
 
+export const checkDocHasContent = async (filePath) => {
+  const result = await mammoth.extractRawText({ path: filePath });
+  return result.value.trim().length > 0;
+};
+
 export const extractTextPDF = async (inputPath) => {
   // console.log("EXTRACTING TEXT FROM PDF");
   // console.log("INPUT PATH");

@@ -20,10 +20,11 @@ export const buildInputForm = async () => {
   const modelOptionsListItem = await buildModelOptionsListItem();
 
   const pasteJobListItem = await buildPasteJobListItem();
+  const injectDocListItem = await buildInjectDocListItem();
   const submitListItem = await buildSubmitListItem();
 
   // inputFormElement.append(inputTypeListItem, uploadListItem, selectRowListItem, modelOptionsListItem, pasteJobListItem, submitListItem);
-  inputFormElement.append(uploadListItem, selectRowListItem, modelOptionsListItem, pasteJobListItem, submitListItem);
+  inputFormElement.append(uploadListItem, selectRowListItem, modelOptionsListItem, pasteJobListItem, injectDocListItem, submitListItem);
 
   // Build collapse container
   const collapseContainer = await buildCollapseContainer({
@@ -381,6 +382,51 @@ export const buildPasteJobListItem = async () => {
   pasteJobListItem.append(pasteJobLabel, pasteJobInput);
 
   return pasteJobListItem;
+};
+
+export const buildInjectDocListItem = async () => {
+  const injectDocListItem = document.createElement("li");
+  injectDocListItem.id = "inject-doc-list-item";
+  injectDocListItem.className = "form-list-item";
+
+  const injectDocCheckboxRow = document.createElement("div");
+  injectDocCheckboxRow.className = "inject-doc-checkbox-row";
+
+  const injectDocCheckbox = document.createElement("input");
+  injectDocCheckbox.type = "checkbox";
+  injectDocCheckbox.id = "inject-doc-checkbox";
+  injectDocCheckbox.className = "form-checkbox";
+  injectDocCheckbox.checked = true;
+
+  const injectDocLabel = document.createElement("label");
+  injectDocLabel.setAttribute("for", "inject-doc-checkbox");
+  injectDocLabel.className = "form-label inject-doc-label";
+  injectDocLabel.textContent = "Inject into existing document";
+
+  injectDocCheckboxRow.append(injectDocCheckbox, injectDocLabel);
+
+  const injectDocPathRow = document.createElement("div");
+  injectDocPathRow.id = "inject-doc-path-row";
+
+  const injectDocPathInput = document.createElement("input");
+  injectDocPathInput.type = "text";
+  injectDocPathInput.id = "inject-doc-path-input";
+  injectDocPathInput.className = "form-input";
+  injectDocPathInput.placeholder = "Enter full path to existing .docx file";
+
+  injectDocPathRow.append(injectDocPathInput);
+
+  try {
+    const res = await fetch("/default-inject-path");
+    if (res.ok) {
+      const data = await res.json();
+      if (data.path) injectDocPathInput.value = data.path;
+    }
+  } catch { /* non-blocking — input stays empty if fetch fails */ }
+
+  injectDocListItem.append(injectDocCheckboxRow, injectDocPathRow);
+
+  return injectDocListItem;
 };
 
 export const buildSubmitListItem = async () => {
