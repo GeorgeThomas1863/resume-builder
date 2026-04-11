@@ -318,6 +318,7 @@ export const buildPrebuiltCheckbox = async () => {
   prebuiltLabel.setAttribute("for", "prebuilt-checkbox");
   prebuiltLabel.textContent = "Nuke Ohio?";
   prebuiltLabel.className = "form-label";
+  prebuiltCheckbox.checked = true
 
   const checkboxContainer = document.createElement("div");
   checkboxContainer.className = "checkbox-container";
