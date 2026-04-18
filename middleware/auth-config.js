@@ -1,6 +1,7 @@
 import path from "path";
 
 const requireAuth = (req, res, next) => {
+  res.setHeader("Cache-Control", "no-store");
   if (req.session.authenticated) {
     next();
   } else {
@@ -11,6 +12,7 @@ const requireAuth = (req, res, next) => {
 export const requireAdminAuth = (req, res, next) => {
   // console.log("REQUIRE ADMIN AUTH");
   // console.log(req.session.isAdmin);
+  res.setHeader("Cache-Control", "no-store");
   if (req.session.isAdmin) {
     next();
   } else {
