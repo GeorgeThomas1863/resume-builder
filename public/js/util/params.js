@@ -10,5 +10,6 @@ export const buildSubmitParams = async () => {
     pi: document.getElementById("pi-checkbox").checked,
     injectDoc: document.getElementById("inject-doc-checkbox").checked,
     injectDocPath: document.getElementById("inject-doc-path-input").value.trim(),
+    editingMinutes: document.getElementById("inject-doc-editing-minutes-input").value.trim(),
   };
 };

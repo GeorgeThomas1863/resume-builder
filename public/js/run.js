@@ -250,10 +250,15 @@ export const runUploadButtonToggle = async (changeType) => {
 export const runInjectDocToggle = async () => {
   const checkbox = document.getElementById("inject-doc-checkbox");
   const pathRow = document.getElementById("inject-doc-path-row");
-  if (!checkbox || !pathRow) return null;
-  checkbox.checked
-    ? pathRow.classList.remove("hidden")
-    : pathRow.classList.add("hidden");
+  const minutesRow = document.getElementById("inject-doc-editing-minutes-row");
+  if (!checkbox || !pathRow || !minutesRow) return null;
+  if (checkbox.checked) {
+    pathRow.classList.remove("hidden");
+    minutesRow.classList.remove("hidden");
+  } else {
+    pathRow.classList.add("hidden");
+    minutesRow.classList.add("hidden");
+  }
   return true;
 };
 

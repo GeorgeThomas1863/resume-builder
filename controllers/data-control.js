@@ -64,7 +64,7 @@ export const checkRouteController = async (req, res) => {
   return res.json({ success: data.success, message: data.message, filename: data.filename });
 };
 
-async function mergeDocxMetadata(templatePath, generatedBuffer) {
+async function mergeDocxMetadata(templatePath, generatedBuffer, editingMinutes) {
   try {
     const templateBuf = await fs.readFile(templatePath);
     const [templateZip, generatedZip] = await Promise.all([
@@ -73,7 +73,12 @@ async function mergeDocxMetadata(templatePath, generatedBuffer) {
     ]);
     for (const metaFile of ["docProps/core.xml", "docProps/app.xml"]) {
       const file = templateZip.file(metaFile);
-      if (file) {
+      if (!file) continue;
+      if (metaFile === "docProps/app.xml" && editingMinutes !== null) {
+        let appXml = await file.async("string");
+        appXml = appXml.replace(/<TotalTime>\d*<\/TotalTime>/, `<TotalTime>${editingMinutes}</TotalTime>`);
+        generatedZip.file(metaFile, appXml);
+      } else {
         const content = await file.async("nodebuffer");
         generatedZip.file(metaFile, content);
       }
@@ -99,6 +104,7 @@ export const submitRouteController = async (req, res) => {
     injectDoc,
     injectDocPath,
     overwriteConfirmed,
+    editingMinutes,
   } = req.body;
 
   const isAdmin = !!req.session.isAdmin;
@@ -110,6 +116,14 @@ export const submitRouteController = async (req, res) => {
   }
   if (!modelType || !String(modelType).trim()) {
     return res.status(400).json({ error: "modelType is required" });
+  }
+
+  let parsedEditingMinutes = null;
+  if (editingMinutes !== undefined && String(editingMinutes).trim() !== "") {
+    parsedEditingMinutes = parseInt(editingMinutes, 10);
+    if (!Number.isInteger(parsedEditingMinutes) || parsedEditingMinutes < 0) {
+      return res.status(400).json({ error: "editingMinutes must be a non-negative integer" });
+    }
   }
 
   const temp = +temperature;
@@ -166,7 +180,7 @@ export const submitRouteController = async (req, res) => {
 
   if (injectDoc) {
     try {
-      const mergedBuffer = await mergeDocxMetadata(injectDocPath.trim(), buffer);
+      const mergedBuffer = await mergeDocxMetadata(injectDocPath.trim(), buffer, parsedEditingMinutes);
       await fs.writeFile(injectDocPath.trim(), mergedBuffer);
     } catch (e) {
       console.error("Error writing inject doc:", e);

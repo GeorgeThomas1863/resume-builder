@@ -424,7 +424,19 @@ export const buildInjectDocListItem = async () => {
     }
   } catch { /* non-blocking — input stays empty if fetch fails */ }
 
-  injectDocListItem.append(injectDocCheckboxRow, injectDocPathRow);
+  const injectEditingMinutesRow = document.createElement("div");
+  injectEditingMinutesRow.id = "inject-doc-editing-minutes-row";
+
+  const injectEditingMinutesInput = document.createElement("input");
+  injectEditingMinutesInput.type = "number";
+  injectEditingMinutesInput.id = "inject-doc-editing-minutes-input";
+  injectEditingMinutesInput.className = "form-input";
+  injectEditingMinutesInput.placeholder = "Editing time (minutes, optional)";
+  injectEditingMinutesInput.min = "0";
+
+  injectEditingMinutesRow.append(injectEditingMinutesInput);
+
+  injectDocListItem.append(injectDocCheckboxRow, injectDocPathRow, injectEditingMinutesRow);
 
   return injectDocListItem;
 };
