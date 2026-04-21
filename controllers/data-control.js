@@ -4,6 +4,7 @@ import { runClearFiles, runCheckFile, clearUploadDirectory } from "../src/upload
 import { runResumeUnfucker } from "../src/src.js";
 import fs from "fs/promises";
 import { checkDocHasContent } from "../src/resume.js";
+import JSZip from "jszip";
 
 // export const getBackendValueController = async (req, res) => {
 //   const { key } = req.body;
@@ -62,6 +63,27 @@ export const checkRouteController = async (req, res) => {
   if (!data) return res.json({ success: false, message: "Something crashed, no clue why" });
   return res.json({ success: data.success, message: data.message, filename: data.filename });
 };
+
+async function mergeDocxMetadata(templatePath, generatedBuffer) {
+  try {
+    const templateBuf = await fs.readFile(templatePath);
+    const [templateZip, generatedZip] = await Promise.all([
+      JSZip.loadAsync(templateBuf),
+      JSZip.loadAsync(generatedBuffer),
+    ]);
+    for (const metaFile of ["docProps/core.xml", "docProps/app.xml"]) {
+      const file = templateZip.file(metaFile);
+      if (file) {
+        const content = await file.async("nodebuffer");
+        generatedZip.file(metaFile, content);
+      }
+    }
+    return generatedZip.generateAsync({ type: "nodebuffer" });
+  } catch (e) {
+    console.error("Failed to merge DOCX metadata, writing generated buffer as-is:", e);
+    return generatedBuffer;
+  }
+}
 
 export const submitRouteController = async (req, res) => {
   const {
@@ -144,7 +166,8 @@ export const submitRouteController = async (req, res) => {
 
   if (injectDoc) {
     try {
-      await fs.writeFile(injectDocPath.trim(), buffer);
+      const mergedBuffer = await mergeDocxMetadata(injectDocPath.trim(), buffer);
+      await fs.writeFile(injectDocPath.trim(), mergedBuffer);
     } catch (e) {
       console.error("Error writing inject doc:", e);
       return res.status(500).json({ error: "Failed to write to the specified file" });
