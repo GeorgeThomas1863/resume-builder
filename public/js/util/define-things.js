@@ -22,7 +22,8 @@ export const EXPAND_OPTIONS_SVG = `
 
 export const modelMap = {
   chatgpt: [
-    { value: "gpt-5.4", text: "GPT 5.4", selected: true },
+    { value: "gpt-5.5", text: "GPT 5.5", selected: true },
+    { value: "gpt-5.4", text: "GPT 5.4" },
     { value: "gpt-5.2", text: "GPT 5.2" },
     { value: "gpt-5", text: "GPT 5" },
     { value: "gpt-5-mini", text: "GPT 5 Mini" },
