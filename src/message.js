@@ -1,577 +1,167 @@
+import fs from "fs/promises";
+
+const promptCache = {};
+
 export const buildMessageInput = async (resumeText, jobInput, infoObj = null) => {
   if (!jobInput) return null;
-  if (infoObj) return await buildMessagePrebuilt(resumeText, jobInput, infoObj);
-
-  return await buildMessageDefault(resumeText, jobInput);
+  const mode = infoObj ? "prebuilt" : "upload";
+  const prompt = await loadPrompt(`builder-${mode}.md`);
+  if (!prompt) return null;
+  return [{ role: "system", content: prompt }, { role: "user", content: buildBuilderUserContent(resumeText, jobInput, infoObj) }];
 };
 
-export const buildInfoObj = async () => {
-  return {
-    summary: process.env.SUMMARY,
-
-    jobArray: [
-      {
-        jobId: 1,
-        company: process.env.COMPANY_1,
-        role: process.env.ROLE_1,
-        timeframe: process.env.TIMEFRAME_1,
-        bullets: [process.env.BULLETS_1_1, process.env.BULLETS_1_2, process.env.BULLETS_1_3, process.env.BULLETS_1_4, process.env.BULLETS_1_5],
-        accomplishments: [
-          process.env.ACCOMPLISHMENTS_1_1,
-          process.env.ACCOMPLISHMENTS_1_2,
-          process.env.ACCOMPLISHMENTS_1_3,
-          process.env.ACCOMPLISHMENTS_1_4,
-        ],
-      },
-      {
-        jobId: 2,
-        company: process.env.COMPANY_2,
-        role: process.env.ROLE_2,
-        timeframe: process.env.TIMEFRAME_2,
-        bullets: [process.env.BULLETS_2_1, process.env.BULLETS_2_2, process.env.BULLETS_2_3],
-        accomplishments: [
-          process.env.ACCOMPLISHMENTS_2_1,
-          process.env.ACCOMPLISHMENTS_2_2,
-          process.env.ACCOMPLISHMENTS_2_3,
-          process.env.ACCOMPLISHMENTS_2_4,
-        ],
-      },
-      {
-        jobId: 3,
-        company: process.env.COMPANY_3,
-        role: process.env.ROLE_3,
-        timeframe: process.env.TIMEFRAME_3,
-        bullets: [process.env.BULLETS_3_1, process.env.BULLETS_3_2],
-        accomplishments: [process.env.ACCOMPLISHMENTS_3_1, process.env.ACCOMPLISHMENTS_3_2],
-      },
-      {
-        jobId: 4,
-        company: process.env.COMPANY_4,
-        role: process.env.ROLE_4,
-        timeframe: process.env.TIMEFRAME_4,
-        bullets: [process.env.BULLETS_4_1, process.env.BULLETS_4_2],
-        accomplishments: [process.env.ACCOMPLISHMENTS_4_1, process.env.ACCOMPLISHMENTS_4_2],
-      },
-      {
-        jobId: 5,
-        company: process.env.COMPANY_5,
-        role: process.env.ROLE_5,
-        timeframe: process.env.TIMEFRAME_5,
-        bullets: [process.env.BULLETS_5_1, process.env.BULLETS_5_2],
-      },
-      {
-        jobId: 6,
-        company: process.env.COMPANY_6,
-        role: process.env.ROLE_6,
-        timeframe: process.env.TIMEFRAME_6,
-        bullets: [process.env.BULLETS_6_1, process.env.BULLETS_6_2],
-      },
-      {
-        jobId: 7,
-        company: process.env.COMPANY_7,
-        role: process.env.ROLE_7,
-        timeframe: process.env.TIMEFRAME_7,
-        bullets: [process.env.BULLETS_7_1, process.env.BULLETS_7_2],
-      },
-    ],
-
-    education: [
-      {
-        school: process.env.SCHOOL_1,
-        program: process.env.SCHOOL_PROGRAM_1,
-        degree1: process.env.DEGREE_1_1,
-        degree2: process.env.DEGREE_1_2,
-        degree3: process.env.DEGREE_1_3,
-        timeframe: process.env.SCHOOL_TIMEFRAME_1,
-        graduation: process.env.GRADUATION_1,
-        notes: process.env.SCHOOL_NOTES_1,
-      },
-      {
-        school: process.env.SCHOOL_2,
-        program: process.env.SCHOOL_PROGRAM_2,
-        degree1: process.env.DEGREE_2_1,
-        timeframe: process.env.SCHOOL_TIMEFRAME_2,
-        graduation: process.env.GRADUATION_2,
-        notes: process.env.SCHOOL_NOTES_2,
-      },
-      {
-        certification: process.env.CERTIFICATION_1,
-        dateCertified: process.env.DATE_CERTIFIED_1,
-        program: process.env.CERT_PROGRAM_1,
-        company: process.env.CERT_COMPANY_1,
-        notes: process.env.CERT_NOTES_1,
-      },
-      {
-        certification: process.env.CERTIFICATION_2,
-        dateCertified: process.env.DATE_CERTIFIED_2,
-        program: process.env.CERT_PROGRAM_2,
-        company: process.env.CERT_COMPANY_2,
-        notes: process.env.CERT_NOTES_2,
-      },
-      {
-        certification: process.env.CERTIFICATION_3,
-        dateCertified: process.env.DATE_CERTIFIED_3,
-        program: process.env.CERT_PROGRAM_3,
-        company: process.env.CERT_COMPANY_3,
-        notes: process.env.CERT_NOTES_3,
-      },
-      {
-        certification: process.env.CERTIFICATION_4,
-        dateCertified: process.env.DATE_CERTIFIED_4,
-        program: process.env.CERT_PROGRAM_4,
-        company: process.env.CERT_COMPANY_4,
-        notes: process.env.CERT_NOTES_4,
-      },
-    ],
-
-    general: process.env.GENERAL_INFO,
-  };
+export const buildScreenerMessageInput = async (builderMessages, draftText, mode) => {
+  if (!Array.isArray(builderMessages) || !draftText || !mode) return null;
+  const prompt = await loadPrompt(`screener-${mode}.md`);
+  const builderUser = builderMessages.find((message) => message.role === "user")?.content;
+  if (!prompt || !builderUser) return null;
+  return [{ role: "system", content: prompt }, { role: "user", content: `${builderUser}\n\n<draft_resume>${draftText}</draft_resume>` }];
 };
 
-export const buildMessagePrebuilt = async (resumeText, jobInput, infoObj) => {
-  if (!resumeText) return await buildMessagePrebuiltNoResume(jobInput, infoObj);
-  return await buildMessagePrebuiltWithResume(resumeText, jobInput, infoObj);
+const loadPrompt = async (fileName) => {
+  if (promptCache[fileName]) return promptCache[fileName];
+  try {
+    promptCache[fileName] = await fs.readFile(new URL(`../prompts/${fileName}`, import.meta.url), "utf8");
+    return promptCache[fileName];
+  } catch (error) {
+    console.error(`Failed to load prompt ${fileName}:`, error.message);
+    return null;
+  }
 };
 
-export const buildMessagePrebuiltNoResume = async (jobInput, infoObj) => {
-  return [
-    {
-      role: "system",
-      content: `You are a resume optimization expert. You enhance resume text to match job descriptions while keeping achievements truthful. Always respond with valid JSON only.
-  
-  ## Instructions:
-  
-  ##Overview:
-  
-  Your job is to take the provided Job Description and background information on me, and output a new resume that is specifically tailored to the job description. 
-  
-  In order for me to inject your output into a resume, I want you to provide different parts / sections of the new resume text in a structured format defined in the json schema. 
-  
-  To do this you will be provided with the following information:
-  
-  - A Job Description (labeled as "Job Description"). This is the job description that you are optimizing the resume for.
-  
-  - Background information on me (labeled as "Background Information"). This background information you receive is comprimsed of multiple different sections with information on me. 
-   multiple different sections. These sections include:
-        - "summary" - A summary of my background and experience.
-        - "jobArray" - An array of objects, each object representing a job I have held. The objects contain the following properties:
-          - "jobId" - The ID of the job.
-          - "role" - The role I held at the job.
-          - "company" - The company I worked for at the job.
-          - "timeframe" - The timeframe of the job.
-          - "bullets" - An array of strings, each string representing a bullet point of the experience and achievements at the job.
-          - "accomplishments" - An array of strings, each string representing an accomplishment at the job.
-        - "education" - An array of objects, each object representing my education and certifications.
-        - "general" - General information about me and my skills.
-  
-  
-  ## Goals
-  - You will need to output new resume text that is tailored to the job description following the rules and schema format provided.  
-  
-  - Focus on customizing the overall resume summary, and each of the bullet points in the Job Array in your output. Do NOT copy and paste from the background information, use it as a guide. Do NOT invent new experiences or achievements. 
-  
-  - Only output valid JSON based on the schema, nothing else.
-  
-  ## Rules:
-  
-  Please follow the following rules when outputting the new resume text:
-  
-  - The new resume text should be highly professional and formal, and should be concise and easy to read.
-  - The new resume should contain many action verbs and keywords, and be optimized to pass ATS filters.
-  - The new resume should focus on accomplishments and objective achievements, do not focus on responsibilities.
-  - The new resume text should be truthful and accurate, optimize the content for the job description, do NOT invent new experiences or achievements.
-  - Do NOT invent or make up any information in the new resume that is not provided in the original resume.
-  - Do NOT reference the original resume or that this is a new resume.
-  - Do NOT reference these instructions in the new resume text.
-  - Do NOT use markdown formatting, or other formatting not in the original resume. Just the plain text.
-  - Please follow the schema format provided exactly, nothing else.
-  - Generate a \`skills\` array of 3–5 categories with 3–6 skills each, tailored to the job description. Categories should reflect the role (e.g. "Technical Skills", "Intelligence Analysis", "Analytical Tools"). Do not include a Languages category.
-  `,
-    },
-    {
-      role: "user",
-      content: `Here is the the Job Description: <job_description>${jobInput}</job_description>.
-
-        And here is the background information on me: <background_information>${JSON.stringify(infoObj)}</background_information>`,
-    },
-  ];
+const buildBuilderUserContent = (resumeText, jobInput, infoObj) => {
+  let content = `<job_description>${jobInput}</job_description>`;
+  if (infoObj) content += `\n\n<background_information>${JSON.stringify(infoObj)}</background_information>`;
+  if (resumeText) content += `\n\n<default_resume>${resumeText}</default_resume>`;
+  return content;
 };
 
-export const buildMessagePrebuiltWithResume = async (resumeText, jobInput, infoObj) => {
-  return [
-    {
-      role: "system",
-      content: `You are a resume optimization expert. You enhance resume text to match job descriptions while keeping achievements truthful. Always respond with valid JSON only.
-  
-  ## Instructions:
-  
-  ##Overview:
-  
-  Your job is to take the provided Job Description and background information on me, and output a new resume that is specifically tailored to the job description. 
-  
-  In order for me to inject your output into a resume, I want you to provide different parts / sections of the new resume text in a structured format defined in the json schema. 
-  
-  To do this you will be provided with the following information:
-  
-  - 1. A Job Description (labeled as "Job Description"). This is the job description that you are optimizing the resume for.
-  
-  - 2. Background information on me (labeled as "Background Information"). This background information you receive is comprimsed of multiple different sections with information on me. 
-   multiple different sections. These sections include:
-        - "summary" - A summary of my background and experience.
-        - "jobArray" - An array of objects, each object representing a job I have held. The objects contain the following properties:
-          - "jobId" - The ID of the job.
-          - "role" - The role I held at the job.
-          - "company" - The company I worked for at the job.
-          - "timeframe" - The timeframe of the job.
-          - "bullets" - An array of strings, each string representing a bullet point of the experience and achievements at the job.
-          - "accomplishments" - An array of strings, each string representing an accomplishment at the job.
-        - "education" - An array of objects, each object representing my education and certifications.
-        - "general" - General information about me and my skills.
-    
-  
-  -3. A default resume (labeled as "Default Resume"). This is a standard resume NOT optimized to anything. Please use it to understand my experience and background. This default resume contains standard resume items. Do NOT this resume in your final output. Instead use it as background info to build the new resume.
-  
-  
-  ## Goals
-  - You will need to output new resume text that is tailored to the job description following the rules and schema format provided.  
-  
-  - Focus on customizing the overall resume summary, and each of the bullet points in the Job Array in your output. Do NOT copy and paste from the background information, use it as a guide. Do NOT invent new experiences or achievements. 
-  
-  - Only output valid JSON based on the schema, nothing else.
-  
-  ## Rules:
-  
-  Please follow the following rules when outputting the new resume text:
-  
-  - The new resume text should be highly professional and formal, and should be concise and easy to read.
-  - The new resume should contain many action verbs and keywords, and be optimized to pass ATS filters.
-  - The new resume text should be truthful and accurate, optimize the content for the job description, do NOT invent new experiences or achievements.
-  - The new resume should focus on accomplishments and objective achievements, do not focus on responsibilities.
-  - Do NOT invent or make up any information in the new resume that is not provided in the original resume.
-  - Do NOT reference the original resume or that this is a new resume.
-  - Do NOT reference these instructions in the new resume text.
-  - Do NOT use markdown formatting, or other formatting not in the original resume. Just the plain text.
-  - Please follow the schema format provided exactly, nothing else.
-  - Generate a \`skills\` array of 3–5 categories with 3–6 skills each, tailored to the job description. Categories should reflect the role (e.g. "Technical Skills", "Intelligence Analysis", "Analytical Tools"). Do not include a Languages category.
-  `,
-    },
-    {
-      role: "user",
-      content: `Here is the the Job Description: <job_description>${jobInput}</job_description>.
-      Here is background information on me: <background_information>${JSON.stringify(infoObj)}</background_information>
-      And here is my default resume: <default_resume>${resumeText}</default_resume>`,
-    },
-  ];
+export const buildInfoObj = async () => ({
+  summary: process.env.SUMMARY,
+  jobArray: buildJobArray(),
+  education: buildEducationArray(),
+  certifications: buildCertificationArray(),
+  general: process.env.GENERAL_INFO,
+});
+
+const buildJobArray = () => {
+  const jobs = [];
+  for (let jobId = 1; jobId <= 7; jobId++) {
+    const bullets = [];
+    const accomplishments = [];
+    for (let index = 1; index <= 5; index++) {
+      const bullet = process.env[`BULLETS_${jobId}_${index}`];
+      if (bullet) bullets.push(bullet);
+    }
+    for (let index = 1; index <= 4; index++) {
+      const accomplishment = process.env[`ACCOMPLISHMENTS_${jobId}_${index}`];
+      if (accomplishment) accomplishments.push(accomplishment);
+    }
+    const job = { jobId, company: process.env[`COMPANY_${jobId}`], role: process.env[`ROLE_${jobId}`], timeframe: process.env[`TIMEFRAME_${jobId}`], bullets };
+    if (accomplishments.length) job.accomplishments = accomplishments;
+    jobs.push(job);
+  }
+  return jobs;
 };
 
-export const buildMessageDefault = async (resumeText, jobInput) => {
-  return [
-    {
-      role: "system",
-      content: `You are a resume optimization expert. You enhance resume text to match job descriptions while keeping achievements truthful. Always respond with valid JSON only.
-  
-  ## Instructions:
-  
-  ##Overview:
-  
-  Your job is to take the provided Job Description and background information on me, and output a new resume that is specifically tailored to the job description. 
-  
-  In order for me to inject your output into a resume, I want you to provide different parts / sections of the new resume text in a structured format defined in the json schema. 
-  
-  To do this you will be provided with the following information:
-  
-  - A Job Description (labeled as "Job Description"). This is the job description that you are optimizing the resume for.
-  
-  - A default resume (labeled as "Default Resume"). This is a standard resume NOT optimized to anything. Please use it to understand my experience and background. This default resume contains standard resume items. Do NOT this resume in your final output. Instead use it as background info to build the new resume.
-  
-  ## Goals
-  - You will need to output new resume text that is tailored to the job description following the rules and schema format provided.  
-  
-  - Focus on customizing the overall resume summary, and each of the bullet points in the Job Array in your output. Do NOT copy and paste from the background information, use it as a guide. Do NOT invent new experiences or achievements. 
-  
-  - Only output valid JSON based on the schema, nothing else.
-  
-  ## Rules:
-  
-  Please follow the following rules when outputting the new resume text:
-  
-  - The new resume text should be highly professional and formal, and should be concise and easy to read.
-  - The new resume should contain many action verbs and keywords, and be optimized to pass ATS filters.
-  - The new resume text should be truthful and accurate, optimize the content for the job description, do NOT invent new experiences or achievements.
-  - The new resume should focus on accomplishments and objective achievements, do not focus on responsibilities.
-  - Do NOT invent or make up any information in the new resume that is not provided in the original resume.
-  - Do NOT reference the original resume or that this is a new resume.
-  - Do NOT reference these instructions in the new resume text.
-  - Do NOT use markdown formatting, or other formatting not in the original resume. Just the plain text.
-  - Please follow the schema format provided exactly, nothing else.
-  - Generate a \`skills\` array of 3–5 categories with 3–6 skills each, tailored to the job description. Categories should reflect the role (e.g. "Technical Skills", "Intelligence Analysis", "Analytical Tools"). Do not include a Languages category.
-  `,
-    },
-    {
-      role: "user",
-      content: `Here is the the Job Description: <job_description>${jobInput}</job_description>.
-
-        And here is my default resume: <default_resume>${resumeText}</default_resume>`,
-    },
-  ];
+const buildEducationArray = () => {
+  const education = [];
+  for (let index = 1; index <= 2; index++) {
+    education.push({ school: process.env[`SCHOOL_${index}`], program: process.env[`SCHOOL_PROGRAM_${index}`], degree1: process.env[`DEGREE_${index}_1`], degree2: process.env[`DEGREE_${index}_2`], degree3: process.env[`DEGREE_${index}_3`], timeframe: process.env[`SCHOOL_TIMEFRAME_${index}`], graduation: process.env[`GRADUATION_${index}`], notes: process.env[`SCHOOL_NOTES_${index}`] });
+  }
+  return education;
 };
 
-//++++++++++++++++++++++++++++++++++++
-
-export const buildSchema = async (model) => {
-  if (!model) return null;
-  if (model === "chatgpt") return await buildSchemaChatGPT();
-  if (model === "claude") return await buildSchemaClaude();
-  return await buildSchemaLocal();
+const buildCertificationArray = () => {
+  const certifications = [];
+  for (let index = 1; index <= 4; index++) {
+    const certification = process.env[`CERTIFICATION_${index}`];
+    if (!certification) continue;
+    certifications.push({ certification, dateCertified: process.env[`DATE_CERTIFIED_${index}`], program: process.env[`CERT_PROGRAM_${index}`], company: process.env[`CERT_COMPANY_${index}`], notes: process.env[`CERT_NOTES_${index}`] });
+  }
+  return certifications;
 };
 
-export const buildSchemaClaude = async () => {
-  return {
-    name: "resume_enhancement",
-    schema: {
-      type: "object",
-      required: ["name", "email", "summary", "experience", "education", "skills"],
-      properties: {
-        name: { type: "string", description: "Candidate's full name" },
-        email: { type: "string", description: "Candidate's email address" },
-        summary: { type: "string", description: "Tailored professional summary" },
-        experience: {
-          type: "array",
-          minItems: 7,
-          maxItems: 7,
-          items: {
-            type: "object",
-            required: ["role", "company", "timeframe", "bullets"],
-            properties: {
-              role: { type: "string" },
-              company: { type: "string" },
-              timeframe: { type: "string" },
-              bullets: { type: "array", items: { type: "string" } },
-            },
-          },
-        },
-        education: {
-          type: "array",
-          items: {
-            type: "object",
-            required: ["degree", "school", "timeframe"],
-            properties: {
-              degree: { type: "string" },
-              school: { type: "string" },
-              timeframe: { type: "string" },
-            },
-          },
-        },
-        skills: {
-          type: "array",
-          description: "Categorized skills tailored to the job description",
-          items: {
-            type: "object",
-            required: ["category", "items"],
-            properties: {
-              category: { type: "string", description: "Skill category name (e.g. Technical Skills, Intelligence Analysis)" },
-              items: { type: "array", items: { type: "string" }, description: "Skills in this category" },
-            },
-          },
-        },
-      },
-    },
-  };
+export const buildSchema = async (aiType, mode, isScreener = false) => {
+  if (!aiType || !mode) return null;
+  const baseSchema = mode === "prebuilt" ? buildBaseSchemaPrebuilt() : buildBaseSchemaUpload();
+  const schema = isScreener ? buildScreenerSchema(baseSchema) : baseSchema;
+  if (aiType === "chatgpt") return { name: "resume_enhancement", schema: makeStrictSchema(schema) };
+  if (aiType === "claude") return { name: "resume_enhancement", schema: removeUnsupportedClaudeConstraints(makeStrictSchema(schema)) };
+  return { type: "json_schema", json_schema: { name: "resume_enhancement", schema } };
 };
 
-export const buildSchemaChatGPT = async () => {
-  return {
-    name: "resume_enhancement",
-    schema: {
-      type: "object",
-      additionalProperties: false,
-      required: ["name", "email", "summary", "experience", "education", "skills"],
-      properties: {
-        name: {
-          type: "string",
-          description: "Candidate's full name",
-        },
-        email: {
-          type: "string",
-          description: "Candidate's email address",
-        },
-        summary: {
-          type: "string",
-          description: "Tailored professional summary",
-        },
-        experience: {
-          type: "array",
-          minItems: 7,
-          maxItems: 7,
-          items: {
-            type: "object",
-            additionalProperties: false,
-            required: ["role", "company", "timeframe", "bullets"],
-            properties: {
-              role: {
-                type: "string",
-                description: "Job title/role",
-              },
-              company: {
-                type: "string",
-                description: "Company name",
-              },
-              timeframe: {
-                type: "string",
-                description: "Employment timeframe or empty string",
-              },
-              bullets: {
-                type: "array",
-                items: {
-                  type: "string",
-                },
-                description: "Array of bullet points describing responsibilities",
-              },
-            },
-          },
-        },
-        education: {
-          type: "array",
-          items: {
-            type: "object",
-            additionalProperties: false,
-            required: ["degree", "school", "timeframe"],
-            properties: {
-              degree: {
-                type: "string",
-                description: "Degree or certification earned",
-              },
-              school: {
-                type: "string",
-                description: "School or institution name",
-              },
-              timeframe: {
-                type: "string",
-                description: "Graduation year or timeframe",
-              },
-            },
-          },
-        },
-        skills: {
-          type: "array",
-          description: "Categorized skills tailored to the job description",
-          items: {
-            type: "object",
-            additionalProperties: false,
-            required: ["category", "items"],
-            properties: {
-              category: {
-                type: "string",
-                description: "Skill category name (e.g. Technical Skills, Intelligence Analysis)",
-              },
-              items: {
-                type: "array",
-                items: { type: "string" },
-                description: "Skills in this category",
-              },
-            },
-          },
-        },
-      },
-    },
-  };
-};
-
-export const buildSchemaLocal = async () => {
-  return {
-    type: "json_schema",
-    json_schema: {
-      name: "resume_enhancement",
-      schema: {
+export const buildBaseSchemaPrebuilt = () => ({
+  type: "object",
+  required: ["summary", "experience", "skills", "certifications"],
+  properties: {
+    summary: { type: "string", description: "Tailored professional summary" },
+    experience: {
+      type: "array",
+      description: "Selected jobs keyed by source jobId",
+      items: {
         type: "object",
-        additionalProperties: false,
-        required: ["name", "email", "summary", "experience", "education", "skills"],
+        required: ["jobId", "bullets"],
         properties: {
-          name: {
-            type: "string",
-            description: "Candidate's full name",
-          },
-          email: {
-            type: "string",
-            description: "Candidate's email address",
-          },
-          summary: {
-            type: "string",
-            description: "Tailored professional summary",
-          },
-          experience: {
-            type: "array",
-            items: {
-              type: "object",
-              properties: {
-                role: {
-                  type: "string",
-                  description: "Job title/role",
-                },
-                company: {
-                  type: "string",
-                  description: "Company name",
-                },
-                timeframe: {
-                  type: "string",
-                  description: "Employment timeframe or empty string",
-                },
-                bullets: {
-                  type: "array",
-                  items: {
-                    type: "string",
-                  },
-                  description: "Array of bullet points describing responsibilities",
-                },
-              },
-              required: ["role", "company", "timeframe", "bullets"],
-            },
-            minItems: 7,
-            maxItems: 7,
-          },
-          education: {
-            type: "array",
-            items: {
-              type: "object",
-              additionalProperties: false,
-              required: ["degree", "school", "timeframe"],
-              properties: {
-                degree: {
-                  type: "string",
-                  description: "Degree or certification earned",
-                },
-                school: {
-                  type: "string",
-                  description: "School or institution name",
-                },
-                timeframe: {
-                  type: "string",
-                  description: "Graduation year or timeframe",
-                },
-              },
-            },
-          },
-          skills: {
-            type: "array",
-            description: "Categorized skills tailored to the job description",
-            items: {
-              type: "object",
-              required: ["category", "items"],
-              properties: {
-                category: {
-                  type: "string",
-                  description: "Skill category name (e.g. Technical Skills, Intelligence Analysis)",
-                },
-                items: {
-                  type: "array",
-                  items: { type: "string" },
-                  description: "Skills in this category",
-                },
-              },
-            },
-          },
+          jobId: { type: "integer", description: "jobId from background_information.jobArray" },
+          bullets: { type: "array", items: { type: "string" }, description: "Tailored accomplishment bullets" },
         },
       },
     },
-  };
+    skills: {
+      type: "array",
+      description: "Categorized skills tailored to the job description",
+      items: {
+        type: "object",
+        required: ["category", "items"],
+        properties: {
+          category: { type: "string" },
+          items: { type: "array", items: { type: "string" } },
+        },
+      },
+    },
+    certifications: { type: "array", description: "Selected certification display names", items: { type: "string" } },
+  },
+});
+
+export const buildBaseSchemaUpload = () => ({
+  type: "object",
+  required: ["name", "email", "summary", "experience", "education", "skills"],
+  properties: {
+    name: { type: "string", description: "Candidate's full name" },
+    email: { type: "string", description: "Candidate's email address" },
+    summary: { type: "string", description: "Tailored professional summary" },
+    experience: { type: "array", minItems: 7, maxItems: 7, items: { type: "object", required: ["role", "company", "timeframe", "bullets"], properties: { role: { type: "string" }, company: { type: "string" }, timeframe: { type: "string" }, bullets: { type: "array", items: { type: "string" } } } } },
+    education: { type: "array", items: { type: "object", required: ["degree", "school", "timeframe"], properties: { degree: { type: "string" }, school: { type: "string" }, timeframe: { type: "string" } } } },
+    skills: { type: "array", description: "Categorized skills tailored to the job description", items: { type: "object", required: ["category", "items"], properties: { category: { type: "string" }, items: { type: "array", items: { type: "string" } } } } },
+  },
+});
+
+const buildScreenerSchema = (baseSchema) => ({
+  ...baseSchema,
+  required: ["audit", ...baseSchema.required],
+  properties: {
+    audit: { type: "string", description: "Terse screening audit and corrections made" },
+    ...baseSchema.properties,
+  },
+});
+
+const makeStrictSchema = (schema) => {
+  if (schema.type === "array") return { ...schema, items: makeStrictSchema(schema.items) };
+  if (schema.type !== "object") return schema;
+  const properties = {};
+  for (const key of Object.keys(schema.properties ?? {})) properties[key] = makeStrictSchema(schema.properties[key]);
+  return { ...schema, properties, required: Object.keys(properties), additionalProperties: false };
+};
+
+const removeUnsupportedClaudeConstraints = (schema) => {
+  if (schema.type === "array") {
+    const { minItems, maxItems, ...supportedSchema } = schema;
+    return { ...supportedSchema, items: removeUnsupportedClaudeConstraints(schema.items) };
+  }
+  if (schema.type !== "object") return schema;
+  const properties = {};
+  for (const key of Object.keys(schema.properties ?? {})) properties[key] = removeUnsupportedClaudeConstraints(schema.properties[key]);
+  const { minItems, maxItems, ...supportedSchema } = schema;
+  return { ...supportedSchema, properties };
 };

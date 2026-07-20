@@ -97,6 +97,8 @@ export const submitRouteController = async (req, res) => {
     inputPath: _ignored,
     aiType,
     modelType,
+    screenerAiType: bodyScreenerAiType,
+    screenerModelType: bodyScreenerModelType,
     serviceTier,
     maxTokens,
     temperature,
@@ -117,6 +119,9 @@ export const submitRouteController = async (req, res) => {
   if (!modelType || !String(modelType).trim()) {
     return res.status(400).json({ error: "modelType is required" });
   }
+  const screenerAiType = String(bodyScreenerAiType || aiType).trim();
+  const screenerModelType = String(bodyScreenerModelType || modelType).trim();
+  if (!screenerModelType) return res.status(400).json({ error: "screenerModelType is required" });
 
   let parsedEditingMinutes = null;
   if (editingMinutes !== undefined && String(editingMinutes).trim() !== "") {
@@ -164,6 +169,8 @@ export const submitRouteController = async (req, res) => {
   const inputParams = {
     aiType,
     modelType,
+    screenerAiType,
+    screenerModelType,
     serviceTier,
     temperature: temp,
     maxTokens: tokens,

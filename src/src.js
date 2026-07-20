@@ -1,5 +1,5 @@
 import { extractResumeText, buildNewResume } from "./resume.js";
-import { runSendToAI } from "./ai.js";
+import { runTwoPassAI } from "./ai.js";
 import { buildMessageInput, buildSchema, buildInfoObj } from "./message.js";
 
 export const runResumeUnfucker = async (inputParams) => {
@@ -15,11 +15,12 @@ export const runResumeUnfucker = async (inputParams) => {
 
   let infoObj = null;
   if (nukeOhio) infoObj = await buildInfoObj();
+  const mode = nukeOhio ? "prebuilt" : "upload";
 
   const messageInput = await buildMessageInput(resumeText, jobInput, infoObj);
   // console.log("MESSAGE INPUT");
   // console.log(messageInput);
-  const schema = await buildSchema(aiType);
+  const schema = await buildSchema(aiType, mode, false);
   // console.log("SCHEMA");
   // console.log(schema);
 
@@ -32,7 +33,7 @@ export const runResumeUnfucker = async (inputParams) => {
   // console.log("AI PARAMS");
   // console.log(aiParams);
 
-  const aiText = await runSendToAI(aiParams);
+  const aiText = await runTwoPassAI({ ...aiParams, mode });
   console.log("AI TEXT");
   console.log(aiText);
   if (!aiText) return null;

@@ -12,7 +12,7 @@ Do NOT commit anything to GitHub. The user will control all commits to GitHub. D
 
 # resume-builder
 
-Personal resume optimization tool. Accepts uploaded resume (DOCX/PDF), extracts text, sends to AI (OpenAI) with a job description, and returns a tailored `new-resume.docx`.
+Personal resume optimization tool. Accepts uploaded resume (DOCX/PDF), extracts text, sends to AI with a job description, and returns a tailored `new-resume.docx`.
 
 ## Commands
 
@@ -26,7 +26,7 @@ npm start        # Dev server with nodemon (hot-reload)
 - **Runtime:** Node.js (ES Modules — `"type": "module"` in package.json)
 - **Server:** Express 5.x
 - **Frontend:** Vanilla ES6 modules, no bundler
-- **AI:** OpenAI SDK — dual mode: ChatGPT (Responses API) + local LLM (chat completions)
+- **AI:** OpenAI, Anthropic, and local model providers
 - **Docs:** `mammoth` (DOCX parse), `pdf-parse` (PDF parse), `docx` (DOCX generation)
 - **Auth:** express-session + password from env, rate-limited (10 attempts/15 min/IP)
 - **Storage:** Local filesystem at `/data/{sessionId}/` — no database
@@ -46,10 +46,11 @@ middleware/
   upload-error.js        # Multer error handler
 src/
   src.js                 # Orchestrator: runResumeUnfucker() — chains all steps
-  ai.js                  # AI client builders + send functions (ChatGPT & local)
+  ai.js                  # AI clients plus builder-to-screener orchestration
   message.js             # Prompt construction + JSON schema builders
   resume.js              # Text extraction + DOCX paragraph builder
   upload-file.js         # Multer config, file ops, session-scoped storage
+prompts/                 # Builder and screener prompts for prebuilt and upload modes
 public/
   js/                    # Frontend ES6 modules (main.js, run.js, auth.js, util/, display/)
   css/                   # Styles
@@ -64,11 +65,13 @@ POST /upload  →  multer → /data/{sessionId}/resume.ext
 POST /submit  →  submitRouteController
                  → runResumeUnfucker()
                    → extractResumeText()     [mammoth / pdf-parse]
-                   → buildMessageInput()     [prompt + schema]
-                   → runSendToAI()           [OpenAI or local]
+                   → buildMessageInput()     [builder prompt + schema]
+                   → runTwoPassAI()          [builder then screener; draft fallback]
                    → buildNewResume()        [docx Packer → Buffer]
                  → res.send(buffer) as new-resume.docx attachment
 ```
+
+The screener receives the complete builder user input plus the builder draft, may use a separately selected provider/model, and falls back to the valid builder draft on any screener failure.
 
 ## Auth
 
@@ -100,9 +103,9 @@ CERTIFICATION_1-4, CERT_PROGRAM_1-4, CERT_COMPANY_1-4
 
 ## Gotchas
 
+- **Two-pass AI pipeline** — both upload and prebuilt modes run builder then screener; screener failures return the builder draft
+- **Experience schema differs by mode** — upload requires seven entries; prebuilt entries are keyed by `jobId`
 - **One file per session** — new upload deletes previous file; multiple files in `/data/{sessionId}/` causes an error
-- **AI schema requires exactly 7 experience entries** — set in `message.js`; AI must comply or DOCX generation breaks
-- **ChatGPT vs local schema differ** — `buildSchemaChatGPT()` uses Responses API strict mode; `buildSchemaLocal()` uses chat completions format
 - **Hardcoded DOCX styles** — 12pt Times New Roman, specific tab stops; change in `resume.js`
 - **Session expiry doesn't clean `/data/`** — orphaned files accumulate; no auto-cleanup
 - **Rate limiting is in-memory** — resets on server restart; applies only to auth routes

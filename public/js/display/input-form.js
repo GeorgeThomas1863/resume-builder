@@ -92,79 +92,69 @@ export const buildSelectRowListItem = async () => {
 
   const selectAIDiv = await buildSelectAIDiv();
   const selectModelDiv = await buildSelectModelDiv();
+  const screenerAIDiv = await buildScreenerAIDiv();
+  const screenerModelDiv = await buildScreenerModelDiv();
   const modelOptionsToggle = await buildModelOptionsToggle();
 
-  selectRowContainer.append(selectAIDiv, selectModelDiv, modelOptionsToggle);
+  selectRowContainer.append(selectAIDiv, selectModelDiv, screenerAIDiv, screenerModelDiv, modelOptionsToggle);
 
   return selectRowContainer;
 };
 
-export const buildSelectAIDiv = async () => {
-  const selectAIDiv = document.createElement("div");
-  selectAIDiv.id = "select-ai-div";
-  selectAIDiv.className = "form-select-half";
+export const buildSelectAIDiv = async () => buildAISelectDiv("ai-type-select", "Select AI", "select-ai-div");
 
-  const selectAILabel = document.createElement("label");
-  selectAILabel.setAttribute("for", "ai-type-select");
-  selectAILabel.textContent = "Select AI";
-  selectAILabel.className = "form-label";
+export const buildSelectModelDiv = async () => buildModelSelectDiv("model-select", "Select Model", "select-model-div");
 
-  const aiSelectType = document.createElement("select");
-  aiSelectType.id = "ai-type-select";
-  aiSelectType.className = "form-select";
-  // aiSelectType.setAttribute("data-label", "ai-type-select");
+export const buildScreenerAIDiv = async () => buildAISelectDiv("screener-ai-type-select", "Screener AI", "select-screener-ai-div", true);
 
-  const optionArray = [
-    { value: "chatgpt", text: "ChatGPT", selected: true },
-    { value: "claude", text: "Claude" },
-    { value: "local", text: "Local LLM" },
-  ];
+export const buildScreenerModelDiv = async () => buildModelSelectDiv("screener-model-select", "Screener Model", "select-screener-model-div");
 
-  for (let i = 0; i < optionArray.length; i++) {
-    const optionData = optionArray[i];
+const buildAISelectDiv = async (selectId, labelText, divId, hasDataLabel = false) => {
+  const selectDiv = document.createElement("div");
+  selectDiv.id = divId;
+  selectDiv.className = "form-select-half";
+  const label = document.createElement("label");
+  label.setAttribute("for", selectId);
+  label.textContent = labelText;
+  label.className = "form-label";
+  const select = document.createElement("select");
+  select.id = selectId;
+  select.className = "form-select";
+  if (hasDataLabel) select.setAttribute("data-label", selectId);
+  const options = [{ value: "chatgpt", text: "ChatGPT", selected: true }, { value: "claude", text: "Claude" }, { value: "local", text: "Local LLM" }];
+  for (let index = 0; index < options.length; index++) {
     const option = document.createElement("option");
-    option.value = optionData.value;
-    option.textContent = optionData.text;
-    if (optionData.selected) option.selected = true;
-
-    aiSelectType.append(option);
+    option.value = options[index].value;
+    option.textContent = options[index].text;
+    if (options[index].selected) option.selected = true;
+    select.append(option);
   }
-
-  selectAIDiv.append(selectAILabel, aiSelectType);
-
-  return selectAIDiv;
+  selectDiv.append(label, select);
+  return selectDiv;
 };
 
-export const buildSelectModelDiv = async () => {
-  const selectModelDiv = document.createElement("div");
-  selectModelDiv.id = "select-model-div";
-  selectModelDiv.className = "form-select-half";
-
-  const selectModelLabel = document.createElement("label");
-  selectModelLabel.setAttribute("for", "model-select");
-  selectModelLabel.textContent = "Select Model";
-  selectModelLabel.className = "form-label";
-
-  const modelSelect = document.createElement("select");
-  modelSelect.id = "model-select";
-  modelSelect.className = "form-select";
-  modelSelect.setAttribute("data-label", "model-select");
-
-  const optionArray = modelMap.chatgpt;
-
-  for (let i = 0; i < optionArray.length; i++) {
-    const optionData = optionArray[i];
+const buildModelSelectDiv = async (selectId, labelText, divId) => {
+  const selectDiv = document.createElement("div");
+  selectDiv.id = divId;
+  selectDiv.className = "form-select-half";
+  const label = document.createElement("label");
+  label.setAttribute("for", selectId);
+  label.textContent = labelText;
+  label.className = "form-label";
+  const select = document.createElement("select");
+  select.id = selectId;
+  select.className = "form-select";
+  select.setAttribute("data-label", selectId);
+  for (let index = 0; index < modelMap.chatgpt.length; index++) {
+    const optionData = modelMap.chatgpt[index];
     const option = document.createElement("option");
     option.value = optionData.value;
     option.textContent = optionData.text;
     if (optionData.selected) option.selected = true;
-
-    modelSelect.append(option);
+    select.append(option);
   }
-
-  selectModelDiv.append(selectModelLabel, modelSelect);
-
-  return selectModelDiv;
+  selectDiv.append(label, select);
+  return selectDiv;
 };
 
 export const buildModelOptionsToggle = async () => {

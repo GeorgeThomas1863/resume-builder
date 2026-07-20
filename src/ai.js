@@ -1,5 +1,6 @@
 import { OpenAI } from "openai";
 import Anthropic from "@anthropic-ai/sdk";
+import { buildScreenerMessageInput, buildSchema } from "./message.js";
 
 let openaiClient = null;
 let localClient = null;
@@ -38,6 +39,56 @@ export const runSendToAI = async (inputParams) => {
 
   //otherwise run local
   return await runLocalAI(inputParams);
+};
+
+const SCREENER_MIN_TOKENS = 16000;
+
+export const runTwoPassAI = async (inputParams) => {
+  const builderStartedAt = Date.now();
+  const draftText = await runSendToAI(inputParams);
+  console.log(`Resume builder pass completed in ${Date.now() - builderStartedAt}ms`);
+  if (!draftText) return null;
+  if (!parseResumeJSON(draftText)) {
+    console.warn("Resume builder returned invalid draft JSON; skipping screener pass");
+    return draftText;
+  }
+
+  try {
+    return await runScreenerPass(inputParams, draftText);
+  } catch (error) {
+    console.error("Resume screener pass failed; returning builder draft:", error.message);
+    return draftText;
+  }
+};
+
+const runScreenerPass = async (inputParams, draftText) => {
+  const { screenerAiType, screenerModelType, mode, messageInput, maxTokens, temperature, serviceTier } = inputParams;
+  const messageInputScreener = await buildScreenerMessageInput(messageInput, draftText, mode);
+  const schema = await buildSchema(screenerAiType, mode, true);
+  if (!messageInputScreener || !schema) throw new Error("could not build screener request");
+  const startedAt = Date.now();
+  const screenerText = await runSendToAI({ aiType: screenerAiType, modelType: screenerModelType, messageInput: messageInputScreener, schema, temperature, serviceTier, maxTokens: Math.max(+maxTokens, SCREENER_MIN_TOKENS) });
+  console.log(`Resume screener pass completed in ${Date.now() - startedAt}ms`);
+  const screenerResume = parseResumeJSON(screenerText);
+  if (!screenerResume || typeof screenerResume.audit !== "string") {
+    console.warn("Resume screener returned invalid JSON; returning builder draft");
+    return draftText;
+  }
+  console.log("Resume screener audit:", screenerResume.audit);
+  return screenerText;
+};
+
+const parseResumeJSON = (text) => {
+  if (typeof text !== "string") return null;
+  const cleanedText = text.replace(/^```json\s*/i, "").replace(/^```\s*/i, "").replace(/\s*```$/, "").trim();
+  try {
+    const value = JSON.parse(cleanedText);
+    if (!value || typeof value !== "object" || typeof value.summary !== "string" || !Array.isArray(value.experience) || !Array.isArray(value.skills)) return null;
+    return value;
+  } catch (error) {
+    console.warn("Failed to parse AI resume JSON:", error.message);
+    return null;
+  }
 };
 
 export const runChatGPT = async (inputParams) => {
@@ -88,21 +139,13 @@ export const runClaude = async (inputParams) => {
       model: modelType,
       max_tokens: +maxTokens,
       temperature: Math.min(+temperature, 1),
-      system: systemContent,
+      system: [{ type: "text", text: systemContent, cache_control: { type: "ephemeral", ttl: "1h" } }],
       messages: userMessages,
-      tools: [
-        {
-          name: schema.name,
-          description: "Output the tailored resume as structured JSON",
-          input_schema: schema.schema,
-        },
-      ],
-      tool_choice: { type: "tool", name: schema.name },
+      output_config: { format: { type: "json_schema", schema: schema.schema } },
     });
 
-    const toolUseBlock = response.content.find((b) => b.type === "tool_use");
-    if (!toolUseBlock) return null;
-    return JSON.stringify(toolUseBlock.input);
+    const textBlock = response.content.find((block) => block.type === "text");
+    return textBlock?.text ?? null;
   } catch (e) {
     console.error("runClaude error:", e?.status, e?.message, e?.error);
     return null;

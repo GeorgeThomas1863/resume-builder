@@ -347,34 +347,6 @@ export const buildPrebuiltParagraphArray = async (aiObj, infoObj, pi = false) =>
     })
   );
 
-  //job header
-  paragraphArray.push(
-    new Paragraph({
-      children: [
-        new TextRun({
-          text: "Intelligence Analyst, Federal Bureau of Investigation",
-          bold: true,
-          font: "Times New Roman",
-          size: 24,
-        }),
-        new TextRun({
-          text: `\t2010-Present`,
-          bold: true,
-          italics: true,
-          font: "Times New Roman",
-          size: 24,
-        }),
-      ],
-      tabStops: [
-        {
-          type: TabStopType.RIGHT,
-          position: 10800,
-        },
-      ],
-      spacing: { before: 120, after: 160 },
-    })
-  );
-
   //job loop
   if (!Array.isArray(aiObj.experience)) {
     console.error("AI response missing or invalid 'experience' field (prebuilt mode)");
@@ -382,19 +354,21 @@ export const buildPrebuiltParagraphArray = async (aiObj, infoObj, pi = false) =>
   }
   for (let i = 0; i < aiObj.experience.length; i++) {
     const jobAI = aiObj.experience[i];
-    if (i >= infoObj.jobArray.length) continue;
-    const jobConfig = infoObj.jobArray[i];
-    if (!jobAI || !jobAI.bullets) continue;
+    if (!jobAI || !Array.isArray(jobAI.bullets) || jobAI.bullets.length === 0) continue;
+    let jobConfig = null;
+    for (let jobIndex = 0; jobIndex < infoObj.jobArray.length; jobIndex++) {
+      if (infoObj.jobArray[jobIndex].jobId === jobAI.jobId) jobConfig = infoObj.jobArray[jobIndex];
+    }
+    if (!jobConfig) {
+      console.warn(`Resume: no jobArray entry found for jobId ${jobAI.jobId}, skipping`);
+      continue;
+    }
 
     paragraphArray.push(
       new Paragraph({
         children: [
           new TextRun({
-            // text: " ".repeat(2),
-            text: " ", //1 space indent
-          }),
-          new TextRun({
-            text: `- ${jobConfig.role}`,
+            text: `${jobConfig.role}, ${jobConfig.company}`,
             bold: true,
             font: "Times New Roman",
             size: 22, // 22 half-points = 11pt
@@ -415,7 +389,7 @@ export const buildPrebuiltParagraphArray = async (aiObj, infoObj, pi = false) =>
             // position: 10400,
           },
         ],
-        spacing: { before: 160, after: 0 },
+        spacing: { before: 160, after: 40 },
       })
     );
 
@@ -491,61 +465,23 @@ export const buildPrebuiltParagraphArray = async (aiObj, infoObj, pi = false) =>
     })
   );
 
-  paragraphArray.push(
-    new Paragraph({
+  for (let index = infoObj.education.length - 1; index >= 0; index--) {
+    const education = infoObj.education[index];
+    if (!education?.school) continue;
+    const degreeParts = [education.degree1, education.degree2, education.degree3];
+    const degrees = [];
+    for (let degreeIndex = 0; degreeIndex < degreeParts.length; degreeIndex++) {
+      if (degreeParts[degreeIndex]) degrees.push(degreeParts[degreeIndex]);
+    }
+    paragraphArray.push(new Paragraph({
       children: [
-        new TextRun({
-          // text: "Georgetown University, Master of Arts in Security Studies",
-          text: `${infoObj.education[1].school}, ${infoObj.education[1].degree1}`,
-          bold: true,
-          font: "Times New Roman",
-          size: 22,
-        }),
-        new TextRun({
-          text: `\tMay 2019`,
-          bold: true,
-          italics: true,
-          font: "Times New Roman",
-          size: 22,
-        }),
+        new TextRun({ text: degrees.length ? `${education.school}, ${degrees.join(", ")}` : education.school, bold: true, font: "Times New Roman", size: 22 }),
+        new TextRun({ text: `\t${education.graduation || education.timeframe || ""}`, bold: true, italics: true, font: "Times New Roman", size: 22 }),
       ],
-      tabStops: [
-        {
-          type: TabStopType.RIGHT,
-          position: 10800,
-        },
-      ],
-      spacing: { before: 0, after: 0 },
-    })
-  );
-
-  paragraphArray.push(
-    new Paragraph({
-      children: [
-        new TextRun({
-          // text: "Catholic University of America, Bachelor of Arts in International Relations; Economics; History",
-          text: `${infoObj.education[0].school}, Bachelor of Arts in Economics and International Relations`,
-          bold: true,
-          font: "Times New Roman",
-          size: 22,
-        }),
-        new TextRun({
-          text: `\t${infoObj.education[0].timeframe}`,
-          bold: true,
-          italics: true,
-          font: "Times New Roman",
-          size: 22,
-        }),
-      ],
-      tabStops: [
-        {
-          type: TabStopType.RIGHT,
-          position: 10800,
-        },
-      ],
-      spacing: { before: 160, after: 0 },
-    })
-  );
+      tabStops: [{ type: TabStopType.RIGHT, position: 10800 }],
+      spacing: { before: index === infoObj.education.length - 1 ? 0 : 160, after: 0 },
+    }));
+  }
 
   paragraphArray.push(
     new Paragraph({
@@ -558,7 +494,7 @@ export const buildPrebuiltParagraphArray = async (aiObj, infoObj, pi = false) =>
           bold: true,
         }),
         new TextRun({
-          text: "GIAC Red Team Professional (GRTP), GIAC Certified Incident Handler (GCIH), GIAC Cyber Threat Intelligence (GCTI)",
+          text: buildPrebuiltCertifications(aiObj, infoObj),
           font: "Times New Roman",
           size: 22,
           bold: false,
@@ -574,6 +510,16 @@ export const buildPrebuiltParagraphArray = async (aiObj, infoObj, pi = false) =>
   );
 
   return paragraphArray;
+};
+
+const buildPrebuiltCertifications = (aiObj, infoObj) => {
+  if (Array.isArray(aiObj.certifications) && aiObj.certifications.length > 0) return aiObj.certifications.join(", ");
+  const certifications = [];
+  for (let index = 0; index < infoObj.certifications.length; index++) {
+    const certification = infoObj.certifications[index]?.certification;
+    if (certification) certifications.push(certification);
+  }
+  return certifications.join(", ");
 };
 
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++

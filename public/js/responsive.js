@@ -69,6 +69,7 @@ export const changeHandler = async (e) => {
   // console.log(changeElement.value);
 
   if (changeId === "ai-type-select") await runAIModelSelect(changeElement.value);
+  if (changeId === "screener-ai-type-select") await runAIModelSelect(changeElement.value, "screener-model-select");
 
   if (changeId === "input-type-select") await runUploadButtonToggle(changeElement.value);
 

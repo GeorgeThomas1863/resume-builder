@@ -183,13 +183,13 @@ export const runPwToggle = async () => {
   return true;
 };
 
-export const runAIModelSelect = async (modelType) => {
-  if (!modelType) return null;
-  const modelValue = modelMap[modelType];
+export const runAIModelSelect = async (aiType, selectId = "model-select") => {
+  if (!aiType) return null;
+  const modelValue = modelMap[aiType];
   // console.log("MODEL VALUE");
   // console.log(modelValue);
 
-  const modelSelect = document.getElementById("model-select");
+  const modelSelect = document.getElementById(selectId);
   if (!modelSelect) return null;
   modelSelect.innerHTML = "";
   for (let i = 0; i < modelValue.length; i++) {
