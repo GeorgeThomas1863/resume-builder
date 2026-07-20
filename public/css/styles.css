@@ -149,15 +149,26 @@ h3 {
   flex-direction: column;
 }
 
+/* screener row is paired with the builder row above it */
+#screener-select-row {
+  padding-top: 0;
+}
+
 /* override for toggle */
-#model-options-toggle {
+#model-options-toggle,
+#toggle-spacer {
   flex: 0 0 auto; /* Don't grow, don't shrink, use auto width */
   min-width: fit-content;
 }
 
-#model-options-toggle .toggle-wrapper {
+#model-options-toggle .toggle-wrapper,
+#toggle-spacer .toggle-wrapper {
   width: fit-content;
   min-width: fit-content;
+}
+
+#toggle-spacer {
+  visibility: hidden;
 }
 
 #model-options-list-item {
@@ -272,11 +283,21 @@ h3 {
   flex-direction: row;
   align-items: flex-start;
   gap: 2rem;
+  min-width: 0;
 }
 
+.upload-row-wrapper .btn-delete {
+  flex-shrink: 0;
+}
+
+/* long filenames truncate with an ellipsis instead of overflowing the row */
 .upload-status {
   display: inline-block;
   vertical-align: middle;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .toggle-wrapper {
@@ -590,5 +611,5 @@ h3 {
 
 #inject-doc-editing-minutes-row {
   margin-top: 1.5rem;
-  max-width: 280px;
+  max-width: 160px;
 }

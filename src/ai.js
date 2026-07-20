@@ -127,6 +127,9 @@ export const runChatGPT = async (inputParams) => {
   }
 };
 
+// Claude 4.7+ / 5 models reject sampling params with a 400 — only Haiku 4.5 still accepts temperature
+const CLAUDE_TEMPERATURE_MODELS = new Set(["claude-haiku-4-5", "claude-haiku-4-5-20251001"]);
+
 export const runClaude = async (inputParams) => {
   const { messageInput, schema, modelType, maxTokens, temperature } = inputParams;
   const client = buildAnthropicClient();
@@ -134,15 +137,17 @@ export const runClaude = async (inputParams) => {
   const systemContent = messageInput.find((m) => m.role === "system")?.content || "";
   const userMessages = messageInput.filter((m) => m.role !== "system");
 
+  const request = {
+    model: modelType,
+    max_tokens: +maxTokens,
+    system: [{ type: "text", text: systemContent, cache_control: { type: "ephemeral", ttl: "1h" } }],
+    messages: userMessages,
+    output_config: { format: { type: "json_schema", schema: schema.schema } },
+  };
+  if (CLAUDE_TEMPERATURE_MODELS.has(modelType)) request.temperature = Math.min(+temperature, 1);
+
   try {
-    const response = await client.messages.create({
-      model: modelType,
-      max_tokens: +maxTokens,
-      temperature: Math.min(+temperature, 1),
-      system: [{ type: "text", text: systemContent, cache_control: { type: "ephemeral", ttl: "1h" } }],
-      messages: userMessages,
-      output_config: { format: { type: "json_schema", schema: schema.schema } },
-    });
+    const response = await client.messages.create(request);
 
     const textBlock = response.content.find((block) => block.type === "text");
     return textBlock?.text ?? null;

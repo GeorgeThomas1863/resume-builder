@@ -64,6 +64,7 @@ export const checkFile = async () => {
 
   if (uploadStatus) {
     uploadStatus.textContent = `✓ ${fileData.filename}`;
+    uploadStatus.title = fileData.filename;
     uploadStatus.style.color = "green";
     uploadStatus.style.display = "inline-block";
     // uploadStatus.style.display = "inline";

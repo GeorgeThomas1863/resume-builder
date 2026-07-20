@@ -1,5 +1,5 @@
 import { buildCollapseContainer } from "./collapse.js";
-import { EXPAND_OPTIONS_SVG, modelMap } from "../util/define-things.js";
+import { EXPAND_OPTIONS_SVG, modelMap, builderDefaultModels } from "../util/define-things.js";
 
 export const buildInputForm = async () => {
   const inputFormWrapper = document.createElement("div");
@@ -16,15 +16,15 @@ export const buildInputForm = async () => {
   // const inputTypeListItem = await buildInputTypeListItem();
   const uploadListItem = await buildUploadListItem();
 
-  const selectRowListItem = await buildSelectRowListItem();
+  const builderSelectRowListItem = await buildBuilderSelectRowListItem();
+  const screenerSelectRowListItem = await buildScreenerSelectRowListItem();
   const modelOptionsListItem = await buildModelOptionsListItem();
 
   const pasteJobListItem = await buildPasteJobListItem();
   const injectDocListItem = await buildInjectDocListItem();
   const submitListItem = await buildSubmitListItem();
 
-  // inputFormElement.append(inputTypeListItem, uploadListItem, selectRowListItem, modelOptionsListItem, pasteJobListItem, submitListItem);
-  inputFormElement.append(uploadListItem, selectRowListItem, modelOptionsListItem, pasteJobListItem, injectDocListItem, submitListItem);
+  inputFormElement.append(uploadListItem, builderSelectRowListItem, screenerSelectRowListItem, modelOptionsListItem, pasteJobListItem, injectDocListItem, submitListItem);
 
   // Build collapse container
   const collapseContainer = await buildCollapseContainer({
@@ -85,25 +85,37 @@ export const buildUploadListItem = async () => {
 
 //----------
 
-export const buildSelectRowListItem = async () => {
-  const selectRowContainer = document.createElement("li");
-  selectRowContainer.id = "select-row-container";
-  selectRowContainer.className = "form-list-item form-row";
+export const buildBuilderSelectRowListItem = async () => {
+  const builderSelectRow = document.createElement("li");
+  builderSelectRow.id = "builder-select-row";
+  builderSelectRow.className = "form-list-item form-row";
 
   const selectAIDiv = await buildSelectAIDiv();
   const selectModelDiv = await buildSelectModelDiv();
+  const toggleSpacerDiv = await buildToggleSpacerDiv();
+
+  builderSelectRow.append(selectAIDiv, selectModelDiv, toggleSpacerDiv);
+
+  return builderSelectRow;
+};
+
+export const buildScreenerSelectRowListItem = async () => {
+  const screenerSelectRow = document.createElement("li");
+  screenerSelectRow.id = "screener-select-row";
+  screenerSelectRow.className = "form-list-item form-row";
+
   const screenerAIDiv = await buildScreenerAIDiv();
   const screenerModelDiv = await buildScreenerModelDiv();
   const modelOptionsToggle = await buildModelOptionsToggle();
 
-  selectRowContainer.append(selectAIDiv, selectModelDiv, screenerAIDiv, screenerModelDiv, modelOptionsToggle);
+  screenerSelectRow.append(screenerAIDiv, screenerModelDiv, modelOptionsToggle);
 
-  return selectRowContainer;
+  return screenerSelectRow;
 };
 
-export const buildSelectAIDiv = async () => buildAISelectDiv("ai-type-select", "Select AI", "select-ai-div");
+export const buildSelectAIDiv = async () => buildAISelectDiv("ai-type-select", "First Pass AI", "select-ai-div");
 
-export const buildSelectModelDiv = async () => buildModelSelectDiv("model-select", "Select Model", "select-model-div");
+export const buildSelectModelDiv = async () => buildModelSelectDiv("model-select", "Select Model", "select-model-div", builderDefaultModels.chatgpt);
 
 export const buildScreenerAIDiv = async () => buildAISelectDiv("screener-ai-type-select", "Screener AI", "select-screener-ai-div", true);
 
@@ -133,7 +145,7 @@ const buildAISelectDiv = async (selectId, labelText, divId, hasDataLabel = false
   return selectDiv;
 };
 
-const buildModelSelectDiv = async (selectId, labelText, divId) => {
+const buildModelSelectDiv = async (selectId, labelText, divId, defaultValue) => {
   const selectDiv = document.createElement("div");
   selectDiv.id = divId;
   selectDiv.className = "form-select-half";
@@ -150,7 +162,7 @@ const buildModelSelectDiv = async (selectId, labelText, divId) => {
     const option = document.createElement("option");
     option.value = optionData.value;
     option.textContent = optionData.text;
-    if (optionData.selected) option.selected = true;
+    if (defaultValue ? optionData.value === defaultValue : optionData.selected) option.selected = true;
     select.append(option);
   }
   selectDiv.append(label, select);
@@ -184,6 +196,32 @@ export const buildModelOptionsToggle = async () => {
   modelOptionsToggle.append(modelOptionsLabel, toggleWrapper);
 
   return modelOptionsToggle;
+};
+
+// invisible twin of the options toggle — keeps both select rows the same width
+export const buildToggleSpacerDiv = async () => {
+  const spacerDiv = document.createElement("div");
+  spacerDiv.id = "toggle-spacer";
+  spacerDiv.className = "form-select-half";
+  spacerDiv.setAttribute("aria-hidden", "true");
+
+  const spacerLabel = document.createElement("label");
+  spacerLabel.textContent = "Options";
+  spacerLabel.className = "form-label";
+
+  const spacerWrapper = document.createElement("div");
+  spacerWrapper.className = "toggle-wrapper";
+
+  const spacerButton = document.createElement("button");
+  spacerButton.type = "button";
+  spacerButton.className = "model-options-toggle-btn";
+  spacerButton.tabIndex = -1;
+  spacerButton.innerHTML = EXPAND_OPTIONS_SVG;
+
+  spacerWrapper.append(spacerButton);
+  spacerDiv.append(spacerLabel, spacerWrapper);
+
+  return spacerDiv;
 };
 
 //----
@@ -309,6 +347,7 @@ export const buildPrebuiltCheckbox = async () => {
   prebuiltCheckbox.type = "checkbox";
   prebuiltCheckbox.id = "prebuilt-checkbox";
   prebuiltCheckbox.className = "form-checkbox";
+  prebuiltCheckbox.checked = true;
   prebuiltCheckbox.setAttribute("data-label", "prebuilt-checkbox");
 
   checkboxContainer.append(prebuiltCheckbox);
@@ -410,14 +449,20 @@ export const buildInjectDocListItem = async () => {
   const injectEditingMinutesRow = document.createElement("div");
   injectEditingMinutesRow.id = "inject-doc-editing-minutes-row";
 
+  const injectEditingMinutesLabel = document.createElement("label");
+  injectEditingMinutesLabel.setAttribute("for", "inject-doc-editing-minutes-input");
+  injectEditingMinutesLabel.textContent = "Editing Time (min)";
+  injectEditingMinutesLabel.className = "form-label";
+
   const injectEditingMinutesInput = document.createElement("input");
   injectEditingMinutesInput.type = "number";
   injectEditingMinutesInput.id = "inject-doc-editing-minutes-input";
   injectEditingMinutesInput.className = "form-input";
-  injectEditingMinutesInput.placeholder = "Editing time (minutes, optional)";
+  injectEditingMinutesInput.placeholder = "20";
   injectEditingMinutesInput.min = "0";
+  injectEditingMinutesInput.value = "20";
 
-  injectEditingMinutesRow.append(injectEditingMinutesInput);
+  injectEditingMinutesRow.append(injectEditingMinutesLabel, injectEditingMinutesInput);
 
   injectDocListItem.append(injectDocCheckboxRow, injectDocPathRow, injectEditingMinutesRow);
 

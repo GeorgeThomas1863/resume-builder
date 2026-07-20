@@ -1,4 +1,4 @@
-import { EYE_OPEN_SVG, EYE_CLOSED_SVG, modelMap } from "./util/define-things.js";
+import { EYE_OPEN_SVG, EYE_CLOSED_SVG, modelMap, builderDefaultModels } from "./util/define-things.js";
 import { sendToBack } from "./util/api-front.js";
 import { buildSubmitParams } from "./util/params.js";
 import { checkFile } from "./util/upload-front.js";
@@ -191,13 +191,14 @@ export const runAIModelSelect = async (aiType, selectId = "model-select") => {
 
   const modelSelect = document.getElementById(selectId);
   if (!modelSelect) return null;
+  const defaultValue = selectId === "model-select" ? builderDefaultModels[aiType] : undefined;
   modelSelect.innerHTML = "";
   for (let i = 0; i < modelValue.length; i++) {
     const model = modelValue[i];
     const option = document.createElement("option");
     option.value = model.value;
     option.textContent = model.text;
-    if (model.selected) option.selected = true;
+    if (defaultValue ? model.value === defaultValue : model.selected) option.selected = true;
     modelSelect.append(option);
   }
   return true;

@@ -22,18 +22,21 @@ export const EXPAND_OPTIONS_SVG = `
 
 export const modelMap = {
   chatgpt: [
-    { value: "gpt-5.5", text: "GPT 5.5", selected: true },
-    { value: "gpt-5.4", text: "GPT 5.4" },
-    { value: "gpt-5.2", text: "GPT 5.2" },
-    { value: "gpt-5", text: "GPT 5" },
-    { value: "gpt-5-mini", text: "GPT 5 Mini" },
-    { value: "gpt-5-nano", text: "GPT 5 Nano" },
-    { value: "gpt-4.1-nano", text: "GPT 4.1 Nano (cheapest)" },
+    { value: "gpt-5.6-sol", text: "GPT 5.6 Sol", selected: true },
+    { value: "gpt-5.6-terra", text: "GPT 5.6 Terra" },
+    { value: "gpt-5.6-luna", text: "GPT 5.6 Luna" },
+    { value: "gpt-5.5", text: "GPT 5.5" },
+    { value: "gpt-5.4-mini", text: "GPT 5.4 Mini" },
+    { value: "gpt-5.4-nano", text: "GPT 5.4 Nano (cheapest)" },
   ],
   claude: [
-    { value: "claude-opus-4-6", text: "Claude Opus 4.6", selected: true },
-    { value: "claude-sonnet-4-6", text: "Claude Sonnet 4.6" },
-    { value: "claude-haiku-4-5-20251001", text: "Claude Haiku 4.5" },
+    { value: "claude-fable-5", text: "Claude Fable 5" },
+    { value: "claude-opus-4-8", text: "Claude Opus 4.8", selected: true },
+    { value: "claude-sonnet-5", text: "Claude Sonnet 5" },
+    { value: "claude-haiku-4-5", text: "Claude Haiku 4.5" },
   ],
   local: [{ value: "meta-llama-3.1-8b-instruct", text: "Meta-Llama 3.1 8B Instruct" }],
 };
+
+// builder-pass default overrides per AI type; the screener keeps the modelMap `selected` flags
+export const builderDefaultModels = { chatgpt: "gpt-5.6-terra" };
