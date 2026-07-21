@@ -3,7 +3,6 @@
 import { runClearFiles, runCheckFile, clearUploadDirectory } from "../src/upload-file.js";
 import { runResumeUnfucker } from "../src/src.js";
 import fs from "fs/promises";
-import { checkDocHasContent } from "../src/resume.js";
 import JSZip from "jszip";
 
 // export const getBackendValueController = async (req, res) => {
@@ -105,7 +104,6 @@ export const submitRouteController = async (req, res) => {
     jobInput,
     injectDoc,
     injectDocPath,
-    overwriteConfirmed,
     editingMinutes,
   } = req.body;
 
@@ -150,13 +148,6 @@ export const submitRouteController = async (req, res) => {
     } catch {
       return res.status(400).json({ error: `File not found: ${cleanPath}` });
     }
-    let hasContent = true;
-    try {
-      hasContent = await checkDocHasContent(cleanPath);
-    } catch { /* treat unreadable file as having content */ }
-    if (hasContent && !overwriteConfirmed) {
-      return res.json({ requiresConfirmation: true });
-    }
   }
 
   const fileCheck = await runCheckFile(req.session.id);
@@ -181,6 +172,7 @@ export const submitRouteController = async (req, res) => {
   };
 
   const buffer = await runResumeUnfucker(inputParams);
+  console.log(`[DOCX-DEBUG] submit controller: buffer=${buffer ? `${buffer.length} bytes` : "NULL"}, injectDoc=${!!injectDoc}`);
   if (!buffer) {
     return res.status(500).json({ error: "Failed to generate resume" });
   }

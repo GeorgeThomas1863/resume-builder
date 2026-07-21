@@ -92,14 +92,11 @@ OPENAI_API_KEY
 OPENAI_API_BASE_URL
 LOCAL_API_KEY
 LOCAL_API_BASE_URL
-
-# Prebuilt resume mode (admin)
-RESUME_NAME, RESUME_EMAIL, SUMMARY, GENERAL_INFO
-COMPANY_1-7, ROLE_1-7, TIMEFRAME_1-7
-BULLETS_{1-7}_{1-5}, ACCOMPLISHMENTS_{1-7}_{1-4}
-SCHOOL_1-2, DEGREE_{1-3}_{1-2}, GRADUATION_1-2
-CERTIFICATION_1-4, CERT_PROGRAM_1-4, CERT_COMPANY_1-4
 ```
+
+## Prebuilt Resume Config
+
+Prebuilt-mode content (name/email, summary, jobs with bullets + context, education, certifications, general info, hidden `adminText` watermark) lives in `config/resume-details.json` (gitignored — contains PII). It is loaded once at import by `src/resume.js` (`resumeDetails`); a missing file logs an error and degrades to empty content rather than crashing. `buildInfoObj()` in `src/message.js` assembles it into the AI's `background_information` (jobs get `jobId` = array index + 1). Same schema as the job-search-automation project's config.
 
 ## Gotchas
 

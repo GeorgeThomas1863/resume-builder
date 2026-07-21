@@ -1,4 +1,5 @@
 import fs from "fs/promises";
+import { resumeDetails } from "./resume.js";
 
 const promptCache = {};
 
@@ -37,49 +38,22 @@ const buildBuilderUserContent = (resumeText, jobInput, infoObj) => {
 };
 
 export const buildInfoObj = async () => ({
-  summary: process.env.SUMMARY,
+  summary: resumeDetails.summary,
   jobArray: buildJobArray(),
-  education: buildEducationArray(),
-  certifications: buildCertificationArray(),
-  general: process.env.GENERAL_INFO,
+  education: resumeDetails.education ?? [],
+  certifications: resumeDetails.certifications ?? [],
+  general: resumeDetails.general ?? [],
 });
 
 const buildJobArray = () => {
   const jobs = [];
-  for (let jobId = 1; jobId <= 7; jobId++) {
-    const bullets = [];
-    const accomplishments = [];
-    for (let index = 1; index <= 5; index++) {
-      const bullet = process.env[`BULLETS_${jobId}_${index}`];
-      if (bullet) bullets.push(bullet);
-    }
-    for (let index = 1; index <= 4; index++) {
-      const accomplishment = process.env[`ACCOMPLISHMENTS_${jobId}_${index}`];
-      if (accomplishment) accomplishments.push(accomplishment);
-    }
-    const job = { jobId, company: process.env[`COMPANY_${jobId}`], role: process.env[`ROLE_${jobId}`], timeframe: process.env[`TIMEFRAME_${jobId}`], bullets };
-    if (accomplishments.length) job.accomplishments = accomplishments;
+  const source = Array.isArray(resumeDetails.jobs) ? resumeDetails.jobs : [];
+  for (let index = 0; index < source.length; index++) {
+    const job = { jobId: index + 1, ...source[index] };
+    if (!job.context) delete job.context;
     jobs.push(job);
   }
   return jobs;
-};
-
-const buildEducationArray = () => {
-  const education = [];
-  for (let index = 1; index <= 2; index++) {
-    education.push({ school: process.env[`SCHOOL_${index}`], program: process.env[`SCHOOL_PROGRAM_${index}`], degree1: process.env[`DEGREE_${index}_1`], degree2: process.env[`DEGREE_${index}_2`], degree3: process.env[`DEGREE_${index}_3`], timeframe: process.env[`SCHOOL_TIMEFRAME_${index}`], graduation: process.env[`GRADUATION_${index}`], notes: process.env[`SCHOOL_NOTES_${index}`] });
-  }
-  return education;
-};
-
-const buildCertificationArray = () => {
-  const certifications = [];
-  for (let index = 1; index <= 4; index++) {
-    const certification = process.env[`CERTIFICATION_${index}`];
-    if (!certification) continue;
-    certifications.push({ certification, dateCertified: process.env[`DATE_CERTIFIED_${index}`], program: process.env[`CERT_PROGRAM_${index}`], company: process.env[`CERT_COMPANY_${index}`], notes: process.env[`CERT_NOTES_${index}`] });
-  }
-  return certifications;
 };
 
 export const buildSchema = async (aiType, mode, isScreener = false) => {

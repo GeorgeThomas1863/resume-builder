@@ -2,7 +2,7 @@ import { EYE_OPEN_SVG, EYE_CLOSED_SVG, modelMap, builderDefaultModels } from "./
 import { sendToBack } from "./util/api-front.js";
 import { buildSubmitParams } from "./util/params.js";
 import { checkFile } from "./util/upload-front.js";
-import { showLoadStatus, hideLoadStatus } from "./display/loading.js";
+import { showLoadStatus, hideLoadStatus, showRunResult } from "./display/loading.js";
 import { hideArray, unhideArray } from "./display/collapse.js";
 import { unhideAdminAuthModal, hideAdminAuthModal } from "./display/modal.js";
 
@@ -53,52 +53,38 @@ export const runMainSubmit = async () => {
 };
 
 export const executeSubmit = async (params) => {
-  if (params.injectDoc) {
-    await showLoadStatus();
-    let res;
-    try {
-      res = await fetch("/submit", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(params),
-      });
-    } catch {
-      await hideLoadStatus();
-      return null;
-    }
+  await showLoadStatus();
+  let res;
+  try {
+    res = await fetch("/submit", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(params),
+    });
+  } catch {
     await hideLoadStatus();
+    await showRunResult(false, "Run failed: could not reach the server");
+    return null;
+  }
+  await hideLoadStatus();
 
-    if (!res.ok) {
-      const err = await res.json().catch(() => ({}));
-      alert(err.error || "Request failed");
-      return null;
-    }
-
-    const data = await res.json();
-
-    if (data.requiresConfirmation) {
-      const confirmed = window.confirm(
-        "The target document already has content. Overwrite it completely?"
-      );
-      if (!confirmed) return null;
-      return executeSubmit({ ...params, overwriteConfirmed: true });
-    }
-
-    if (data.success) {
-      alert(`Resume successfully written to:\n${params.injectDocPath}`);
-      return true;
-    }
-
-    alert("An unexpected error occurred. Please try again.");
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    await showRunResult(false, `Run failed: ${err.error || `server error (${res.status})`}`);
     return null;
   }
 
-  // existing blob path (unchanged)
-  await showLoadStatus();
-  const data = await sendToBack(params, "POST", true);
-  await hideLoadStatus();
-  if (!data) return null;
-  const blob = await data.blob();
+  if (params.injectDoc) {
+    const data = await res.json().catch(() => null);
+    if (!data || !data.success) {
+      await showRunResult(false, "Run failed: unexpected server response");
+      return null;
+    }
+    await showRunResult(true, `Success — resume written to ${params.injectDocPath}`);
+    return true;
+  }
+
+  const blob = await res.blob();
   const url = window.URL.createObjectURL(blob);
   const a = document.createElement("a");
   a.style.display = "none";
@@ -107,6 +93,7 @@ export const executeSubmit = async (params) => {
   a.click();
   window.URL.revokeObjectURL(url);
   a.remove();
+  await showRunResult(true, "Success — new-resume.docx downloaded");
   return true;
 };
 

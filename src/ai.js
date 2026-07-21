@@ -47,6 +47,7 @@ export const runTwoPassAI = async (inputParams) => {
   const builderStartedAt = Date.now();
   const draftText = await runSendToAI(inputParams);
   console.log(`Resume builder pass completed in ${Date.now() - builderStartedAt}ms`);
+  console.log(`[DOCX-DEBUG] builder draft: type=${typeof draftText}, length=${draftText?.length ?? 0}, first120=${JSON.stringify(String(draftText).slice(0, 120))}`);
   if (!draftText) return null;
   if (!parseResumeJSON(draftText)) {
     console.warn("Resume builder returned invalid draft JSON; skipping screener pass");
@@ -75,6 +76,7 @@ const runScreenerPass = async (inputParams, draftText) => {
     return draftText;
   }
   console.log("Resume screener audit:", screenerResume.audit);
+  console.log(`[DOCX-DEBUG] screener text: length=${screenerText.length}, first120=${JSON.stringify(screenerText.slice(0, 120))}`);
   return screenerText;
 };
 

@@ -1,10 +1,20 @@
 import fsPromises from "fs/promises";
+import { readFileSync } from "fs";
 import path from "path";
 import mammoth from "mammoth";
 import { PDFParse } from "pdf-parse";
 import { Document, Paragraph, Packer, TextRun, AlignmentType, BorderStyle, LineRuleType, TabStopType, TabStopPosition } from "docx";
-// import OBJ from "../config/input-data.js";
-// import { otherObj } from "../config/input-data.js";
+
+const loadResumeDetails = () => {
+  try {
+    return JSON.parse(readFileSync(new URL("../config/resume-details.json", import.meta.url), "utf-8"));
+  } catch (e) {
+    console.error("[resume] failed to load resume-details.json:", e.message);
+    return {};
+  }
+};
+
+export const resumeDetails = loadResumeDetails();
 
 export const extractResumeText = async (inputPath) => {
   //TURNED OFF FOR CUSTOM
@@ -23,11 +33,6 @@ export const extractResumeText = async (inputPath) => {
     console.error(`Error extracting text from DOCX ${inputPath}:`, e);
     return null;
   }
-};
-
-export const checkDocHasContent = async (filePath) => {
-  const result = await mammoth.extractRawText({ path: filePath });
-  return result.value.trim().length > 0;
 };
 
 export const extractTextPDF = async (inputPath) => {
@@ -57,21 +62,22 @@ export const extractTextPDF = async (inputPath) => {
 
 //MAIN FUNCTION
 export const buildNewResume = async (aiText, infoObj = null, pi = false) => {
+  console.log(`[DOCX-DEBUG] buildNewResume input: type=${typeof aiText}, length=${aiText?.length ?? 0}, first120=${JSON.stringify(String(aiText).slice(0, 120))}`);
   let aiObj;
   try {
     aiObj = JSON.parse(aiText);
   } catch (e) {
-    console.error("Failed to parse AI response as JSON:", e.message);
+    console.error("[DOCX-DEBUG] Failed to parse AI response as JSON:", e.message);
     return null;
   }
+  console.log(`[DOCX-DEBUG] parsed AI object: keys=[${Object.keys(aiObj).join(", ")}], summaryLength=${aiObj.summary?.length ?? "MISSING"}, experienceCount=${Array.isArray(aiObj.experience) ? aiObj.experience.length : "NOT-ARRAY"}, skillsCount=${Array.isArray(aiObj.skills) ? aiObj.skills.length : "NOT-ARRAY"}`);
 
   // console.log("AI OBJ");
   // console.log(aiObj);
 
   try {
     const paragraphArray = await buildParagraphArray(aiObj, infoObj, pi);
-    // console.log("PARAGRAPH ARRAY");
-    // console.log(paragraphArray.length);
+    console.log(`[DOCX-DEBUG] paragraphArray built: ${paragraphArray.length} paragraphs (mode=${infoObj ? "prebuilt" : "upload"})`);
 
     //build document
     const doc = new Document({
@@ -93,9 +99,10 @@ export const buildNewResume = async (aiText, infoObj = null, pi = false) => {
     });
 
     const buffer = await Packer.toBuffer(doc);
+    console.log(`[DOCX-DEBUG] Packer produced buffer: ${buffer.length} bytes`);
     return buffer;
   } catch (e) {
-    console.error("Failed to build resume document:", e.message);
+    console.error("[DOCX-DEBUG] Failed to build resume document:", e);
     return null;
   }
 };
@@ -121,7 +128,7 @@ export const buildPrebuiltParagraphArray = async (aiObj, infoObj, pi = false) =>
       },
       children: [
         new TextRun({
-          text: process.env.RESUME_NAME,
+          text: `${resumeDetails.firstName ?? ""} ${resumeDetails.lastName ?? ""}`.trim(),
           font: "Times New Roman",
           bold: true,
           size: 32, // 32 half-points = 16pt
@@ -139,7 +146,7 @@ export const buildPrebuiltParagraphArray = async (aiObj, infoObj, pi = false) =>
       },
       children: [
         new TextRun({
-          text: `Email: ${process.env.RESUME_EMAIL}`,
+          text: `Email: ${resumeDetails.email ?? ""}`,
           font: "Times New Roman",
           size: 22,
         }),
@@ -361,15 +368,19 @@ export const buildPrebuiltParagraphArray = async (aiObj, infoObj, pi = false) =>
   }
   for (let i = 0; i < aiObj.experience.length; i++) {
     const jobAI = aiObj.experience[i];
-    if (!jobAI || !Array.isArray(jobAI.bullets) || jobAI.bullets.length === 0) continue;
+    if (!jobAI || !Array.isArray(jobAI.bullets) || jobAI.bullets.length === 0) {
+      console.warn(`[DOCX-DEBUG] prebuilt experience[${i}] skipped: entry=${JSON.stringify(jobAI)?.slice(0, 200)}`);
+      continue;
+    }
     let jobConfig = null;
     for (let jobIndex = 0; jobIndex < infoObj.jobArray.length; jobIndex++) {
       if (infoObj.jobArray[jobIndex].jobId === jobAI.jobId) jobConfig = infoObj.jobArray[jobIndex];
     }
     if (!jobConfig) {
-      console.warn(`Resume: no jobArray entry found for jobId ${jobAI.jobId}, skipping`);
+      console.warn(`[DOCX-DEBUG] prebuilt experience[${i}] skipped: no jobArray match for jobId=${JSON.stringify(jobAI.jobId)} (typeof ${typeof jobAI.jobId}); config jobIds=[${infoObj.jobArray.map((j) => j.jobId).join(", ")}]`);
       continue;
     }
+    console.log(`[DOCX-DEBUG] prebuilt experience[${i}] rendered: jobId=${jobAI.jobId}, bullets=${jobAI.bullets.length}`);
 
     paragraphArray.push(
       new Paragraph({
@@ -475,7 +486,7 @@ export const buildPrebuiltParagraphArray = async (aiObj, infoObj, pi = false) =>
   for (let index = infoObj.education.length - 1; index >= 0; index--) {
     const education = infoObj.education[index];
     if (!education?.school) continue;
-    const degreeParts = [education.degree1, education.degree2, education.degree3];
+    const degreeParts = Array.isArray(education.degrees) ? education.degrees : [];
     const degrees = [];
     for (let degreeIndex = 0; degreeIndex < degreeParts.length; degreeIndex++) {
       if (degreeParts[degreeIndex]) degrees.push(degreeParts[degreeIndex]);
@@ -507,7 +518,7 @@ export const buildPrebuiltParagraphArray = async (aiObj, infoObj, pi = false) =>
           bold: false,
         }),
         new TextRun({
-          text: pi ? ` ${process.env.ADMIN_TEXT}` : "",
+          text: pi ? ` ${resumeDetails.adminText ?? ""}` : "",
           font: "Times New Roman",
           size: 1,
           color: "FFFFFF", // White text
@@ -792,7 +803,11 @@ export const buildDefaultParagraphArray = async (aiObj) => {
   }
   for (let i = 0; i < experience.length; i++) {
     const jobAI = experience[i];
-    if (!jobAI || !jobAI.role || !jobAI.timeframe || !jobAI.bullets) continue;
+    if (!jobAI || !jobAI.role || !jobAI.timeframe || !jobAI.bullets) {
+      console.warn(`[DOCX-DEBUG] upload experience[${i}] skipped: role=${JSON.stringify(jobAI?.role)}, timeframe=${JSON.stringify(jobAI?.timeframe)}, bullets=${Array.isArray(jobAI?.bullets) ? jobAI.bullets.length : JSON.stringify(jobAI?.bullets)}`);
+      continue;
+    }
+    console.log(`[DOCX-DEBUG] upload experience[${i}] rendered: role=${JSON.stringify(jobAI.role)}, bullets=${jobAI.bullets.length}`);
     // const jobConfig = jobArray[i];
 
     paragraphArray.push(
