@@ -49,7 +49,7 @@ export const buildUploadListItem = async () => {
   const fileInput = document.createElement("input");
   fileInput.type = "file";
   fileInput.id = "upload-file-input";
-  fileInput.accept = ".pdf,.doc,.docx";
+  fileInput.accept = ".docx,.pdf";
   fileInput.style.display = "none";
 
   const uploadButton = document.createElement("button");

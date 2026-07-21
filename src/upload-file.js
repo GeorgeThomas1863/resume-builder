@@ -18,14 +18,18 @@ if (!fs.existsSync(uploadDir)) {
 
 // File filter
 const fileFilter = (req, file, cb) => {
-  const allowedTypes = /doc|docx|pdf/;
-  const extname = allowedTypes.test(path.extname(file.originalname).toLowerCase());
-  const mimetype = allowedTypes.test(file.mimetype);
+  const allowedExtensions = /\.(docx|pdf)$/i;
+  const allowedMimetypes = [
+    "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+    "application/pdf",
+  ];
+  const extname = allowedExtensions.test(path.extname(file.originalname));
+  const mimetype = allowedMimetypes.includes(file.mimetype);
 
   if (extname && mimetype) {
     cb(null, true);
   } else {
-    cb(new Error("Only Word docs are allowed"));
+    cb(new Error("Only DOCX and PDF files are allowed"));
   }
 };
 

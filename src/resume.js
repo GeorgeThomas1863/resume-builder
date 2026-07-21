@@ -1,4 +1,5 @@
 import fsPromises from "fs/promises";
+import path from "path";
 import mammoth from "mammoth";
 import { PDFParse } from "pdf-parse";
 import { Document, Paragraph, Packer, TextRun, AlignmentType, BorderStyle, LineRuleType, TabStopType, TabStopPosition } from "docx";
@@ -9,12 +10,19 @@ export const extractResumeText = async (inputPath) => {
   //TURNED OFF FOR CUSTOM
   if (!inputPath) return null;
 
-  if (inputPath.endsWith(".pdf")) return await extractTextPDF(inputPath);
+  const extension = path.extname(inputPath).toLowerCase();
+  if (extension === ".pdf") return await extractTextPDF(inputPath);
+  if (extension !== ".docx") return null;
 
-  const data = await mammoth.extractRawText({ path: inputPath });
-  if (!data) return null;
+  try {
+    const data = await mammoth.extractRawText({ path: inputPath });
+    if (!data) return null;
 
-  return data.value;
+    return data.value;
+  } catch (e) {
+    console.error(`Error extracting text from DOCX ${inputPath}:`, e);
+    return null;
+  }
 };
 
 export const checkDocHasContent = async (filePath) => {
@@ -40,8 +48,7 @@ export const extractTextPDF = async (inputPath) => {
 
     return data.text;
   } catch (e) {
-    // console.log("ERROR EXTRACTING TEXT FROM PDF");
-    // console.log(e);
+    console.error(`Error extracting text from PDF ${inputPath}:`, e);
     return null;
   }
 };
