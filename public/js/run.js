@@ -2,7 +2,7 @@ import { EYE_OPEN_SVG, EYE_CLOSED_SVG, modelMap, builderDefaultModels } from "./
 import { sendToBack } from "./util/api-front.js";
 import { buildSubmitParams } from "./util/params.js";
 import { checkFile } from "./util/upload-front.js";
-import { showLoadStatus, hideLoadStatus, showRunResult } from "./display/loading.js";
+import { showLoadStatus, showRunResult } from "./display/loading.js";
 import { hideArray, unhideArray } from "./display/collapse.js";
 import { unhideAdminAuthModal, hideAdminAuthModal } from "./display/modal.js";
 
@@ -62,11 +62,9 @@ export const executeSubmit = async (params) => {
       body: JSON.stringify(params),
     });
   } catch {
-    await hideLoadStatus();
     await showRunResult(false, "Run failed: could not reach the server");
     return null;
   }
-  await hideLoadStatus();
 
   if (!res.ok) {
     const err = await res.json().catch(() => ({}));
@@ -235,18 +233,13 @@ export const runUploadButtonToggle = async (changeType) => {
   return true;
 };
 
+// editing-time row stays visible in both modes — download mode stamps TotalTime too
 export const runInjectDocToggle = async () => {
   const checkbox = document.getElementById("inject-doc-checkbox");
   const pathRow = document.getElementById("inject-doc-path-row");
-  const minutesRow = document.getElementById("inject-doc-editing-minutes-row");
-  if (!checkbox || !pathRow || !minutesRow) return null;
-  if (checkbox.checked) {
-    pathRow.classList.remove("hidden");
-    minutesRow.classList.remove("hidden");
-  } else {
-    pathRow.classList.add("hidden");
-    minutesRow.classList.add("hidden");
-  }
+  if (!checkbox || !pathRow) return null;
+  if (checkbox.checked) pathRow.classList.remove("hidden");
+  else pathRow.classList.add("hidden");
   return true;
 };
 

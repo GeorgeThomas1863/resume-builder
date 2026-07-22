@@ -597,33 +597,72 @@ h3 {
   font-weight: 500;
 }
 
-.run-result-toast {
-  position: fixed;
-  bottom: 24px;
-  left: 50%;
-  transform: translateX(-50%);
-  max-width: 90%;
-  padding: 12px 20px;
-  border-radius: 6px;
-  font-size: 15px;
-  font-weight: 500;
-  color: #fff;
+.loading-overlay.result-mode .spinner,
+.loading-overlay.result-mode .loading-text {
+  display: none;
+}
+
+.run-result-panel {
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12);
+  padding: 2rem;
+  max-width: 480px;
+  width: 90%;
   text-align: center;
-  z-index: 10000;
-  opacity: 0;
-  transition: opacity 0.3s ease;
 }
 
-.run-result-toast.visible {
-  opacity: 1;
+.loading-overlay.result-mode .run-result-panel {
+  display: flex;
 }
 
-.run-result-toast.success {
-  background: #2e7d32;
+.run-result-message {
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
 }
 
-.run-result-toast.error {
-  background: #c62828;
+.run-result-message.success {
+  color: #2e7d32;
+}
+
+.run-result-message.error {
+  color: #dc2626;
+}
+
+.run-result-ok-btn {
+  min-width: 140px;
+  padding: 12px 24px;
+  font-family: "Roboto Condensed", sans-serif;
+  font-size: 15px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: #ffffff;
+  background: #2563a8;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(74, 144, 226, 0.25);
+}
+
+.run-result-ok-btn:hover {
+  background: linear-gradient(135deg, #3573b8 0%, #2563a8 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(74, 144, 226, 0.35);
+}
+
+.run-result-ok-btn:active {
+  transform: translateY(0);
+  background: linear-gradient(135deg, #1d5398 0%, #164388 100%);
+  box-shadow: 0 2px 8px rgba(74, 144, 226, 0.25);
 }
 
 .inject-doc-checkbox-row {

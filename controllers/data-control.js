@@ -63,7 +63,7 @@ export const checkRouteController = async (req, res) => {
   return res.json({ success: data.success, message: data.message, filename: data.filename });
 };
 
-async function mergeDocxMetadata(templatePath, generatedBuffer, editingMinutes) {
+export async function mergeDocxMetadata(templatePath, generatedBuffer, editingMinutes) {
   try {
     const templateBuf = await fs.readFile(templatePath);
     const [templateZip, generatedZip] = await Promise.all([
@@ -74,8 +74,7 @@ async function mergeDocxMetadata(templatePath, generatedBuffer, editingMinutes) 
       const file = templateZip.file(metaFile);
       if (!file) continue;
       if (metaFile === "docProps/app.xml" && editingMinutes !== null) {
-        let appXml = await file.async("string");
-        appXml = appXml.replace(/<TotalTime>\d*<\/TotalTime>/, `<TotalTime>${editingMinutes}</TotalTime>`);
+        const appXml = setTotalTime(await file.async("string"), editingMinutes);
         generatedZip.file(metaFile, appXml);
       } else {
         const content = await file.async("nodebuffer");
@@ -85,6 +84,27 @@ async function mergeDocxMetadata(templatePath, generatedBuffer, editingMinutes) 
     return generatedZip.generateAsync({ type: "nodebuffer" });
   } catch (e) {
     console.error("Failed to merge DOCX metadata, writing generated buffer as-is:", e);
+    return generatedBuffer;
+  }
+}
+
+// templates that lost their <TotalTime> tag (e.g. after a failed merge wrote raw docx-lib output) must still get one
+const setTotalTime = (appXml, editingMinutes) => {
+  const tag = `<TotalTime>${editingMinutes}</TotalTime>`;
+  if (/<TotalTime>\d*<\/TotalTime>/.test(appXml)) return appXml.replace(/<TotalTime>\d*<\/TotalTime>/, tag);
+  if (/<Properties[^>]*\/>/.test(appXml)) return appXml.replace(/<Properties([^>]*?)\s*\/>/, `<Properties$1>${tag}</Properties>`);
+  return appXml.replace(/(<Properties[^>]*>)/, `$1${tag}`);
+};
+
+export async function applyEditingTime(generatedBuffer, editingMinutes) {
+  try {
+    const zip = await JSZip.loadAsync(generatedBuffer);
+    const file = zip.file("docProps/app.xml");
+    if (!file) return generatedBuffer;
+    zip.file("docProps/app.xml", setTotalTime(await file.async("string"), editingMinutes));
+    return await zip.generateAsync({ type: "nodebuffer" });
+  } catch (e) {
+    console.error("Failed to set editing time, sending generated buffer as-is:", e);
     return generatedBuffer;
   }
 }
@@ -187,9 +207,10 @@ export const submitRouteController = async (req, res) => {
     return res.json({ success: true });
   }
 
+  const downloadBuffer = parsedEditingMinutes !== null ? await applyEditingTime(buffer, parsedEditingMinutes) : buffer;
   res.setHeader("Content-Type", "application/vnd.openxmlformats-officedocument.wordprocessingml.document");
   res.setHeader("Content-Disposition", 'attachment; filename="new-resume.docx"');
-  return res.send(buffer);
+  return res.send(downloadBuffer);
 };
 
 export const defaultInjectPathController = async (req, res) => {
