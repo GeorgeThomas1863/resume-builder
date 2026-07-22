@@ -42,7 +42,7 @@ export const buildAdminAuthModal = async () => {
   modalContent.className = "modal-content";
 
   const modalTitle = document.createElement("h2");
-  modalTitle.textContent = "⚠️ Authorization Required to Nuke Ohio ⚠️";
+  modalTitle.textContent = "⚠️ Authorization Required to Use Special Info ⚠️";
   modalTitle.className = "modal-title";
 
   const pwWrapper = document.createElement("div");

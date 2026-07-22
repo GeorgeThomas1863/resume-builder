@@ -77,7 +77,7 @@ The screener receives the complete builder user input plus the builder draft, ma
 
 - Two tiers: site auth (`PW`) and admin auth (`ADMIN_PW`)
 - Middleware: `requireAuth`, `requireAdminAuth` in `middleware/auth-config.js`
-- Admin-only features: `nukeOhio` (generate resume without upload), `pi` param
+- Admin-only features: `useSpecialInfo` (generate resume without upload), `pi` param
 
 ## Environment Variables
 

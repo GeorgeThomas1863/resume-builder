@@ -62,22 +62,19 @@ export const extractTextPDF = async (inputPath) => {
 
 //MAIN FUNCTION
 export const buildNewResume = async (aiText, infoObj = null, pi = false) => {
-  console.log(`[DOCX-DEBUG] buildNewResume input: type=${typeof aiText}, length=${aiText?.length ?? 0}, first120=${JSON.stringify(String(aiText).slice(0, 120))}`);
   let aiObj;
   try {
     aiObj = JSON.parse(aiText);
   } catch (e) {
-    console.error("[DOCX-DEBUG] Failed to parse AI response as JSON:", e.message);
+    console.error("Failed to parse AI response as JSON:", e.message);
     return null;
   }
-  console.log(`[DOCX-DEBUG] parsed AI object: keys=[${Object.keys(aiObj).join(", ")}], summaryLength=${aiObj.summary?.length ?? "MISSING"}, experienceCount=${Array.isArray(aiObj.experience) ? aiObj.experience.length : "NOT-ARRAY"}, skillsCount=${Array.isArray(aiObj.skills) ? aiObj.skills.length : "NOT-ARRAY"}`);
 
   // console.log("AI OBJ");
   // console.log(aiObj);
 
   try {
     const paragraphArray = await buildParagraphArray(aiObj, infoObj, pi);
-    console.log(`[DOCX-DEBUG] paragraphArray built: ${paragraphArray.length} paragraphs (mode=${infoObj ? "prebuilt" : "upload"})`);
 
     //build document
     const doc = new Document({
@@ -99,10 +96,9 @@ export const buildNewResume = async (aiText, infoObj = null, pi = false) => {
     });
 
     const buffer = await Packer.toBuffer(doc);
-    console.log(`[DOCX-DEBUG] Packer produced buffer: ${buffer.length} bytes`);
     return buffer;
   } catch (e) {
-    console.error("[DOCX-DEBUG] Failed to build resume document:", e);
+    console.error("Failed to build resume document:", e);
     return null;
   }
 };
@@ -366,10 +362,12 @@ export const buildPrebuiltParagraphArray = async (aiObj, infoObj, pi = false) =>
     console.error("AI response missing or invalid 'experience' field (prebuilt mode)");
     return paragraphArray;
   }
-  for (let i = 0; i < aiObj.experience.length; i++) {
-    const jobAI = aiObj.experience[i];
+  // jobArray order is chronological, so jobId order must never depend on the AI's output order
+  const experience = [...aiObj.experience].sort((a, b) => (Number(a?.jobId) || 0) - (Number(b?.jobId) || 0));
+  for (let i = 0; i < experience.length; i++) {
+    const jobAI = experience[i];
     if (!jobAI || !Array.isArray(jobAI.bullets) || jobAI.bullets.length === 0) {
-      console.warn(`[DOCX-DEBUG] prebuilt experience[${i}] skipped: entry=${JSON.stringify(jobAI)?.slice(0, 200)}`);
+      console.warn(`Prebuilt experience entry skipped — no bullets: jobId=${jobAI?.jobId}`);
       continue;
     }
     let jobConfig = null;
@@ -377,10 +375,9 @@ export const buildPrebuiltParagraphArray = async (aiObj, infoObj, pi = false) =>
       if (infoObj.jobArray[jobIndex].jobId === jobAI.jobId) jobConfig = infoObj.jobArray[jobIndex];
     }
     if (!jobConfig) {
-      console.warn(`[DOCX-DEBUG] prebuilt experience[${i}] skipped: no jobArray match for jobId=${JSON.stringify(jobAI.jobId)} (typeof ${typeof jobAI.jobId}); config jobIds=[${infoObj.jobArray.map((j) => j.jobId).join(", ")}]`);
+      console.warn(`Prebuilt experience entry skipped — no jobArray match for jobId=${JSON.stringify(jobAI.jobId)}`);
       continue;
     }
-    console.log(`[DOCX-DEBUG] prebuilt experience[${i}] rendered: jobId=${jobAI.jobId}, bullets=${jobAI.bullets.length}`);
 
     paragraphArray.push(
       new Paragraph({
@@ -804,10 +801,9 @@ export const buildDefaultParagraphArray = async (aiObj) => {
   for (let i = 0; i < experience.length; i++) {
     const jobAI = experience[i];
     if (!jobAI || !jobAI.role || !jobAI.timeframe || !jobAI.bullets) {
-      console.warn(`[DOCX-DEBUG] upload experience[${i}] skipped: role=${JSON.stringify(jobAI?.role)}, timeframe=${JSON.stringify(jobAI?.timeframe)}, bullets=${Array.isArray(jobAI?.bullets) ? jobAI.bullets.length : JSON.stringify(jobAI?.bullets)}`);
+      console.warn(`Upload experience entry ${i + 1} skipped — missing role, timeframe, or bullets`);
       continue;
     }
-    console.log(`[DOCX-DEBUG] upload experience[${i}] rendered: role=${JSON.stringify(jobAI.role)}, bullets=${jobAI.bullets.length}`);
     // const jobConfig = jobArray[i];
 
     paragraphArray.push(

@@ -8,7 +8,7 @@ export const buildSubmitParams = async () => {
     serviceTier: document.getElementById("priority-select").value,
     maxTokens: document.getElementById("max-tokens-input").value,
     temperature: document.getElementById("temperature-input").value,
-    nukeOhio: document.getElementById("prebuilt-checkbox").checked,
+    useSpecialInfo: document.getElementById("prebuilt-checkbox").checked,
     pi: document.getElementById("pi-checkbox").checked,
     injectDoc: document.getElementById("inject-doc-checkbox").checked,
     injectDocPath: document.getElementById("inject-doc-path-input").value.trim(),

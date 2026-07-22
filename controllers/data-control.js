@@ -91,7 +91,7 @@ async function mergeDocxMetadata(templatePath, generatedBuffer, editingMinutes) 
 
 export const submitRouteController = async (req, res) => {
   const {
-    nukeOhio,
+    useSpecialInfo,
     pi,
     inputPath: _ignored,
     aiType,
@@ -108,7 +108,7 @@ export const submitRouteController = async (req, res) => {
   } = req.body;
 
   const isAdmin = !!req.session.isAdmin;
-  const safeNukeOhio = isAdmin && !!nukeOhio;
+  const safeUseSpecialInfo = isAdmin && !!useSpecialInfo;
   const safePi = isAdmin && !!pi;
 
   if (!jobInput || !String(jobInput).trim()) {
@@ -153,7 +153,7 @@ export const submitRouteController = async (req, res) => {
   const fileCheck = await runCheckFile(req.session.id);
   const inputPath = fileCheck?.success ? fileCheck.filePath : null;
 
-  if (!safeNukeOhio && !inputPath) {
+  if (!safeUseSpecialInfo && !inputPath) {
     return res.status(400).json({ error: "No resume found for this session" });
   }
 
@@ -167,12 +167,11 @@ export const submitRouteController = async (req, res) => {
     maxTokens: tokens,
     jobInput,
     inputPath,
-    nukeOhio: safeNukeOhio,
+    useSpecialInfo: safeUseSpecialInfo,
     pi: safePi,
   };
 
   const buffer = await runResumeUnfucker(inputParams);
-  console.log(`[DOCX-DEBUG] submit controller: buffer=${buffer ? `${buffer.length} bytes` : "NULL"}, injectDoc=${!!injectDoc}`);
   if (!buffer) {
     return res.status(500).json({ error: "Failed to generate resume" });
   }

@@ -337,7 +337,7 @@ export const buildPrebuiltCheckbox = async () => {
 
   const prebuiltLabel = document.createElement("label");
   prebuiltLabel.setAttribute("for", "prebuilt-checkbox");
-  prebuiltLabel.textContent = "Nuke Ohio?";
+  prebuiltLabel.textContent = "Use Special Info";
   prebuiltLabel.className = "form-label";
 
   const checkboxContainer = document.createElement("div");

@@ -26,7 +26,7 @@ export const runMainSubmit = async () => {
   const fileData = await checkFile();
   // console.log("FILE DATA");
   // console.log(fileData);
-  if (!fileData && !params.nukeOhio) {
+  if (!fileData && !params.useSpecialInfo) {
     alert("You forgot to upload a resume. Please upload a resume and try again.");
     return null;
   }
@@ -36,7 +36,7 @@ export const runMainSubmit = async () => {
   // console.log("RUN MAIN SUBMIT PARAMS");
   // console.dir(params);
 
-  if (params.nukeOhio) {
+  if (params.useSpecialInfo) {
     const adminAuthData = await sendToBack({ route: "/check-admin-auth" }, "GET");
 
     if (!adminAuthData.isAdmin) {
