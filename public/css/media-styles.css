@@ -45,16 +45,23 @@
     font-size: 0.75rem;
   }
 
-  #priority-div {
-    flex: 0 0 40%;
+  #model-options-list-item {
+    flex-wrap: wrap;
+  }
+
+  #priority-div,
+  #max-tokens-div,
+  #temperature-div,
+  #prebuilt-checkbox-div {
+    flex: 1 1 auto;
   }
 
   #max-tokens-div {
-    flex: 0 0 20%;
+    min-width: 8rem;
   }
 
-  #temperature-div {
-    flex: 0 0 15%;
+  #prebuilt-checkbox-div {
+    margin-left: 0;
   }
 
   .btn-submit,
@@ -117,11 +124,6 @@
     gap: 1rem;
   }
 
-  #prebuilt-checkbox-div {
-    margin-left: -0.75rem;
-    flex: 0 0 20%;
-  }
-
   .form-select,
   .form-input,
   .form-textarea {
@@ -136,13 +138,6 @@
   .model-options-toggle-btn {
     width: 22px;
     height: 22px;
-  }
-
-  #priority-select,
-  #max-tokens-input,
-  #temperature-input,
-  #prebuilt-checkbox {
-    font-size: 12px;
   }
 
   .checkbox-container {
@@ -508,10 +503,8 @@
     -ms-text-size-adjust: 100%;
     text-size-adjust: 100%;
   }
-}
 
-/* Smooth scrolling for better mobile UX */
-@media (max-width: 768px) {
+  /* Smooth scrolling for better mobile UX */
   html {
     scroll-behavior: smooth;
   }
