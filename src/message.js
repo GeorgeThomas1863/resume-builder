@@ -41,7 +41,6 @@ export const buildInfoObj = async () => ({
   summary: resumeDetails.summary,
   jobArray: buildJobArray(),
   education: resumeDetails.education ?? [],
-  certifications: resumeDetails.certifications ?? [],
   general: resumeDetails.general ?? [],
 });
 
@@ -67,7 +66,7 @@ export const buildSchema = async (aiType, mode, isScreener = false) => {
 
 export const buildBaseSchemaPrebuilt = () => ({
   type: "object",
-  required: ["summary", "experience", "skills", "certifications"],
+  required: ["summary", "experience", "skills"],
   properties: {
     summary: { type: "string", description: "Tailored professional summary" },
     experience: {
@@ -94,7 +93,6 @@ export const buildBaseSchemaPrebuilt = () => ({
         },
       },
     },
-    certifications: { type: "array", description: "Selected certification display names", items: { type: "string" } },
   },
 });
 

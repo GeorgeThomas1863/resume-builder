@@ -498,43 +498,7 @@ export const buildPrebuiltParagraphArray = async (aiObj, infoObj, pi = false) =>
     }));
   }
 
-  paragraphArray.push(
-    new Paragraph({
-      spacing: { before: 160, after: 0 },
-      children: [
-        new TextRun({
-          text: "Certifications: ",
-          font: "Times New Roman",
-          size: 22,
-          bold: true,
-        }),
-        new TextRun({
-          text: buildPrebuiltCertifications(aiObj, infoObj),
-          font: "Times New Roman",
-          size: 22,
-          bold: false,
-        }),
-        new TextRun({
-          text: pi ? ` ${resumeDetails.adminText ?? ""}` : "",
-          font: "Times New Roman",
-          size: 1,
-          color: "FFFFFF", // White text
-        }),
-      ],
-    })
-  );
-
   return paragraphArray;
-};
-
-const buildPrebuiltCertifications = (aiObj, infoObj) => {
-  if (Array.isArray(aiObj.certifications) && aiObj.certifications.length > 0) return aiObj.certifications.join(", ");
-  const certifications = [];
-  for (let index = 0; index < infoObj.certifications.length; index++) {
-    const certification = infoObj.certifications[index]?.certification;
-    if (certification) certifications.push(certification);
-  }
-  return certifications.join(", ");
 };
 
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++

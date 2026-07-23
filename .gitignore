@@ -1,5 +1,6 @@
 # Config & secrets
 config/
+config/*
 /config*
 .env
 .env.*
@@ -10,6 +11,9 @@ config/
 .claude/.pics/
 .claude/.tmp/
 .claude/settings.local.json
+
+outputs/
+*outputs
 
 # Tool artifacts
 .playwright-mcp/
@@ -36,3 +40,6 @@ node_modules/
 # VSCode
 .vscode/
 .vscode-test
+
+docs/
+docs/*

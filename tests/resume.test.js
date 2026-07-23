@@ -25,7 +25,7 @@ describe("resume parsing and document creation", () => {
 
   it("skips prebuilt experience entries with unknown jobIds", async () => {
     vi.spyOn(console, "warn").mockImplementation(() => {});
-    const info = { jobArray: [], education: [], certifications: [] };
+    const info = { jobArray: [], education: [] };
     const baseline = await buildPrebuiltParagraphArray({ summary: "S", skills: [], experience: [] }, info);
     const paragraphs = await buildPrebuiltParagraphArray({ summary: "S", skills: [], experience: [{ jobId: 99, bullets: ["x"] }] }, info);
     expect(paragraphs).toHaveLength(baseline.length);
