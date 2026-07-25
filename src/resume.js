@@ -480,7 +480,8 @@ export const buildPrebuiltParagraphArray = async (aiObj, infoObj, pi = false) =>
     })
   );
 
-  for (let index = infoObj.education.length - 1; index >= 0; index--) {
+  // config order is most-recent-first, so render it as-is
+  for (let index = 0; index < infoObj.education.length; index++) {
     const education = infoObj.education[index];
     if (!education?.school) continue;
     const degreeParts = Array.isArray(education.degrees) ? education.degrees : [];
@@ -494,7 +495,7 @@ export const buildPrebuiltParagraphArray = async (aiObj, infoObj, pi = false) =>
         new TextRun({ text: `\t${education.graduation || education.timeframe || ""}`, bold: true, italics: true, font: "Times New Roman", size: 22 }),
       ],
       tabStops: [{ type: TabStopType.RIGHT, position: 10800 }],
-      spacing: { before: index === infoObj.education.length - 1 ? 0 : 160, after: 0 },
+      spacing: { before: index === 0 ? 0 : 160, after: 0 },
     }));
   }
 

@@ -50,14 +50,15 @@ Keep every output rule: exactly seven experience entries; a 2–4 sentence, 60�
 
 ## Output
 
-Return JSON with seven fields in this order:
+Return JSON with eight fields in this order:
 
 1. `audit` — a terse deficiency report, one line per WEAK, MISSING, unsupported-claim, identity, chronology, education, or formatting finding and how it was resolved. Return “No deficiencies found” only if the draft was already maximal and fully truthful.
-2. `name`
-3. `email`
-4. `summary`
-5. `experience`
-6. `education`
-7. `skills`
+2. `company_name` — the hiring company named in the job description. Pass the draft's value through unchanged unless it is clearly wrong, in which case correct it. Use `Unknown` if no company is stated. This is filing metadata and is out of scope for the audit.
+3. `name`
+4. `email`
+5. `summary`
+6. `experience`
+7. `education`
+8. `skills`
 
 The six corrected resume fields must use exactly the same full upload schema as the draft.

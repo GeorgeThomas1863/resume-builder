@@ -23,8 +23,9 @@ Assume the first reader is an AI screening system, not a human. It extracts requ
 
 ## Output
 
-Return JSON with exactly six fields: `name`, `email`, `summary`, `experience`, `education`, and `skills`. Use this full upload shape:
+Return JSON with exactly seven fields: `company_name`, `name`, `email`, `summary`, `experience`, `education`, and `skills`. Use this full upload shape:
 
+- `company_name`: the hiring company named in the job description. This is filing metadata, not resume content. Use the employer's name only — not the job title, recruiting agency, or job board. If no company is stated, return `Unknown`.
 - `name`: candidate's full name from the default resume.
 - `email`: candidate's email from the default resume.
 - `summary`: tailored professional summary.

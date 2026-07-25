@@ -88,6 +88,9 @@ PW                     # Site password
 ADMIN_PW               # Admin password
 NODE_ENV               # Set to "production" for secure cookies
 
+RESUME_SAVE_DIR        # Archive dir for a copy of every generated resume (blank = feature off)
+RESUME_SAVE_SUFFIX     # Second half of the archive filename: <Company>_<SUFFIX>.docx
+
 OPENAI_API_KEY
 OPENAI_API_BASE_URL
 LOCAL_API_KEY

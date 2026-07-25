@@ -36,6 +36,17 @@ export const runResumeUnfucker = async (inputParams) => {
 
 
   const buffer = await buildNewResume(aiText, infoObj, pi);
+  if (!buffer) return null;
 
-  return buffer;
+  return { buffer, companyName: extractCompanyName(aiText) };
+};
+
+// company_name is filing metadata only — a parse failure must never break resume generation
+const extractCompanyName = (aiText) => {
+  try {
+    const value = JSON.parse(aiText)?.company_name;
+    return typeof value === "string" && value.trim() ? value.trim() : null;
+  } catch {
+    return null;
+  }
 };

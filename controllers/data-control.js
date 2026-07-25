@@ -1,6 +1,6 @@
 // import CONFIG from "../config/config.js";
 
-import { runClearFiles, runCheckFile, clearUploadDirectory } from "../src/upload-file.js";
+import { runClearFiles, runCheckFile, clearUploadDirectory, saveResumeCopy } from "../src/upload-file.js";
 import { runResumeUnfucker } from "../src/src.js";
 import fs from "fs/promises";
 import JSZip from "jszip";
@@ -109,6 +109,14 @@ export async function applyEditingTime(generatedBuffer, editingMinutes) {
   }
 }
 
+// archiving is best-effort — the user still gets their resume if the copy can't be written
+const archiveResume = async (buffer, companyName) => {
+  const saveResult = await saveResumeCopy(buffer, companyName);
+  if (saveResult.success) console.log(`Saved resume copy: ${saveResult.filePath}`);
+  else if (!saveResult.skipped) console.error(`Resume copy not saved: ${saveResult.message}`);
+  return saveResult.success ? saveResult.filePath : null;
+};
+
 export const submitRouteController = async (req, res) => {
   const {
     useSpecialInfo,
@@ -191,23 +199,28 @@ export const submitRouteController = async (req, res) => {
     pi: safePi,
   };
 
-  const buffer = await runResumeUnfucker(inputParams);
+  const result = await runResumeUnfucker(inputParams);
+  const { buffer, companyName } = result || {};
   if (!buffer) {
     return res.status(500).json({ error: "Failed to generate resume" });
   }
 
   if (injectDoc) {
+    let mergedBuffer;
     try {
-      const mergedBuffer = await mergeDocxMetadata(injectDocPath.trim(), buffer, parsedEditingMinutes);
+      mergedBuffer = await mergeDocxMetadata(injectDocPath.trim(), buffer, parsedEditingMinutes);
       await fs.writeFile(injectDocPath.trim(), mergedBuffer);
     } catch (e) {
       console.error("Error writing inject doc:", e);
       return res.status(500).json({ error: "Failed to write to the specified file" });
     }
-    return res.json({ success: true });
+    const injectSavedPath = await archiveResume(mergedBuffer, companyName);
+    return res.json({ success: true, savedPath: injectSavedPath });
   }
 
   const downloadBuffer = parsedEditingMinutes !== null ? await applyEditingTime(buffer, parsedEditingMinutes) : buffer;
+  const savedPath = await archiveResume(downloadBuffer, companyName);
+  if (savedPath) res.setHeader("X-Saved-Resume-Path", encodeURIComponent(savedPath));
   res.setHeader("Content-Type", "application/vnd.openxmlformats-officedocument.wordprocessingml.document");
   res.setHeader("Content-Disposition", 'attachment; filename="new-resume.docx"');
   return res.send(downloadBuffer);

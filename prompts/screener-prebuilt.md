@@ -38,4 +38,4 @@ Keep every format rule: summary is 2–4 sentences and 60–100 words with a tit
 
 ## Output
 
-Return JSON with four fields. `audit` comes first and is a terse deficiency report, one line per WEAK, MISSING, or unsupported-claim finding plus its resolution; return “No deficiencies found” only when appropriate. Then return corrected `summary`, `experience`, and `skills` in the same schema as the draft.
+Return JSON with five fields. `audit` comes first and is a terse deficiency report, one line per WEAK, MISSING, or unsupported-claim finding plus its resolution; return “No deficiencies found” only when appropriate. Then return `company_name` — the hiring company named in the job description, passed through from the draft unchanged unless clearly wrong, or `Unknown` if none is stated; this is filing metadata and is out of scope for the audit. Then return corrected `summary`, `experience`, and `skills` in the same schema as the draft.

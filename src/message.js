@@ -66,8 +66,9 @@ export const buildSchema = async (aiType, mode, isScreener = false) => {
 
 export const buildBaseSchemaPrebuilt = () => ({
   type: "object",
-  required: ["summary", "experience", "skills"],
+  required: ["company_name", "summary", "experience", "skills"],
   properties: {
+    company_name: { type: "string", description: "Hiring company named in the job description, or 'Unknown'" },
     summary: { type: "string", description: "Tailored professional summary" },
     experience: {
       type: "array",
@@ -98,8 +99,9 @@ export const buildBaseSchemaPrebuilt = () => ({
 
 export const buildBaseSchemaUpload = () => ({
   type: "object",
-  required: ["name", "email", "summary", "experience", "education", "skills"],
+  required: ["company_name", "name", "email", "summary", "experience", "education", "skills"],
   properties: {
+    company_name: { type: "string", description: "Hiring company named in the job description, or 'Unknown'" },
     name: { type: "string", description: "Candidate's full name" },
     email: { type: "string", description: "Candidate's email address" },
     summary: { type: "string", description: "Tailored professional summary" },

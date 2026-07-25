@@ -28,7 +28,11 @@ Assume the first reader is an AI screening system, not a human. It extracts the 
 
 ## Output
 
-Return JSON with exactly three fields: `summary`, `experience`, and `skills`. The application pre-fills name, email, education, and job metadata (`role`, `company`, `timeframe`), so do not output them. All strings are plain text with no markdown.
+Return JSON with exactly four fields: `company_name`, `summary`, `experience`, and `skills`.
+
+`company_name` is the hiring company named in the job description. This is filing metadata, not resume content. Use the employer's name only — not the job title, recruiting agency, or job board. If no company is stated, return `Unknown`.
+
+The application pre-fills name, email, education, and job metadata (`role`, `company`, `timeframe`), so do not output them. All strings are plain text with no markdown.
 
 `experience` is an array of `{ jobId, bullets }` objects. `jobId` must be an integer from `background_information.jobArray`.
 

@@ -78,10 +78,11 @@ export const executeSubmit = async (params) => {
       await showRunResult(false, "Run failed: unexpected server response");
       return null;
     }
-    await showRunResult(true, `Success — resume written to ${params.injectDocPath}`);
+    await showRunResult(true, successMessage(data.savedPath, `resume written to ${params.injectDocPath}`));
     return true;
   }
 
+  const savedPath = decodeSavedPath(res.headers.get("X-Saved-Resume-Path"));
   const blob = await res.blob();
   const url = window.URL.createObjectURL(blob);
   const a = document.createElement("a");
@@ -91,8 +92,20 @@ export const executeSubmit = async (params) => {
   a.click();
   window.URL.revokeObjectURL(url);
   a.remove();
-  await showRunResult(true, "Success — new-resume.docx downloaded");
+  await showRunResult(true, successMessage(savedPath, "new-resume.docx downloaded"));
   return true;
+};
+
+// the archive copy is best-effort server-side, so fall back to the old wording if its path is absent
+const successMessage = (savedPath, fallback) => `Success — ${savedPath ? `saved to ${savedPath}` : fallback}`;
+
+const decodeSavedPath = (header) => {
+  if (!header) return null;
+  try {
+    return decodeURIComponent(header);
+  } catch {
+    return header;
+  }
 };
 
 //----------------------
