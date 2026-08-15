@@ -1,4 +1,4 @@
-import { extractResumeText, buildNewResume } from "./resume.js";
+import { extractResumeText, buildNewResume, resumeDetails } from "./resume.js";
 import { runTwoPassAI } from "./ai.js";
 import { buildMessageInput, buildSchema, buildInfoObj } from "./message.js";
 
@@ -33,9 +33,35 @@ export const runResumeUnfucker = async (inputParams) => {
   const aiText = await runTwoPassAI({ ...aiParams, mode });
   if (!aiText) return null;
 
+  const aiObj = parseAiResponse(aiText);
+  if (!aiObj) return null;
 
+  const buffer = await buildNewResume(aiObj, infoObj, pi);
+  if (!buffer) return null;
 
-  const buffer = await buildNewResume(aiText, infoObj, pi);
+  const lastName = resolveLastName(mode, aiObj.name);
 
-  return buffer;
+  return { buffer, targetCompany: aiObj.targetCompany, targetTitle: aiObj.targetTitle, lastName };
+};
+
+// the single parse of the AI's JSON response; the parsed object is passed straight into buildNewResume
+const parseAiResponse = (aiText) => {
+  try {
+    const parsed = JSON.parse(aiText);
+    if (!parsed || typeof parsed !== "object") return null;
+    return parsed;
+  } catch (e) {
+    console.error("Failed to parse AI response as JSON:", e.message);
+    return null;
+  }
+};
+
+const resolveLastName = (mode, aiName) => {
+  if (mode === "prebuilt") return resumeDetails.lastName || "User";
+
+  const trimmed = typeof aiName === "string" ? aiName.trim() : "";
+  if (!trimmed) return "User";
+
+  const parts = trimmed.split(/\s+/);
+  return parts[parts.length - 1];
 };

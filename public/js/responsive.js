@@ -10,7 +10,6 @@ import {
   runUploadClick,
   runMainSubmit,
   runDeleteResume,
-  runInjectDocToggle,
 } from "./run.js";
 import { runUploadFile } from "./util/upload-front.js";
 
@@ -72,8 +71,6 @@ export const changeHandler = async (e) => {
   if (changeId === "screener-ai-type-select") await runAIModelSelect(changeElement.value, "screener-model-select");
 
   if (changeId === "input-type-select") await runUploadButtonToggle(changeElement.value);
-
-  if (changeId === "inject-doc-checkbox") await runInjectDocToggle();
 
   if (changeId !== "upload-file-input") return null;
 

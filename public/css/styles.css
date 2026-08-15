@@ -665,19 +665,7 @@ h3 {
   box-shadow: 0 2px 8px rgba(74, 144, 226, 0.25);
 }
 
-.inject-doc-checkbox-row {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  margin-bottom: 0.75rem;
-}
-
-.inject-doc-label {
-  margin-bottom: 0;
-  cursor: pointer;
-}
-
-#inject-doc-editing-minutes-row {
+#editing-minutes-row {
   margin-top: 1.5rem;
   max-width: 160px;
 }

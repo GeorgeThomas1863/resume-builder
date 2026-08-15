@@ -21,10 +21,10 @@ export const buildInputForm = async () => {
   const modelOptionsListItem = await buildModelOptionsListItem();
 
   const pasteJobListItem = await buildPasteJobListItem();
-  const injectDocListItem = await buildInjectDocListItem();
+  const saveOptionsListItem = await buildSaveOptionsListItem();
   const submitListItem = await buildSubmitListItem();
 
-  inputFormElement.append(uploadListItem, builderSelectRowListItem, screenerSelectRowListItem, modelOptionsListItem, pasteJobListItem, injectDocListItem, submitListItem);
+  inputFormElement.append(uploadListItem, builderSelectRowListItem, screenerSelectRowListItem, modelOptionsListItem, pasteJobListItem, saveOptionsListItem, submitListItem);
 
   // Build collapse container
   const collapseContainer = await buildCollapseContainer({
@@ -406,67 +406,55 @@ export const buildPasteJobListItem = async () => {
   return pasteJobListItem;
 };
 
-export const buildInjectDocListItem = async () => {
-  const injectDocListItem = document.createElement("li");
-  injectDocListItem.id = "inject-doc-list-item";
-  injectDocListItem.className = "form-list-item";
+export const buildSaveOptionsListItem = async () => {
+  const saveOptionsListItem = document.createElement("li");
+  saveOptionsListItem.id = "save-options-list-item";
+  saveOptionsListItem.className = "form-list-item";
 
-  const injectDocCheckboxRow = document.createElement("div");
-  injectDocCheckboxRow.className = "inject-doc-checkbox-row";
+  const saveDirRow = document.createElement("div");
+  saveDirRow.id = "save-dir-row";
 
-  const injectDocCheckbox = document.createElement("input");
-  injectDocCheckbox.type = "checkbox";
-  injectDocCheckbox.id = "inject-doc-checkbox";
-  injectDocCheckbox.className = "form-checkbox";
-  injectDocCheckbox.checked = true;
+  const saveDirLabel = document.createElement("label");
+  saveDirLabel.setAttribute("for", "save-dir-input");
+  saveDirLabel.className = "form-label";
+  saveDirLabel.textContent = "Default save location";
 
-  const injectDocLabel = document.createElement("label");
-  injectDocLabel.setAttribute("for", "inject-doc-checkbox");
-  injectDocLabel.className = "form-label inject-doc-label";
-  injectDocLabel.textContent = "Inject into existing document";
+  const saveDirInput = document.createElement("input");
+  saveDirInput.type = "text";
+  saveDirInput.id = "save-dir-input";
+  saveDirInput.className = "form-input";
+  saveDirInput.placeholder = "Folder where resumes are saved";
 
-  injectDocCheckboxRow.append(injectDocCheckbox, injectDocLabel);
-
-  const injectDocPathRow = document.createElement("div");
-  injectDocPathRow.id = "inject-doc-path-row";
-
-  const injectDocPathInput = document.createElement("input");
-  injectDocPathInput.type = "text";
-  injectDocPathInput.id = "inject-doc-path-input";
-  injectDocPathInput.className = "form-input";
-  injectDocPathInput.placeholder = "Enter full path to existing .docx file";
-
-  injectDocPathRow.append(injectDocPathInput);
+  saveDirRow.append(saveDirLabel, saveDirInput);
 
   try {
-    const res = await fetch("/default-inject-path");
+    const res = await fetch("/default-save-dir");
     if (res.ok) {
       const data = await res.json();
-      if (data.path) injectDocPathInput.value = data.path;
+      if (data.path) saveDirInput.value = data.path;
     }
   } catch { /* non-blocking — input stays empty if fetch fails */ }
 
-  const injectEditingMinutesRow = document.createElement("div");
-  injectEditingMinutesRow.id = "inject-doc-editing-minutes-row";
+  const editingMinutesRow = document.createElement("div");
+  editingMinutesRow.id = "editing-minutes-row";
 
-  const injectEditingMinutesLabel = document.createElement("label");
-  injectEditingMinutesLabel.setAttribute("for", "inject-doc-editing-minutes-input");
-  injectEditingMinutesLabel.textContent = "Editing Time (min)";
-  injectEditingMinutesLabel.className = "form-label";
+  const editingMinutesLabel = document.createElement("label");
+  editingMinutesLabel.setAttribute("for", "editing-minutes-input");
+  editingMinutesLabel.textContent = "Editing Time (min)";
+  editingMinutesLabel.className = "form-label";
 
-  const injectEditingMinutesInput = document.createElement("input");
-  injectEditingMinutesInput.type = "number";
-  injectEditingMinutesInput.id = "inject-doc-editing-minutes-input";
-  injectEditingMinutesInput.className = "form-input";
-  injectEditingMinutesInput.placeholder = "20";
-  injectEditingMinutesInput.min = "0";
-  injectEditingMinutesInput.value = "20";
+  const editingMinutesInput = document.createElement("input");
+  editingMinutesInput.type = "text";
+  editingMinutesInput.id = "editing-minutes-input";
+  editingMinutesInput.className = "form-input";
+  editingMinutesInput.placeholder = "auto";
+  editingMinutesInput.value = "auto";
 
-  injectEditingMinutesRow.append(injectEditingMinutesLabel, injectEditingMinutesInput);
+  editingMinutesRow.append(editingMinutesLabel, editingMinutesInput);
 
-  injectDocListItem.append(injectDocCheckboxRow, injectDocPathRow, injectEditingMinutesRow);
+  saveOptionsListItem.append(saveDirRow, editingMinutesRow);
 
-  return injectDocListItem;
+  return saveOptionsListItem;
 };
 
 export const buildSubmitListItem = async () => {

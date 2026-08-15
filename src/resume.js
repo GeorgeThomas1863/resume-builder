@@ -61,14 +61,8 @@ export const extractTextPDF = async (inputPath) => {
 //++++++++++++++++++++++++++++++
 
 //MAIN FUNCTION
-export const buildNewResume = async (aiText, infoObj = null, pi = false) => {
-  let aiObj;
-  try {
-    aiObj = JSON.parse(aiText);
-  } catch (e) {
-    console.error("Failed to parse AI response as JSON:", e.message);
-    return null;
-  }
+export const buildNewResume = async (aiObj, infoObj = null, pi = false) => {
+  if (!aiObj || typeof aiObj !== "object") return null;
 
   // console.log("AI OBJ");
   // console.log(aiObj);

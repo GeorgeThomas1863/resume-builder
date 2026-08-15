@@ -2,8 +2,14 @@
 
 import { runClearFiles, runCheckFile, clearUploadDirectory } from "../src/upload-file.js";
 import { runResumeUnfucker } from "../src/src.js";
-import fs from "fs/promises";
-import JSZip from "jszip";
+import {
+  applyDocxMetadata,
+  buildResumeFileName,
+  resolveDefaultSaveDir,
+  resolveEditingMinutes,
+  resolveSaveDir,
+  writeResumeFile,
+} from "../src/save-resume.js";
 
 // export const getBackendValueController = async (req, res) => {
 //   const { key } = req.body;
@@ -63,52 +69,6 @@ export const checkRouteController = async (req, res) => {
   return res.json({ success: data.success, message: data.message, filename: data.filename });
 };
 
-export async function mergeDocxMetadata(templatePath, generatedBuffer, editingMinutes) {
-  try {
-    const templateBuf = await fs.readFile(templatePath);
-    const [templateZip, generatedZip] = await Promise.all([
-      JSZip.loadAsync(templateBuf),
-      JSZip.loadAsync(generatedBuffer),
-    ]);
-    for (const metaFile of ["docProps/core.xml", "docProps/app.xml"]) {
-      const file = templateZip.file(metaFile);
-      if (!file) continue;
-      if (metaFile === "docProps/app.xml" && editingMinutes !== null) {
-        const appXml = setTotalTime(await file.async("string"), editingMinutes);
-        generatedZip.file(metaFile, appXml);
-      } else {
-        const content = await file.async("nodebuffer");
-        generatedZip.file(metaFile, content);
-      }
-    }
-    return generatedZip.generateAsync({ type: "nodebuffer" });
-  } catch (e) {
-    console.error("Failed to merge DOCX metadata, writing generated buffer as-is:", e);
-    return generatedBuffer;
-  }
-}
-
-// templates that lost their <TotalTime> tag (e.g. after a failed merge wrote raw docx-lib output) must still get one
-const setTotalTime = (appXml, editingMinutes) => {
-  const tag = `<TotalTime>${editingMinutes}</TotalTime>`;
-  if (/<TotalTime>\d*<\/TotalTime>/.test(appXml)) return appXml.replace(/<TotalTime>\d*<\/TotalTime>/, tag);
-  if (/<Properties[^>]*\/>/.test(appXml)) return appXml.replace(/<Properties([^>]*?)\s*\/>/, `<Properties$1>${tag}</Properties>`);
-  return appXml.replace(/(<Properties[^>]*>)/, `$1${tag}`);
-};
-
-export async function applyEditingTime(generatedBuffer, editingMinutes) {
-  try {
-    const zip = await JSZip.loadAsync(generatedBuffer);
-    const file = zip.file("docProps/app.xml");
-    if (!file) return generatedBuffer;
-    zip.file("docProps/app.xml", setTotalTime(await file.async("string"), editingMinutes));
-    return await zip.generateAsync({ type: "nodebuffer" });
-  } catch (e) {
-    console.error("Failed to set editing time, sending generated buffer as-is:", e);
-    return generatedBuffer;
-  }
-}
-
 export const submitRouteController = async (req, res) => {
   const {
     useSpecialInfo,
@@ -122,8 +82,7 @@ export const submitRouteController = async (req, res) => {
     maxTokens,
     temperature,
     jobInput,
-    injectDoc,
-    injectDocPath,
+    saveDir,
     editingMinutes,
   } = req.body;
 
@@ -141,13 +100,8 @@ export const submitRouteController = async (req, res) => {
   const screenerModelType = String(bodyScreenerModelType || modelType).trim();
   if (!screenerModelType) return res.status(400).json({ error: "screenerModelType is required" });
 
-  let parsedEditingMinutes = null;
-  if (editingMinutes !== undefined && String(editingMinutes).trim() !== "") {
-    parsedEditingMinutes = parseInt(editingMinutes, 10);
-    if (!Number.isInteger(parsedEditingMinutes) || parsedEditingMinutes < 0) {
-      return res.status(400).json({ error: "editingMinutes must be a non-negative integer" });
-    }
-  }
+  const editingMinutesResult = resolveEditingMinutes(editingMinutes);
+  if (!editingMinutesResult.success) return res.status(400).json({ error: editingMinutesResult.message });
 
   const temp = +temperature;
   if (!Number.isFinite(temp) || temp < 0) {
@@ -158,17 +112,11 @@ export const submitRouteController = async (req, res) => {
     return res.status(400).json({ error: "maxTokens must be a positive integer" });
   }
 
-  if (injectDoc) {
-    const cleanPath = typeof injectDocPath === "string" ? injectDocPath.trim() : "";
-    if (!cleanPath || cleanPath.includes("\0") || !cleanPath.toLowerCase().endsWith(".docx")) {
-      return res.status(400).json({ error: "injectDocPath must be a valid .docx file path" });
-    }
-    try {
-      await fs.access(cleanPath);
-    } catch {
-      return res.status(400).json({ error: `File not found: ${cleanPath}` });
-    }
+  const rawSaveDir = typeof saveDir === "string" ? saveDir : "";
+  if (rawSaveDir.includes("\0")) {
+    return res.status(400).json({ error: "saveDir must not contain a null byte" });
   }
+  const targetDir = resolveSaveDir(rawSaveDir);
 
   const fileCheck = await runCheckFile(req.session.id);
   const inputPath = fileCheck?.success ? fileCheck.filePath : null;
@@ -191,28 +139,25 @@ export const submitRouteController = async (req, res) => {
     pi: safePi,
   };
 
-  const buffer = await runResumeUnfucker(inputParams);
-  if (!buffer) {
+  const result = await runResumeUnfucker(inputParams);
+  if (!result) {
     return res.status(500).json({ error: "Failed to generate resume" });
   }
 
-  if (injectDoc) {
-    try {
-      const mergedBuffer = await mergeDocxMetadata(injectDocPath.trim(), buffer, parsedEditingMinutes);
-      await fs.writeFile(injectDocPath.trim(), mergedBuffer);
-    } catch (e) {
-      console.error("Error writing inject doc:", e);
-      return res.status(500).json({ error: "Failed to write to the specified file" });
-    }
-    return res.json({ success: true });
-  }
+  const { buffer, targetCompany, targetTitle, lastName } = result;
+  const templatePath = process.env.INJECT_DOC_DEFAULT_PATH?.trim() || null;
+  const stampedBuffer = await applyDocxMetadata(buffer, { templatePath, editingMinutes: editingMinutesResult.value });
+  const fileName = buildResumeFileName(targetCompany, targetTitle, lastName);
 
-  const downloadBuffer = parsedEditingMinutes !== null ? await applyEditingTime(buffer, parsedEditingMinutes) : buffer;
-  res.setHeader("Content-Type", "application/vnd.openxmlformats-officedocument.wordprocessingml.document");
-  res.setHeader("Content-Disposition", 'attachment; filename="new-resume.docx"');
-  return res.send(downloadBuffer);
+  try {
+    const written = await writeResumeFile(targetDir, fileName, stampedBuffer);
+    return res.json({ success: true, fileName: written.fileName, filePath: written.filePath });
+  } catch (e) {
+    console.error("Error saving resume file:", e);
+    return res.status(500).json({ error: "Failed to save resume file" });
+  }
 };
 
-export const defaultInjectPathController = async (req, res) => {
-  return res.json({ path: process.env.INJECT_DOC_DEFAULT_PATH || "" });
+export const defaultSaveDirController = async (req, res) => {
+  return res.json({ path: resolveDefaultSaveDir() });
 };

@@ -12,7 +12,7 @@ Do NOT commit anything to GitHub. The user will control all commits to GitHub. D
 
 # resume-builder
 
-Personal resume optimization tool. Accepts uploaded resume (DOCX/PDF), extracts text, sends to AI with a job description, and returns a tailored `new-resume.docx`.
+Personal resume optimization tool. Accepts uploaded resume (DOCX/PDF), extracts text, sends to AI with a job description, and saves a tailored resume DOCX to a save folder on the server.
 
 ## Commands
 
@@ -49,6 +49,7 @@ src/
   ai.js                  # AI clients plus builder-to-screener orchestration
   message.js             # Prompt construction + JSON schema builders
   resume.js              # Text extraction + DOCX paragraph builder
+  save-resume.js         # DOCX metadata stamping, filename building, lock-safe save
   upload-file.js         # Multer config, file ops, session-scoped storage
 prompts/                 # Builder and screener prompts for prebuilt and upload modes
 public/
@@ -68,10 +69,15 @@ POST /submit  →  submitRouteController
                    → buildMessageInput()     [builder prompt + schema]
                    → runTwoPassAI()          [builder then screener; draft fallback]
                    → buildNewResume()        [docx Packer → Buffer]
-                 → res.send(buffer) as new-resume.docx attachment
+                   → returns { buffer, targetCompany, targetTitle, lastName }
+                 → applyDocxMetadata()       [stamp created/modified/TotalTime]
+                 → buildResumeFileName()     [{Company}_{first 3 title words}_Resume_{LastName}_{MonYYYY}.docx]
+                 → writeResumeFile()         [mkdir -p save dir; wx write, _1/_2/... on collision or lock]
+                 → res.json({ success: true, fileName, filePath })
+GET /default-save-dir → { path }             [RESUME_SAVE_DIR or <root>/resumes]
 ```
 
-The screener receives the complete builder user input plus the builder draft, may use a separately selected provider/model, and falls back to the valid builder draft on any screener failure.
+The screener receives the complete builder user input plus the builder draft, may use a separately selected provider/model, and falls back to the valid builder draft on any screener failure. The AI schema (both modes) includes `targetCompany`/`targetTitle`, extracted from the job description, used only for the saved filename.
 
 ## Auth
 
@@ -92,6 +98,9 @@ OPENAI_API_KEY
 OPENAI_API_BASE_URL
 LOCAL_API_KEY
 LOCAL_API_BASE_URL
+
+RESUME_SAVE_DIR         # Default save folder; falls back to <project root>/resumes
+INJECT_DOC_DEFAULT_PATH # Optional .docx whose docProps/core.xml + app.xml seed generated resume metadata
 ```
 
 ## Prebuilt Resume Config
@@ -107,3 +116,5 @@ Prebuilt-mode content (name/email, summary, jobs with bullets + context, educati
 - **Session expiry doesn't clean `/data/`** — orphaned files accumulate; no auto-cleanup
 - **Rate limiting is in-memory** — resets on server restart; applies only to auth routes
 - **Frontend is pure ES modules** — no bundler; browser must support ES6 imports natively
+- **Filename never skips a build** — a colliding or locked (`EBUSY`/`EPERM`/`EACCES`) target name advances to `_1`, `_2`, … up to 20 attempts, then throws
+- **DOCX metadata is jittered** — `created` is a random 10–29 minutes before `modified`; `TotalTime` defaults to that same offset unless overridden, then is clamped to the created→modified gap

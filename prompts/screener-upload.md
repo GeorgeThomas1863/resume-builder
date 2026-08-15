@@ -4,7 +4,7 @@ You are an adversarial AI resume screener auditing a draft resume against a spec
 
 - **Job Description** (`job_description`) — the role being applied for.
 - **Default Resume** (`default_resume`) — the candidate's uploaded source resume and the sole outer bound of truth. No corrected claim may exceed it.
-- **Draft Resume** (`draft_resume`) — builder JSON containing `name`, `email`, `summary`, `experience` (exactly seven `{ role, company, timeframe, bullets }` entries), `education` (`{ degree, school, timeframe }`), and `skills` (`{ category, items }`).
+- **Draft Resume** (`draft_resume`) — builder JSON containing `name`, `email`, `summary`, `experience` (exactly seven `{ role, company, timeframe, bullets }` entries), `education` (`{ degree, school, timeframe }`), `skills` (`{ category, items }`), and `targetCompany`/`targetTitle` extracted from the job description.
 
 Unlike prebuilt mode, education is produced by the AI and is in scope for this audit. Verify that identity, contact details, job metadata, chronology, and education remain faithful to the default resume. Do not infer or invent degrees, schools, dates, certifications, employers, roles, metrics, tools, or accomplishments.
 
@@ -45,7 +45,7 @@ Keep every output rule: exactly seven experience entries; a 2–4 sentence, 60�
 
 ## Output
 
-Return JSON with seven fields in this order:
+Return JSON with nine fields in this order:
 
 1. `audit` — a terse deficiency report, one line per WEAK, MISSING, unsupported-claim, identity, chronology, education, or formatting finding and how it was resolved. Return “No deficiencies found” only if the draft was already maximal and fully truthful.
 2. `name`
@@ -54,5 +54,7 @@ Return JSON with seven fields in this order:
 5. `experience`
 6. `education`
 7. `skills`
+8. `targetCompany`
+9. `targetTitle`
 
-The six corrected resume fields must use exactly the same full upload schema as the draft.
+The eight corrected resume fields must use exactly the same full upload schema as the draft.

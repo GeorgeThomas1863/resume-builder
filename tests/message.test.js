@@ -55,4 +55,16 @@ describe("resume JSON schemas", () => {
     const experience = (await buildSchema("claude", "upload")).schema.properties.experience;
     expect(experience).not.toHaveProperty("minItems");
   });
+
+  it("requires targetCompany and targetTitle on both base schemas", () => {
+    expect(buildBaseSchemaPrebuilt().required).toEqual(expect.arrayContaining(["targetCompany", "targetTitle"]));
+    expect(buildBaseSchemaUpload().required).toEqual(expect.arrayContaining(["targetCompany", "targetTitle"]));
+  });
+
+  it("carries targetCompany and targetTitle through to the screener schema", async () => {
+    const schema = (await buildSchema("local", "upload", true)).json_schema.schema;
+    expect(schema.required).toEqual(expect.arrayContaining(["targetCompany", "targetTitle"]));
+    expect(schema.properties).toHaveProperty("targetCompany");
+    expect(schema.properties).toHaveProperty("targetTitle");
+  });
 });

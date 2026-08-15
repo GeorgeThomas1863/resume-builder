@@ -7,14 +7,14 @@ describe("resume parsing and document creation", () => {
     await expect(extractResumeText(null)).resolves.toBeNull();
   });
 
-  it("returns null for malformed AI JSON", async () => {
-    vi.spyOn(console, "error").mockImplementation(() => {});
+  it("returns null for a non-object input", async () => {
     await expect(buildNewResume("not json")).resolves.toBeNull();
+    await expect(buildNewResume(null)).resolves.toBeNull();
   });
 
   it("builds a valid DOCX buffer from a minimal valid upload response", async () => {
     const input = { name: "A", email: "a@example.com", summary: "S", experience: [], education: [], skills: [] };
-    const buffer = await buildNewResume(JSON.stringify(input));
+    const buffer = await buildNewResume(input);
     const zip = await JSZip.loadAsync(buffer);
     expect(zip.file("word/document.xml")).not.toBeNull();
   });

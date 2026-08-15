@@ -67,7 +67,7 @@ export const buildSchema = async (aiType, mode, isScreener = false) => {
 
 export const buildBaseSchemaPrebuilt = () => ({
   type: "object",
-  required: ["summary", "experience", "skills", "certifications"],
+  required: ["summary", "experience", "skills", "certifications", "targetCompany", "targetTitle"],
   properties: {
     summary: { type: "string", description: "Tailored professional summary" },
     experience: {
@@ -95,12 +95,14 @@ export const buildBaseSchemaPrebuilt = () => ({
       },
     },
     certifications: { type: "array", description: "Selected certification display names", items: { type: "string" } },
+    targetCompany: { type: "string", description: "Hiring company name extracted from job_description; use \"Company\" if not determinable" },
+    targetTitle: { type: "string", description: "Job title extracted from job_description; use \"Role\" if not determinable" },
   },
 });
 
 export const buildBaseSchemaUpload = () => ({
   type: "object",
-  required: ["name", "email", "summary", "experience", "education", "skills"],
+  required: ["name", "email", "summary", "experience", "education", "skills", "targetCompany", "targetTitle"],
   properties: {
     name: { type: "string", description: "Candidate's full name" },
     email: { type: "string", description: "Candidate's email address" },
@@ -108,6 +110,8 @@ export const buildBaseSchemaUpload = () => ({
     experience: { type: "array", minItems: 7, maxItems: 7, items: { type: "object", required: ["role", "company", "timeframe", "bullets"], properties: { role: { type: "string" }, company: { type: "string" }, timeframe: { type: "string" }, bullets: { type: "array", items: { type: "string" } } } } },
     education: { type: "array", items: { type: "object", required: ["degree", "school", "timeframe"], properties: { degree: { type: "string" }, school: { type: "string" }, timeframe: { type: "string" } } } },
     skills: { type: "array", description: "Categorized skills tailored to the job description", items: { type: "object", required: ["category", "items"], properties: { category: { type: "string" }, items: { type: "array", items: { type: "string" } } } } },
+    targetCompany: { type: "string", description: "Hiring company name extracted from job_description; use \"Company\" if not determinable" },
+    targetTitle: { type: "string", description: "Job title extracted from job_description; use \"Role\" if not determinable" },
   },
 });
 

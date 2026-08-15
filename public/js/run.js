@@ -16,11 +16,14 @@ export const runMainSubmit = async () => {
   const params = await buildSubmitParams();
   if (!params) return null;
 
-  if (params.injectDoc) {
-    if (!params.injectDocPath || !params.injectDocPath.toLowerCase().endsWith(".docx")) {
-      alert("Please enter a valid path to an existing .docx file.");
-      return null;
-    }
+  if (!params.saveDir) {
+    await showRunResult(false, "Please enter a save location.");
+    return null;
+  }
+
+  if (!isEditingMinutesValid(params.editingMinutes)) {
+    await showRunResult(false, `Editing Time (min) must be "auto" or a non-negative whole number.`);
+    return null;
   }
 
   const fileData = await checkFile();
@@ -66,33 +69,26 @@ export const executeSubmit = async (params) => {
     return null;
   }
 
+  const data = await res.json().catch(() => null);
+
   if (!res.ok) {
-    const err = await res.json().catch(() => ({}));
-    await showRunResult(false, `Run failed: ${err.error || `server error (${res.status})`}`);
+    await showRunResult(false, (data && data.error) || `Run failed: server error (${res.status})`);
     return null;
   }
 
-  if (params.injectDoc) {
-    const data = await res.json().catch(() => null);
-    if (!data || !data.success) {
-      await showRunResult(false, "Run failed: unexpected server response");
-      return null;
-    }
-    await showRunResult(true, `Success — resume written to ${params.injectDocPath}`);
-    return true;
+  if (!data || !data.success) {
+    await showRunResult(false, (data && data.error) || "Resume build failed");
+    return null;
   }
 
-  const blob = await res.blob();
-  const url = window.URL.createObjectURL(blob);
-  const a = document.createElement("a");
-  a.style.display = "none";
-  a.href = url;
-  a.download = "new-resume.docx";
-  a.click();
-  window.URL.revokeObjectURL(url);
-  a.remove();
-  await showRunResult(true, "Success — new-resume.docx downloaded");
+  await showRunResult(true, `Success — saved to ${data.filePath}`);
   return true;
+};
+
+// "auto" (any case) or a non-negative whole number string
+const isEditingMinutesValid = (value) => {
+  if (value.toLowerCase() === "auto") return true;
+  return /^\d+$/.test(value);
 };
 
 //----------------------
@@ -230,16 +226,6 @@ export const runUploadButtonToggle = async (changeType) => {
 
   await hideArray([uploadListItem]);
   // uploadListItem.classList.add("hidden");
-  return true;
-};
-
-// editing-time row stays visible in both modes — download mode stamps TotalTime too
-export const runInjectDocToggle = async () => {
-  const checkbox = document.getElementById("inject-doc-checkbox");
-  const pathRow = document.getElementById("inject-doc-path-row");
-  if (!checkbox || !pathRow) return null;
-  if (checkbox.checked) pathRow.classList.remove("hidden");
-  else pathRow.classList.add("hidden");
   return true;
 };
 

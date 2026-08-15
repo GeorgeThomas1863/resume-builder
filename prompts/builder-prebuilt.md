@@ -25,9 +25,11 @@ Assume the first reader is an AI screening system, not a human. It extracts the 
 
 ## Output
 
-Return JSON with exactly four fields: `summary`, `experience`, `skills`, and `certifications`. The application pre-fills name, email, education, and job metadata (`role`, `company`, `timeframe`), so do not output them. All strings are plain text with no markdown.
+Return JSON with exactly six fields: `summary`, `experience`, `skills`, `certifications`, `targetCompany`, and `targetTitle`. The application pre-fills name, email, education, and job metadata (`role`, `company`, `timeframe`), so do not output them. All strings are plain text with no markdown.
 
 `experience` is an array of `{ jobId, bullets }` objects. `jobId` must be an integer from `background_information.jobArray`.
+
+`targetCompany` and `targetTitle` are the hiring company name and job title extracted from `job_description`. Use `Company` or `Role` respectively when not determinable.
 
 ## Summary
 

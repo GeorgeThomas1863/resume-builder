@@ -19,7 +19,7 @@ Assume the first reader is an AI screening system, not a human. It extracts requ
 
 ## Output
 
-Return JSON with exactly six fields: `name`, `email`, `summary`, `experience`, `education`, and `skills`. Use this full upload shape:
+Return JSON with exactly eight fields: `name`, `email`, `summary`, `experience`, `education`, `skills`, `targetCompany`, and `targetTitle`. Use this full upload shape:
 
 - `name`: candidate's full name from the default resume.
 - `email`: candidate's email from the default resume.
@@ -27,6 +27,8 @@ Return JSON with exactly six fields: `name`, `email`, `summary`, `experience`, `
 - `experience`: exactly seven objects, each with `role`, `company`, `timeframe`, and `bullets`.
 - `education`: objects with `degree`, `school`, and `timeframe` derived from the source.
 - `skills`: objects with `category` and `items`.
+- `targetCompany`: the hiring company name extracted from `job_description`; use `Company` when not determinable.
+- `targetTitle`: the job title extracted from `job_description`; use `Role` when not determinable.
 
 All strings must be plain text without markdown. Preserve source job identity, company, chronology, and education facts. Never fabricate a seventh job; when the source representation already contains seven entries, retain all seven and tailor their supported content.
 

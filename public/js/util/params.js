@@ -10,8 +10,7 @@ export const buildSubmitParams = async () => {
     temperature: document.getElementById("temperature-input").value,
     useSpecialInfo: document.getElementById("prebuilt-checkbox").checked,
     pi: document.getElementById("pi-checkbox").checked,
-    injectDoc: document.getElementById("inject-doc-checkbox").checked,
-    injectDocPath: document.getElementById("inject-doc-path-input").value.trim(),
-    editingMinutes: document.getElementById("inject-doc-editing-minutes-input").value.trim(),
+    saveDir: document.getElementById("save-dir-input").value.trim(),
+    editingMinutes: document.getElementById("editing-minutes-input").value.trim() || "auto",
   };
 };
