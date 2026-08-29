@@ -174,7 +174,8 @@ h3 {
 #model-options-list-item {
   margin-top: 0.5rem;
   margin-bottom: 0.5rem;
-  gap: 1.5rem;
+  /* tighter than .form-row's 1.5rem -- six items in this row need the room */
+  gap: 1rem;
 }
 
 #priority-div {
@@ -182,16 +183,21 @@ h3 {
 }
 
 #max-tokens-div {
-  flex: 0 0 15%;
+  flex: 0 0 14%;
 }
 
 #temperature-div {
-  flex: 0 0 10%;
+  flex: 0 0 7%;
+}
+
+#verbose-checkbox-div {
+  flex: 0 0 12%;
+  text-align: center;
 }
 
 #prebuilt-checkbox-div {
   margin-left: -0.5rem;
-  flex: 0 0 12%;
+  flex: 0 0 9%;
   text-align: center;
 }
 

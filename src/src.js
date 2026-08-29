@@ -4,7 +4,7 @@ import { buildMessageInput, buildSchema, buildInfoObj } from "./message.js";
 
 export const runResumeUnfucker = async (inputParams) => {
   if (!inputParams) return null;
-  const { inputPath, aiType, jobInput, useSpecialInfo, pi } = inputParams;
+  const { inputPath, aiType, jobInput, useSpecialInfo, pi, verbose } = inputParams;
 
   const resumeText = await extractResumeText(inputPath);
   // console.log("RESUME TEXT");
@@ -14,10 +14,10 @@ export const runResumeUnfucker = async (inputParams) => {
   if (useSpecialInfo) infoObj = await buildInfoObj();
   const mode = useSpecialInfo ? "prebuilt" : "upload";
 
-  const messageInput = await buildMessageInput(resumeText, jobInput, infoObj);
+  const messageInput = await buildMessageInput(resumeText, jobInput, infoObj, verbose);
   // console.log("MESSAGE INPUT");
   // console.log(messageInput);
-  const schema = await buildSchema(aiType, mode, false);
+  const schema = await buildSchema(aiType, mode, false, verbose);
   // console.log("SCHEMA");
   // console.log(schema);
 
@@ -36,7 +36,7 @@ export const runResumeUnfucker = async (inputParams) => {
   const aiObj = parseAiResponse(aiText);
   if (!aiObj) return null;
 
-  const buffer = await buildNewResume(aiObj, infoObj, pi);
+  const buffer = await buildNewResume(aiObj, infoObj, pi, verbose);
   if (!buffer) return null;
 
   const lastName = resolveLastName(mode, aiObj.name);

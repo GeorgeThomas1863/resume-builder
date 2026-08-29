@@ -235,10 +235,11 @@ export const buildModelOptionsListItem = async () => {
   const priorityDiv = await buildPriorityDiv();
   const maxTokensDiv = await buildMaxTokensDiv();
   const temperatureDiv = await buildTemperatureDiv();
+  const verboseCheckbox = await buildVerboseCheckbox();
   const prebuiltCheckbox = await buildPrebuiltCheckbox();
   const piCheckbox = await buildPICheckbox();
 
-  modelOptionsListItem.append(priorityDiv, maxTokensDiv, temperatureDiv, prebuiltCheckbox, piCheckbox);
+  modelOptionsListItem.append(priorityDiv, maxTokensDiv, temperatureDiv, verboseCheckbox, prebuiltCheckbox, piCheckbox);
 
   return modelOptionsListItem;
 };
@@ -328,6 +329,32 @@ export const buildTemperatureDiv = async () => {
 
   temperatureDiv.append(temperatureLabel, temperatureInput);
   return temperatureDiv;
+};
+
+export const buildVerboseCheckbox = async () => {
+  const verboseCheckboxDiv = document.createElement("div");
+  verboseCheckboxDiv.id = "verbose-checkbox-div";
+  verboseCheckboxDiv.className = "form-select-half checkbox-wrapper";
+
+  const verboseLabel = document.createElement("label");
+  verboseLabel.setAttribute("for", "verbose-checkbox");
+  verboseLabel.textContent = "Verbose Resume (2-Page)";
+  verboseLabel.className = "form-label";
+
+  const checkboxContainer = document.createElement("div");
+  checkboxContainer.className = "checkbox-container";
+
+  const verboseCheckbox = document.createElement("input");
+  verboseCheckbox.type = "checkbox";
+  verboseCheckbox.id = "verbose-checkbox";
+  verboseCheckbox.className = "form-checkbox";
+  verboseCheckbox.checked = true;
+  verboseCheckbox.setAttribute("data-label", "verbose-checkbox");
+
+  checkboxContainer.append(verboseCheckbox);
+  verboseCheckboxDiv.append(verboseLabel, checkboxContainer);
+
+  return verboseCheckboxDiv;
 };
 
 export const buildPrebuiltCheckbox = async () => {

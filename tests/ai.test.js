@@ -23,7 +23,16 @@ vi.mock("@anthropic-ai/sdk", () => ({
   },
 }));
 
+// Mocked so the screener-pass tests below don't depend on real prompt files on disk (verbose
+// prompt selection and schema shaping are covered directly in message.test.js) — every existing
+// test here only asserts on requests reaching the OpenAI/Anthropic mocks, never on message.js output.
+vi.mock("../src/message.js", () => ({
+  buildScreenerMessageInput: vi.fn(async () => [{ role: "user", content: "screener" }]),
+  buildSchema: vi.fn(async () => ({ schema: { type: "object" }, name: "resume_enhancement" })),
+}));
+
 const { runChatGPT, runClaude, runTwoPassAI } = await import("../src/ai.js");
+const { buildScreenerMessageInput, buildSchema } = await import("../src/message.js");
 
 const validDraft = JSON.stringify({ summary: "draft", experience: [], skills: [] });
 const base = {
@@ -40,6 +49,7 @@ beforeEach(() => {
   vi.spyOn(console, "log").mockImplementation(() => {});
   vi.spyOn(console, "warn").mockImplementation(() => {});
   vi.spyOn(console, "error").mockImplementation(() => {});
+  vi.clearAllMocks();
 });
 
 describe("two-pass AI", () => {
@@ -64,6 +74,22 @@ describe("two-pass AI", () => {
     openAIResponses = [validDraft, JSON.stringify({ audit: "ok", summary: "x", experience: [], skills: [] })];
     await runTwoPassAI(base);
     expect(openAIRequests[1].max_tokens).toBe(16000);
+  });
+});
+
+describe("screener verbose threading", () => {
+  it("passes verbose through to buildScreenerMessageInput and buildSchema", async () => {
+    openAIResponses = [validDraft, JSON.stringify({ audit: "ok", summary: "x", experience: [], skills: [] })];
+    await runTwoPassAI({ ...base, verbose: true });
+    expect(buildScreenerMessageInput).toHaveBeenCalledWith(base.messageInput, validDraft, base.mode, true);
+    expect(buildSchema).toHaveBeenCalledWith(base.screenerAiType, base.mode, true, true);
+  });
+
+  it("passes verbose through as-is (undefined) when absent from inputParams", async () => {
+    openAIResponses = [validDraft, JSON.stringify({ audit: "ok", summary: "x", experience: [], skills: [] })];
+    await runTwoPassAI(base);
+    expect(buildScreenerMessageInput).toHaveBeenCalledWith(base.messageInput, validDraft, base.mode, undefined);
+    expect(buildSchema).toHaveBeenCalledWith(base.screenerAiType, base.mode, true, undefined);
   });
 });
 

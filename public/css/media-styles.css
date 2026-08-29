@@ -52,6 +52,7 @@
   #priority-div,
   #max-tokens-div,
   #temperature-div,
+  #verbose-checkbox-div,
   #prebuilt-checkbox-div {
     flex: 1 1 auto;
   }

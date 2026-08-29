@@ -62,9 +62,9 @@ export const runTwoPassAI = async (inputParams) => {
 };
 
 const runScreenerPass = async (inputParams, draftText) => {
-  const { screenerAiType, screenerModelType, mode, messageInput, maxTokens, temperature, serviceTier } = inputParams;
-  const messageInputScreener = await buildScreenerMessageInput(messageInput, draftText, mode);
-  const schema = await buildSchema(screenerAiType, mode, true);
+  const { screenerAiType, screenerModelType, mode, messageInput, maxTokens, temperature, serviceTier, verbose } = inputParams;
+  const messageInputScreener = await buildScreenerMessageInput(messageInput, draftText, mode, verbose);
+  const schema = await buildSchema(screenerAiType, mode, true, verbose);
   if (!messageInputScreener || !schema) throw new Error("could not build screener request");
   const startedAt = Date.now();
   const screenerText = await runSendToAI({ aiType: screenerAiType, modelType: screenerModelType, messageInput: messageInputScreener, schema, temperature, serviceTier, maxTokens: Math.max(+maxTokens, SCREENER_MIN_TOKENS) });

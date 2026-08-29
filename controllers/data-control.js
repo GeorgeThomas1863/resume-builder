@@ -84,6 +84,7 @@ export const submitRouteController = async (req, res) => {
     jobInput,
     saveDir,
     editingMinutes,
+    verbose,
   } = req.body;
 
   const isAdmin = !!req.session.isAdmin;
@@ -137,6 +138,7 @@ export const submitRouteController = async (req, res) => {
     inputPath,
     useSpecialInfo: safeUseSpecialInfo,
     pi: safePi,
+    verbose: !!verbose,
   };
 
   const result = await runResumeUnfucker(inputParams);
